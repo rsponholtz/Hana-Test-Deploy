@@ -5,25 +5,25 @@
         "vmName": {
             "type": "string",
             "metadata": {
-                "testofdescription": "VM Name"
+                "rosswashere": "VM Name"
             }
         },
         "customUri": {
             "type": "string",
             "metadata": {
-                "testofdescription": "Uri for SAP Bits"
+                "rosswashere": "Uri for SAP Bits"
             }
         },
         "HANAsubnetRef": {
             "type": "string",
             "metadata": {
-                "testofdescription": "The Hana subnet reference ID"
+                "rosswashere": "The Hana subnet reference ID"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "testofdescription": "Operating system for HANA Machine"
+                "rosswashere": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -35,35 +35,35 @@
         "vmUserName": {
             "type": "string",
             "metadata": {
-                "testofdescription": "Username for the Virtual Machine"
+                "rosswashere": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "vmPassword": {
             "type": "securestring",
             "metadata": {
-                "testofdescription": "Password for the Virtual Machine"
+                "rosswashere": "Password for the Virtual Machine"
             },
             "defaultValue": "Hana07061992!"
         },
         "hanaSid": {
             "type": "string",
             "metadata": {
-                "testofdescription": "SAP HANA System ID"
+                "rosswashere": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "hanaNumber": {
             "type": "string",
             "metadata": {
-                "testofdescription": "SAP HANA Instance Number"
+                "rosswashere": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },      
         "vmSize": {
             "type": "string",
             "metadata": {
-                "testofdescription": "Size of VM to deploy"
+                "rosswashere": "Size of VM to deploy"
             }
         },
         "IPAllocationMethod": {
@@ -73,34 +73,34 @@
               "Static"
             ],
             "metadata": {
-                "testofdescription": "IP Allocation Method"
+                "rosswashere": "IP Allocation Method"
           }
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "testofdescription": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "rosswashere": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "testofdescription": "OS Subscription Email for BYOS, blank for PAYG"
+            "rosswashere": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "testofdescription": "OS Subscription ID for BYOS, blank for PAYG"
+            "rosswashere": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri":{
           "type": "string",
           "metadata":{
-            "testofdescription": "SMT Uri, blank for none"
+            "rosswashere": "SMT Uri, blank for none"
           },
           "DefaultValue": ""
         }
