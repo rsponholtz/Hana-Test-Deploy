@@ -5,25 +5,25 @@
         "vmName": {
             "type": "string",
             "metadata": {
-                "rosswashere": "VM Name"
+                "description": "VM Name"
             }
         },
         "customUri": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Uri for SAP Bits"
+                "description": "Uri for SAP Bits"
             }
         },
         "HANAsubnetRef": {
             "type": "string",
             "metadata": {
-                "rosswashere": "The Hana subnet reference ID"
+                "description": "The Hana subnet reference ID"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Operating system for HANA Machine"
+                "description": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": 
@@ -36,35 +36,35 @@
         "vmUserName": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Username for the Virtual Machine"
+                "description": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "vmPassword": {
             "type": "securestring",
             "metadata": {
-                "rosswashere": "Password for the Virtual Machine"
+                "description": "Password for the Virtual Machine"
             },
             "defaultValue": "Hana07061992!"
         },
         "hanaSid": {
             "type": "string",
             "metadata": {
-                "rosswashere": "SAP HANA System ID"
+                "description": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "hanaNumber": {
             "type": "string",
             "metadata": {
-                "rosswashere": "SAP HANA Instance Number"
+                "description": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },       
         "vmSize": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Size of VM to deploy"
+                "description": "Size of VM to deploy"
             }
         },
         "IPAllocationMethod": {
@@ -74,41 +74,41 @@
               "Static"
             ],
             "metadata": {
-                "rosswashere": "IP Allocation Method"
+                "description": "IP Allocation Method"
           }
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "rosswashere": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "rosswashere": "OS Subscription Email for BYOS, blank for PAYG"
+            "description": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "rosswashere": "OS Subscription ID for BYOS, blank for PAYG"
+            "description": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri":{
             "type": "string",
             "metadata":{
-              "rosswashere": "SMT Uri, blank for none"
+              "description": "SMT Uri, blank for none"
             },
             "DefaultValue": ""
         },
         "WriteAccelerator": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Choose whether to use Write Accelerator, only for M series"
+                "description": "Choose whether to use Write Accelerator, only for M series"
             },
             "allowedValues": [
                 "yes",

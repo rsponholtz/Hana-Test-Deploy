@@ -5,27 +5,27 @@
     "vmUserName": {
       "type": "string",
       "metadata": {
-        "rosswashere": "Username for the Virtual Machine"
+        "description": "Username for the Virtual Machine"
       },
       "defaultValue": "testuser"
     },
     "mgmtSubnetRef": {
         "type": "string",
         "metadata": {
-            "rosswashere": "The Hana subnet reference ID"
+            "description": "The Hana subnet reference ID"
         }
     },
     "vmPassword": {
       "type": "securestring",
       "metadata": {
-        "rosswashere": "Password for the Virtual Machine"
+        "description": "Password for the Virtual Machine"
       },
       "defaultValue": "Hana07061992!"
     },
     "customUri": {
       "type": "string",
       "metadata": {
-        "rosswashere": "Uri for SAP Bits"
+        "description": "Uri for SAP Bits"
       }
     }
   },

@@ -6,13 +6,13 @@
             "type": "string",
             "maxLength": 13,
             "metadata": {
-                "rosswashere": "VM Name"
+                "description": "VM Name"
             }
         },
         "HANAJumpbox": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Choose whether to deploy a VM with HANA Studio installed"
+                "description": "Choose whether to deploy a VM with HANA Studio installed"
             },
             "allowedValues": [
                 "yes",
@@ -22,7 +22,7 @@
         "VMSize": {
             "type": "string",
             "metadata": {
-                "rosswashere": "VM Size"
+                "description": "VM Size"
             },
             "defaultValue": "Standard_GS5 (448 GB, Certified)",
             "allowedValues": [
@@ -39,7 +39,7 @@
         "WriteAccelerator": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Choose whether to use Write Accelerator, only for M series"
+                "description": "Choose whether to use Write Accelerator, only for M series"
             },
             "defaultValue": "no",
             "allowedValues": [
@@ -51,67 +51,67 @@
             "type": "string",
             "defaultValue": "ra-sap-hana-vnet",
             "metadata": {
-                "rosswashere": "The HANA VNET"
+                "description": "The HANA VNET"
             }
         },
         "addressPrefixes": {
             "type": "string",
             "defaultValue": "10.0.0.0/16",
             "metadata": {
-                "rosswashere": "The HANA VNET prefix"
+                "description": "The HANA VNET prefix"
             }
         },
         "HANASubnetName": {
             "type": "string",
             "defaultValue": "SAPDataSubnet",
             "metadata": {
-                "rosswashere": "The data subnet name"
+                "description": "The data subnet name"
             }
         },
         "HANASubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.5.0/24",
             "metadata": {
-                "rosswashere": "The data subnet prefix"
+                "description": "The data subnet prefix"
             }
         },
         "ManagementSubnetName": {
             "type": "string",
             "defaultValue": "SAPMgmtSubnet",
             "metadata": {
-                "rosswashere": "The management subnet name"
+                "description": "The management subnet name"
             }
         },
         "ManagementSubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.6.0/24",
             "metadata": {
-                "rosswashere": "The management subnet prefix"
+                "description": "The management subnet prefix"
             }
         },
         "customURI": {
             "type": "string",
             "metadata": {
-                "rosswashere": "URI where SAP bits are uploaded"
+                "description": "URI where SAP bits are uploaded"
             }
         },
         "VMUserName": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Username for the Virtual Machine"
+                "description": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "VMPassword": {
             "type": "securestring",
             "metadata": {
-                "rosswashere": "Password for the Virtual Machine"
+                "description": "Password for the Virtual Machine"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Operating system for HANA Machine"
+                "description": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -123,21 +123,21 @@
         "HANASID": {
             "type": "string",
             "metadata": {
-                "rosswashere": "SAP HANA System ID"
+                "description": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "HANANumber": {
             "type": "string",
             "metadata": {
-                "rosswashere": "SAP HANA Instance Number"
+                "description": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },
         "ExistingNetworkResourceGroup": {
             "type": "string",
             "metadata": {
-                "rosswashere": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+                "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
             },
             "defaultValue": "no"
         },
@@ -148,35 +148,35 @@
               "Static"
             ],
             "metadata": {
-                "rosswashere": "IP Allocation Method"
+                "description": "IP Allocation Method"
           },
           "defaultValue": "Dynamic"
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "rosswashere": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "rosswashere": "OS Subscription Email for BYOS, blank for PAYG"
+            "description": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "rosswashere": "OS Subscription ID for BYOS, blank for PAYG"
+            "description": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri": {
             "type": "string",
             "metadata": {
-              "rosswashere": "SMT URI, blank for none"
+              "description": "SMT URI, blank for none"
             },
             "defaultValue": ""
           }                               
