@@ -5,25 +5,25 @@
         "vmName": {
             "type": "string",
             "metadata": {
-                "description": "VM Name"
+                "testofdescription": "VM Name"
             }
         },
         "customUri": {
             "type": "string",
             "metadata": {
-                "description": "Uri for SAP Bits"
+                "testofdescription": "Uri for SAP Bits"
             }
         },
         "HANAsubnetRef": {
             "type": "string",
             "metadata": {
-                "description": "The Hana subnet reference ID"
+                "testofdescription": "The Hana subnet reference ID"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "description": "Operating system for HANA Machine"
+                "testofdescription": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -35,35 +35,35 @@
         "vmUserName": {
             "type": "string",
             "metadata": {
-                "description": "Username for the Virtual Machine"
+                "testofdescription": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "vmPassword": {
             "type": "securestring",
             "metadata": {
-                "description": "Password for the Virtual Machine"
+                "testofdescription": "Password for the Virtual Machine"
             },
             "defaultValue": "Hana07061992!"
         },
         "hanaSid": {
             "type": "string",
             "metadata": {
-                "description": "SAP HANA System ID"
+                "testofdescription": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "hanaNumber": {
             "type": "string",
             "metadata": {
-                "description": "SAP HANA Instance Number"
+                "testofdescription": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },      
         "vmSize": {
             "type": "string",
             "metadata": {
-                "description": "Size of VM to deploy"
+                "testofdescription": "Size of VM to deploy"
             }
         },
         "IPAllocationMethod": {
@@ -73,34 +73,34 @@
               "Static"
             ],
             "metadata": {
-                "description": "IP Allocation Method"
+                "testofdescription": "IP Allocation Method"
           }
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "testofdescription": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "description": "OS Subscription Email for BYOS, blank for PAYG"
+            "testofdescription": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "description": "OS Subscription ID for BYOS, blank for PAYG"
+            "testofdescription": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri":{
           "type": "string",
           "metadata":{
-            "description": "SMT Uri, blank for none"
+            "testofdescription": "SMT Uri, blank for none"
           },
           "DefaultValue": ""
         }
@@ -109,7 +109,7 @@
         "api-version": "2017-06-01",
         "api-version-vm": "2017-12-01",
         "mode": "Push",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy2/master/",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/",
         "nicName": "[if (equals(parameters('IPAllocationMethod'),'Static'), concat(parameters('vmName'),'-static'), concat(parameters('vmName'),'-dynamic'))]",
         "subnetRef": "[parameters('HANASubnetRef')]",
         "OperatingSystemSpec":{

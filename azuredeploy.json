@@ -6,13 +6,13 @@
             "type": "string",
             "maxLength": 13,
             "metadata": {
-                "description": "VM Name"
+                "testofdescription": "VM Name"
             }
         },
         "HANAJumpbox": {
             "type": "string",
             "metadata": {
-                "description": "Choose whether to deploy a VM with HANA Studio installed"
+                "testofdescription": "Choose whether to deploy a VM with HANA Studio installed"
             },
             "allowedValues": [
                 "yes",
@@ -22,7 +22,7 @@
         "VMSize": {
             "type": "string",
             "metadata": {
-                "description": "VM Size"
+                "testofdescription": "VM Size"
             },
             "defaultValue": "Standard_GS5 (448 GB, Certified)",
             "allowedValues": [
@@ -39,7 +39,7 @@
         "WriteAccelerator": {
             "type": "string",
             "metadata": {
-                "description": "Choose whether to use Write Accelerator, only for M series"
+                "testofdescription": "Choose whether to use Write Accelerator, only for M series"
             },
             "defaultValue": "no",
             "allowedValues": [
@@ -51,67 +51,67 @@
             "type": "string",
             "defaultValue": "ra-sap-hana-vnet",
             "metadata": {
-                "description": "The HANA VNET"
+                "testofdescription": "The HANA VNET"
             }
         },
         "addressPrefixes": {
             "type": "string",
             "defaultValue": "10.0.0.0/16",
             "metadata": {
-                "description": "The HANA VNET prefix"
+                "testofdescription": "The HANA VNET prefix"
             }
         },
         "HANASubnetName": {
             "type": "string",
             "defaultValue": "SAPDataSubnet",
             "metadata": {
-                "description": "The data subnet name"
+                "testofdescription": "The data subnet name"
             }
         },
         "HANASubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.5.0/24",
             "metadata": {
-                "description": "The data subnet prefix"
+                "testofdescription": "The data subnet prefix"
             }
         },
         "ManagementSubnetName": {
             "type": "string",
             "defaultValue": "SAPMgmtSubnet",
             "metadata": {
-                "description": "The management subnet name"
+                "testofdescription": "The management subnet name"
             }
         },
         "ManagementSubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.6.0/24",
             "metadata": {
-                "description": "The management subnet prefix"
+                "testofdescription": "The management subnet prefix"
             }
         },
         "customURI": {
             "type": "string",
             "metadata": {
-                "description": "URI where SAP bits are uploaded"
+                "testofdescription": "URI where SAP bits are uploaded"
             }
         },
         "VMUserName": {
             "type": "string",
             "metadata": {
-                "description": "Username for the Virtual Machine"
+                "testofdescription": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "VMPassword": {
             "type": "securestring",
             "metadata": {
-                "description": "Password for the Virtual Machine"
+                "testofdescription": "Password for the Virtual Machine"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "description": "Operating system for HANA Machine"
+                "testofdescription": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -123,21 +123,21 @@
         "HANASID": {
             "type": "string",
             "metadata": {
-                "description": "SAP HANA System ID"
+                "testofdescription": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "HANANumber": {
             "type": "string",
             "metadata": {
-                "description": "SAP HANA Instance Number"
+                "testofdescription": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },
         "ExistingNetworkResourceGroup": {
             "type": "string",
             "metadata": {
-                "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+                "testofdescription": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
             },
             "defaultValue": "no"
         },
@@ -148,42 +148,42 @@
               "Static"
             ],
             "metadata": {
-                "description": "IP Allocation Method"
+                "testofdescription": "IP Allocation Method"
           },
           "defaultValue": "Dynamic"
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "testofdescription": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "description": "OS Subscription Email for BYOS, blank for PAYG"
+            "testofdescription": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "description": "OS Subscription ID for BYOS, blank for PAYG"
+            "testofdescription": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri": {
             "type": "string",
             "metadata": {
-              "description": "SMT URI, blank for none"
+              "testofdescription": "SMT URI, blank for none"
             },
             "defaultValue": ""
           }                               
     },
   "variables": {
     "vmName": "[toLower(parameters('vmName'))]",
-    "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy2/master/",
+    "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/",
     "smallUri": "[concat(variables('baseUri'),'Vms/small.json')]",
     "mediumUri": "[concat(variables('baseUri'),'Vms/medium.json')]",
     "largeUri": "[concat(variables('baseUri'),'Vms/large.json')]",
