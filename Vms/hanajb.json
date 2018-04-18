@@ -5,27 +5,27 @@
     "vmUserName": {
       "type": "string",
       "metadata": {
-        "github-230": "Username for the Virtual Machine"
+        "github-231": "Username for the Virtual Machine"
       },
       "defaultValue": "testuser"
     },
     "mgmtSubnetRef": {
         "type": "string",
         "metadata": {
-            "github-230": "The Hana subnet reference ID"
+            "github-231": "The Hana subnet reference ID"
         }
     },
     "vmPassword": {
       "type": "securestring",
       "metadata": {
-        "github-230": "Password for the Virtual Machine"
+        "github-231": "Password for the Virtual Machine"
       },
       "defaultValue": "Hana07061992!"
     },
     "customUri": {
       "type": "string",
       "metadata": {
-        "github-230": "Uri for SAP Bits"
+        "github-231": "Uri for SAP Bits"
       }
     }
   },

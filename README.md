@@ -80,7 +80,7 @@ For your deployment to be supported by SAP the Azure Enhanced Monitoring Extensi
 
 ## Parameters
 
-Parameter name | Required | github-230 | Default Value | Allowed Values
+Parameter name | Required | github-231 | Default Value | Allowed Values
 -------------- | -------- | ----------- | ------------- | --------------
 VM Name |Yes |Name of the HANA Virtual Machine. | None | No restrictions
 HANA Jumpbox |Yes |Defines whether to create a Windows Server with HANA Studio installed. | None | No Restrictions

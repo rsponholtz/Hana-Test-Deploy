@@ -5,25 +5,25 @@
         "vmName": {
             "type": "string",
             "metadata": {
-                "github-230": "VM Name"
+                "github-231": "VM Name"
             }
         },
         "customUri": {
             "type": "string",
             "metadata": {
-                "github-230": "Uri for SAP Bits"
+                "github-231": "Uri for SAP Bits"
             }
         },
         "HANAsubnetRef": {
             "type": "string",
             "metadata": {
-                "github-230": "The Hana subnet reference ID"
+                "github-231": "The Hana subnet reference ID"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "github-230": "Operating system for HANA Machine"
+                "github-231": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -35,35 +35,35 @@
         "vmUserName": {
             "type": "string",
             "metadata": {
-                "github-230": "Username for the Virtual Machine"
+                "github-231": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "vmPassword": {
             "type": "securestring",
             "metadata": {
-                "github-230": "Password for the Virtual Machine"
+                "github-231": "Password for the Virtual Machine"
             },
             "defaultValue": "Hana07061992!"
         },
         "hanaSid": {
             "type": "string",
             "metadata": {
-                "github-230": "SAP HANA System ID"
+                "github-231": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "hanaNumber": {
             "type": "string",
             "metadata": {
-                "github-230": "SAP HANA Instance Number"
+                "github-231": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },       
         "vmSize": {
             "type": "string",
             "metadata": {
-                "github-230": "Size of VM to deploy"
+                "github-231": "Size of VM to deploy"
             }
         },
         "IPAllocationMethod": {
@@ -73,41 +73,41 @@
               "Static"
             ],
             "metadata": {
-                "github-230": "IP Allocation Method"
+                "github-231": "IP Allocation Method"
           }
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "github-230": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "github-231": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "github-230": "OS Subscription Email for BYOS, blank for PAYG"
+            "github-231": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "github-230": "OS Subscription ID for BYOS, blank for PAYG"
+            "github-231": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri":{
             "type": "string",
             "metadata":{
-              "github-230": "SMT Uri, blank for none"
+              "github-231": "SMT Uri, blank for none"
             },
             "DefaultValue": ""
         },
         "WriteAccelerator": {
             "type": "string",
             "metadata": {
-                "github-230": "Choose whether to use Write Accelerator, only for M series"
+                "github-231": "Choose whether to use Write Accelerator, only for M series"
             },
             "allowedValues": [
                 "yes",

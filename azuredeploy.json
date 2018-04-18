@@ -6,13 +6,13 @@
             "type": "string",
             "maxLength": 13,
             "metadata": {
-                "github-230": "VM Name"
+                "github-231": "VM Name"
             }
         },
         "HANAJumpbox": {
             "type": "string",
             "metadata": {
-                "github-230": "Choose whether to deploy a VM with HANA Studio installed"
+                "github-231": "Choose whether to deploy a VM with HANA Studio installed"
             },
             "allowedValues": [
                 "yes",
@@ -22,7 +22,7 @@
         "VMSize": {
             "type": "string",
             "metadata": {
-                "github-230": "VM Size"
+                "github-231": "VM Size"
             },
             "defaultValue": "Standard_GS5 (448 GB, Certified)",
             "allowedValues": [
@@ -39,7 +39,7 @@
         "WriteAccelerator": {
             "type": "string",
             "metadata": {
-                "github-230": "Choose whether to use Write Accelerator, only for M series"
+                "github-231": "Choose whether to use Write Accelerator, only for M series"
             },
             "defaultValue": "no",
             "allowedValues": [
@@ -51,67 +51,67 @@
             "type": "string",
             "defaultValue": "ra-sap-hana-vnet",
             "metadata": {
-                "github-230": "The HANA VNET"
+                "github-231": "The HANA VNET"
             }
         },
         "addressPrefixes": {
             "type": "string",
             "defaultValue": "10.0.0.0/16",
             "metadata": {
-                "github-230": "The HANA VNET prefix"
+                "github-231": "The HANA VNET prefix"
             }
         },
         "HANASubnetName": {
             "type": "string",
             "defaultValue": "SAPDataSubnet",
             "metadata": {
-                "github-230": "The data subnet name"
+                "github-231": "The data subnet name"
             }
         },
         "HANASubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.5.0/24",
             "metadata": {
-                "github-230": "The data subnet prefix"
+                "github-231": "The data subnet prefix"
             }
         },
         "ManagementSubnetName": {
             "type": "string",
             "defaultValue": "SAPMgmtSubnet",
             "metadata": {
-                "github-230": "The management subnet name"
+                "github-231": "The management subnet name"
             }
         },
         "ManagementSubnetPrefix": {
             "type": "string",
             "defaultValue": "10.0.6.0/24",
             "metadata": {
-                "github-230": "The management subnet prefix"
+                "github-231": "The management subnet prefix"
             }
         },
         "customURI": {
             "type": "string",
             "metadata": {
-                "github-230": "URI where SAP bits are uploaded"
+                "github-231": "URI where SAP bits are uploaded"
             }
         },
         "VMUserName": {
             "type": "string",
             "metadata": {
-                "github-230": "Username for the Virtual Machine"
+                "github-231": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
         },
         "VMPassword": {
             "type": "securestring",
             "metadata": {
-                "github-230": "Password for the Virtual Machine"
+                "github-231": "Password for the Virtual Machine"
             }
         },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "github-230": "Operating system for HANA Machine"
+                "github-231": "Operating system for HANA Machine"
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
@@ -123,21 +123,21 @@
         "HANASID": {
             "type": "string",
             "metadata": {
-                "github-230": "SAP HANA System ID"
+                "github-231": "SAP HANA System ID"
             },
             "defaultValue": "H10"
         },
         "HANANumber": {
             "type": "string",
             "metadata": {
-                "github-230": "SAP HANA Instance Number"
+                "github-231": "SAP HANA Instance Number"
             },
             "defaultValue": "00"
         },
         "ExistingNetworkResourceGroup": {
             "type": "string",
             "metadata": {
-                "github-230": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+                "github-231": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
             },
             "defaultValue": "no"
         },
@@ -148,35 +148,35 @@
               "Static"
             ],
             "metadata": {
-                "github-230": "IP Allocation Method"
+                "github-231": "IP Allocation Method"
           },
           "defaultValue": "Dynamic"
         },
         "StaticIP": {
           "type": "string",
           "metadata": {
-            "github-230": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            "github-231": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
           },
           "defaultValue": "10.0.5.4"
         },               
         "SubscriptionEmail": {
           "type": "string",
           "metadata": {
-            "github-230": "OS Subscription Email for BYOS, blank for PAYG"
+            "github-231": "OS Subscription Email for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },              
         "SubscriptionID": {
           "type": "string",
           "metadata": {
-            "github-230": "OS Subscription ID for BYOS, blank for PAYG"
+            "github-231": "OS Subscription ID for BYOS, blank for PAYG"
           },
           "defaultValue": ""
         },
         "SMTUri": {
             "type": "string",
             "metadata": {
-              "github-230": "SMT URI, blank for none"
+              "github-231": "SMT URI, blank for none"
             },
             "defaultValue": ""
           }                               
