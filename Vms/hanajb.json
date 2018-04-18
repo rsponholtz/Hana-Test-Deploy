@@ -5,27 +5,27 @@
     "vmUserName": {
       "type": "string",
       "metadata": {
-        "github-231": "Username for the Virtual Machine"
+        "description": "Username for the Virtual Machine"
       },
       "defaultValue": "testuser"
     },
     "mgmtSubnetRef": {
         "type": "string",
         "metadata": {
-            "github-231": "The Hana subnet reference ID"
+            "description": "The Hana subnet reference ID"
         }
     },
     "vmPassword": {
       "type": "securestring",
       "metadata": {
-        "github-231": "Password for the Virtual Machine"
+        "description": "Password for the Virtual Machine"
       },
       "defaultValue": "Hana07061992!"
     },
     "customUri": {
       "type": "string",
       "metadata": {
-        "github-231": "Uri for SAP Bits"
+        "description": "Uri for SAP Bits"
       }
     }
   },
@@ -38,7 +38,7 @@
         "scriptFolder": ".",
         "scriptFileName": "hanastudio.ps1",
         "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-        "fileuri":"https://raw.githubusercontent.com/AzureCAT-GSI/SAP-HANA-ARM/master/hanastudio.ps1"
+        "fileuri":"https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1"
         
     },
     "resources": [
