@@ -30,13 +30,13 @@
             "value": "10.0.6.0/24"
         },
         "customURI": {
-            "value": "https://stagea66a6dd3ca954d68bdd.blob.core.windows.net/tazuresaphana22rg-stageartifacts"            
+            "value": "https://yourblobname.blob.core.windows.net/yourContainerName"            
         },
         "VMUserName": {
             "value": "testuser"
         },
         "VMPassword": {
-            "value": "Dk@zurec@tgsi"
+            "value": "YourPassword"
                         },                    
         "OperatingSystem": {
             "value":  "SLES for SAP 12 SP3"

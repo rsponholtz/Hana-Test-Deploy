@@ -26,7 +26,7 @@ Use the commands below to provide key information from your environment:
 You do NOT have to include this information if this is a FEATURE REQUEST
 -->
 
-**description**
+**Description**
 
 <!--
 Briefly describe the problem you are having in a few paragraphs.

@@ -4,7 +4,7 @@ This ARM template is used to install SAP HANA on a single VM running SUSE SLES 1
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fazuredeploy.json)
 ## Machine Info
 The template current deploys HANA on a one of the machines listed in the table below with the noted disk configuration.  The deployment takes advantage of Managed Disks, for more information on Managed Disks or the sizes of the noted disks can be found on [this](https://docs.microsoft.com/en-us/azure/storage/storage-managed-disks-overview#pricing-and-billing) page.
-testing java
+
 Machine Size | RAM | Data and Log Disks | /hana/shared | /root | /usr/sap | hana/backup
 ------------ | --- | ------------------ | ------------ | ----- | -------- | -----------
 E16 | 128 GB | 2 x P20 | 1 x S20 | 1 x S6 | 1 x S6 | 1 x S15
@@ -80,7 +80,7 @@ For your deployment to be supported by SAP the Azure Enhanced Monitoring Extensi
 
 ## Parameters
 
-Parameter name | Required | description | Default Value | Allowed Values
+Parameter name | Required | Description | Default Value | Allowed Values
 -------------- | -------- | ----------- | ------------- | --------------
 VM Name |Yes |Name of the HANA Virtual Machine. | None | No restrictions
 HANA Jumpbox |Yes |Defines whether to create a Windows Server with HANA Studio installed. | None | No Restrictions
