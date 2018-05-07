@@ -9,11 +9,19 @@
       },
       "defaultValue": "testuser"
     },
-    "mgmtSubnetRef": {
+    "ExistingNetworkResourceGroup": {
         "type": "string",
         "metadata": {
-            "description": "The Hana subnet reference ID"
+            "description": "Resource Group for the VNET where the VM will be placed"
         }
+    },
+    "vnetName": {
+        "defaultValue": "vnet",
+        "type": "string"
+    },
+    "subnetName": {
+        "defaultValue": "vnet",
+        "type": "string"
     },
     "vmPassword": {
       "type": "securestring",
@@ -30,7 +38,8 @@
     }
   },
     "variables": {
-        "subnetRef": "[parameters('mgmtSubnetRef')]",
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]" ,
         "vmName": "hanajb",
         "vNicName": "hanajbnic",
         "PIPName": "hanajbpip",

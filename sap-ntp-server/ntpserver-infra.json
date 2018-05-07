@@ -73,8 +73,8 @@
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmName": "iscsiserver",
-        "vNicName": "iscsiservernic",
+        "vmName": "ntpserver",
+        "vNicName": "ntpservernic",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
             "Windows Server 2016 Datacenter": {
@@ -120,8 +120,8 @@
                 "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
             },
             "Linux": {
-                "script": "[concat(parameters('_artifactsLocation'), '/scripts/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]",
-                "scriptCall": "sh iscsiserver.sh"
+                "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.sh', parameters('_artifactsLocationSasToken'))]",
+                "scriptCall": "sh ntpserver.sh"
             }
         },
         "scriptFolder": "."

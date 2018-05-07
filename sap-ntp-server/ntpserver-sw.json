@@ -2,6 +2,27 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource Group for the VNET where the VM will be placed"
+            }
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
+        "subnetName": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
         "osType": {
             "type": "string",
             "allowedValues": [
@@ -16,10 +37,22 @@
               "description": "The type of the operating system you want to deploy."
             }
           },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
         "customUri": {
             "type": "string",
             "metadata": {
                 "description": "Uri for SAP Bits"
+            }
+        },
+        "StaticIP": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address for the virtual machine"
             }
         },
         "_artifactsLocation": {
@@ -38,7 +71,11 @@
           }        
     },
     "variables": {
-        "vmName": "iscsiserver",
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmName": "ntpserver",
+        "vNicName": "ntpservernic",
+        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
             "Windows Server 2016 Datacenter": {
               "sku": "2016-Datacenter",
@@ -83,8 +120,8 @@
               "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
             },
             "Linux": {
-              "script": "[concat(parameters('_artifactsLocation'), '/scripts/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]",
-              "scriptCall": "sh iscsiserver.sh"
+              "script": "[concat(parameters('_artifactsLocation'), '/scripts/ntpserver.sh', parameters('_artifactsLocationSasToken'))]",
+              "scriptCall": "sh ntpserver.sh"
             }
           },
           "csExtensionScript": {
@@ -97,10 +134,12 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
-            "apiVersion": "2017-12-01",
+            "name": "CustomScriptExtension",
+            "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
-            "dependsOn": [ ],
+            "dependsOn": [
+                "[variables('vmName')]"
+            ],
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
@@ -110,7 +149,7 @@
                     "fileUris": [
                         "[variables('csExtensionscript')]"
                     ],
-                    "commandToExecute": "sh iscsiserver.sh"
+                    "commandToExecute": "[variables('csExtensionscriptCall')]"
                 },
                 "protectedSettings": {}
             }
