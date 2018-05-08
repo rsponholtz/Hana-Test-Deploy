@@ -1,54 +1,65 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-  "parameters": {
-    "vmUserName": {
-      "type": "string",
-      "metadata": {
-        "description": "Username for the Virtual Machine"
-      },
-      "defaultValue": "testuser"
-    },
-    "ExistingNetworkResourceGroup": {
-        "type": "string",
-        "metadata": {
-            "description": "Resource Group for the VNET where the VM will be placed"
+    "parameters": {
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Virtual Machine"
+            },
+            "defaultValue": "hanajb"
+        },
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource Group for the VNET where the VM will be placed"
+            }
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string",
+            "metadata": {
+                "description": "Virtual network name"
+            }
+        },
+        "subnetName": {
+            "defaultValue": "subnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name"
+            }
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            }
         }
     },
-    "vnetName": {
-        "defaultValue": "vnet",
-        "type": "string"
-    },
-    "subnetName": {
-        "defaultValue": "vnet",
-        "type": "string"
-    },
-    "vmPassword": {
-      "type": "securestring",
-      "metadata": {
-        "description": "Password for the Virtual Machine"
-      },
-      "defaultValue": "Hana07061992!"
-    },
-    "customUri": {
-      "type": "string",
-      "metadata": {
-        "description": "Uri for SAP Bits"
-      }
-    }
-  },
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]" ,
-        "vmName": "hanajb",
-        "vNicName": "hanajbnic",
-        "PIPName": "hanajbpip",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmName": "[variables('vmName')]",
+        "vNicName": "[concat(variables('vmName'),'nic')]",
+        "PIPName": "[concat(variables('vmName'),'pip')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "scriptFolder": ".",
         "scriptFileName": "hanastudio.ps1",
         "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-        "fileuri":"https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1"
-        
+        "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1"
     },
     "resources": [
         {
@@ -138,37 +149,34 @@
                     ]
                 }
             },
-            "resources": [             
-                                {
-                                    "type": "extensions",
-                                    "name": "CustomScriptExtension",
-                                    "apiVersion": "2015-06-15",
-                                    "location": "[resourceGroup().location]",           
-                                    "dependsOn": [
-                                        "[variables('vmName')]"
-                                    ],
-                                    "tags": {
-                                        "displayName": "hanastudio"
-                                    },
-                                    "properties": {
-                                        "publisher": "Microsoft.Compute",
-                                        "type": "CustomScriptExtension",
-                                        "typeHandlerVersion": "1.9",
-                                        "autoUpgradeMinorVersion": true,
-                                        "settings": {
-                                            "fileUris": [
-                                                "[variables('fileuri')]"
-                                            ],
-                                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File hanastudio.ps1', variables('scriptParameters'))]"
-                                        },
-                                        "protectedSettings": {
-                                           
-                                        }
-                                    }                
-                                }
-                        ]
+            "resources": [
+                {
+                    "type": "extensions",
+                    "name": "CustomScriptExtension",
+                    "apiVersion": "2015-06-15",
+                    "location": "[resourceGroup().location]",
+                    "dependsOn": [
+                        "[variables('vmName')]"
+                    ],
+                    "tags": {
+                        "displayName": "hanastudio"
+                    },
+                    "properties": {
+                        "publisher": "Microsoft.Compute",
+                        "type": "CustomScriptExtension",
+                        "typeHandlerVersion": "1.9",
+                        "autoUpgradeMinorVersion": true,
+                        "settings": {
+                            "fileUris": [
+                                "[variables('fileuri')]"
+                            ],
+                            "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File hanastudio.ps1', variables('scriptParameters'))]"
+                        },
+                        "protectedSettings": {}
+                    }
+                }
+            ]
         }
     ],
-    "outputs": { }
-    
+    "outputs": {}
 }
