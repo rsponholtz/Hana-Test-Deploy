@@ -164,7 +164,6 @@
             "type": "Microsoft.Resources/deployments",
             "name": "[parameters('vnetName')]",
             "apiVersion": "2016-09-01",
-            "location": "[resourceGroup().location]",
           "properties": {
             "mode": "Incremental",
             "templateLink": {
