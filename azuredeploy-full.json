@@ -25,29 +25,29 @@
         "vmJbUserName": {
             "type": "string",
             "metadata": {
-              "description": "Username for the Virtual Machine"
+                "description": "Username for the Virtual Machine"
             },
             "defaultValue": "testuser"
-          },
-          "ExistingNetworkResourceGroup": {
-              "type": "string",
-              "metadata": {
-                  "description": "Resource Group for the VNET where the VM will be placed"
-              }
-          },
-          "vmJbPassword": {
-            "type": "securestring",
-            "metadata": {
-              "description": "Password for the Virtual Machine"
-            },
-            "defaultValue": "Hana07061992!"
-          },
-          "customUri": {
+        },
+        "ExistingNetworkResourceGroup": {
             "type": "string",
             "metadata": {
-              "description": "Uri for SAP Bits"
+                "description": "Resource Group for the VNET where the VM will be placed"
             }
-          },
+        },
+        "vmJbPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            },
+            "defaultValue": "Hana07061992!"
+        },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            }
+        },
         "vmUserName": {
             "type": "string",
             "metadata": {
@@ -96,100 +96,85 @@
             "defaultValue": ""
         }
     },
-  "variables": {
-    "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-    "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]" ,
-    "vmJbName": "hanajb",
-    "vJbNicName": "hanajbnic",
-    "PIPName": "hanajbpip",
-    "vhdJbStorageAccountName": "[uniqueString(resourceGroup().id, 'storage_jb')]",
-    "scriptFolder": ".",
-    "scriptFileName": "hanastudio.ps1",
-    "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-    "fileuri":"https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
-    "vmName": "ntpserver",
-    "vNicName": "ntpservernic",
-    "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
-    "images": {
-        "Windows Server 2016 Datacenter": {
-            "sku": "2016-Datacenter",
-            "offer": "WindowsServer",
-            "publisher": "MicrosoftWindowsServer",
-            "version": "latest",
-            "OSType": "Windows"
-        },
-        "SLES 12 SP3": {
-            "sku": "12-SP3",
-            "offer": "SLES-SAP",
-            "publisher": "SUSE",
-            "version": "latest",
-            "OSType": "Linux"
-        },
-        "SLES 12 SP3BYOS": {
-            "sku": "12-SP3",
-            "offer": "SLES-SAP-BYOS",
-            "publisher": "SUSE",
-            "OSType": "Linux",
-            "version": "latest"
-        },
-        "SLES 12 SP2": {
-            "sku": "12-SP2",
-            "offer": "SLES-SAP",
-            "publisher": "SUSE",
-            "version": "latest",
-            "OSType": "Linux"
-        },
-        "SLES 12 SP2 BYOS": {
-            "sku": "12-SP2",
-            "offer": "SLES-SAP-BYOS",
-            "publisher": "SUSE",
-            "OSType": "Linux",
-            "version": "latest"
-        }
+    "variables": {
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmJbName": "hanajb",
+        "vJbNicName": "hanajbnic",
+        "PIPName": "hanajbpip",
+        "vhdJbStorageAccountName": "[uniqueString(resourceGroup().id, 'storage_jb')]",
+        "scriptFolder": ".",
+        "scriptFileName": "hanastudio.ps1",
+        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
+        "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
+        "vmName": "ntpserver",
+        "vNicName": "ntpservernic",
+        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]"
     },
-    "internalOSType": "[variables('images')[parameters('osType')].OSType]",
-    "csExtension": {
-        "Windows": {
-            "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
-            "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
-        },
-        "Linux": {
-            "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.sh', parameters('_artifactsLocationSasToken'))]",
-            "scriptCall": "sh ntpserver.sh"
-        }
-    }
-},
     "resources": [
         {
             "type": "Microsoft.Resources/deployments",
             "name": "[parameters('vnetName')]",
             "apiVersion": "2016-09-01",
-          "properties": {
-            "mode": "Incremental",
-            "templateLink": {
-              "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json"
-            },
-            "parameters": {
-                "vnetResourceGroup": {
-                    "value": "[parameters('vnetResourceGroup')]"
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json"
                 },
-              "addressPrefix": {
-                "value": "[parameters('addressPrefix')]"
-              },
-              "subnetName": {
-                "value": "[parameters('subnetName')]"
-              },
-              "subnetPrefix": {
-                "value": "[parameters('subnetPrefix')]"
-              },
-              "vnetName": {
-                "value": "[parameters('vnetName')]"
-              }
+                "parameters": {
+                    "vnetResourceGroup": {
+                        "value": "[parameters('vnetResourceGroup')]"
+                    },
+                    "addressPrefix": {
+                        "value": "[parameters('addressPrefix')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "subnetPrefix": {
+                        "value": "[parameters('subnetPrefix')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    }
+                }
             }
-          }
-                  
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[parameters('vnetName')]",
+            "apiVersion": "2016-09-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/Vms/hanajumpbox.json"
+                },
+                "parameters": {
+                    "vmUserName": {
+                        "type": "string",
+                        "metadata": {
+                            "description": "Username for the Virtual Machine"
+                        },
+                        "defaultValue": "testuser"
+                    },
+                    "ExistingNetworkResourceGroup": {
+                        "value": "[parameters('vnetResourceGroup')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmPassword')]"
+                    },
+                    "customUri": {
+                        "value": "[parameters('customUri')]"
+                    }
+                }
+            }
         }
-
     ],
     "outputs": {}
 }
