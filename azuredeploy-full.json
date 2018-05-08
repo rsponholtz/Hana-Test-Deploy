@@ -89,7 +89,7 @@
     },
     "variables": {
         "vmJbName": "hanajb",
-        "vmName": "ntpserver",
+        "vmName": "ntpserver"
     },
     "resources": [
         {
@@ -124,6 +124,9 @@
             "type": "Microsoft.Resources/deployments",
             "name": "[variables('vmJbName')]",
             "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
+              ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -155,6 +158,9 @@
             "type": "Microsoft.Resources/deployments",
             "name": "[parameters('vmntpName')]",
             "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]"
+              ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
