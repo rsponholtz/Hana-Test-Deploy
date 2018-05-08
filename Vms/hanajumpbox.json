@@ -52,7 +52,7 @@
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmName": "[variables('vmName')]",
+        "vmName": "[parameters('vmName')]",
         "vNicName": "[concat(variables('vmName'),'nic')]",
         "PIPName": "[concat(variables('vmName'),'pip')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
