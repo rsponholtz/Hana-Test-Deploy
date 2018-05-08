@@ -52,9 +52,8 @@
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmName": "[parameters('vmName')]",
-        "vNicName": "[concat(variables('vmName'),'nic')]",
-        "PIPName": "[concat(variables('vmName'),'pip')]",
+        "vNicName": "[concat(parameters('vmName'),'nic')]",
+        "PIPName": "[concat(parameters('vmName'),'pip')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "scriptFolder": ".",
         "scriptFileName": "hanastudio.ps1",
@@ -110,7 +109,7 @@
         {
             "apiVersion": "2016-03-30",
             "type": "Microsoft.Compute/virtualMachines",
-            "name": "[variables('vmName')]",
+            "name": "[parameters('vmName')]",
             "location": "[resourceGroup().location]",
             "dependsOn": [
                 "[variables('vhdStorageAccountName')]",
@@ -121,7 +120,7 @@
                     "vmSize": "Standard_D1_v2"
                 },
                 "osProfile": {
-                    "computerName": "[variables('vmName')]",
+                    "computerName": "[parameters('vmName')]",
                     "adminUsername": "[parameters('vmUserName')]",
                     "adminPassword": "[parameters('vmPassword')]"
                 },
@@ -156,7 +155,7 @@
                     "apiVersion": "2015-06-15",
                     "location": "[resourceGroup().location]",
                     "dependsOn": [
-                        "[variables('vmName')]"
+                        "[parameters('vmName')]"
                     ],
                     "tags": {
                         "displayName": "hanastudio"
