@@ -20,7 +20,7 @@ If you'd like to deploy a complete environment with minimal configuration, follo
 Step | description | Documentation Link | infrastructure deploy template link | software installation template link
 ---- | ----------- | ------------------ | ------------- | -----------------------------------
 1 | plan deployment | [SAP on Azure Planning Guide](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/get-started) | n/a |  n/a 
-2 | Deploy S/4 HANA environment | documentation link | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
+2 | Deploy S/4 HANA environment | documentation link | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fazuredeploy-full.json) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
 
 testing
 

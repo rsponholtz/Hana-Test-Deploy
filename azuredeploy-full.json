@@ -1,0 +1,197 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vnetResourceGroup": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "addressPrefix": {
+            "defaultValue": "10.0.0.0/16",
+            "type": "string"
+        },
+        "subnetName": {
+            "defaultValue": "subnet",
+            "type": "string"
+        },
+        "subnetPrefix": {
+            "defaultValue": "10.0.0.0/24",
+            "type": "string"
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
+        "vmJbUserName": {
+            "type": "string",
+            "metadata": {
+              "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+          },
+          "ExistingNetworkResourceGroup": {
+              "type": "string",
+              "metadata": {
+                  "description": "Resource Group for the VNET where the VM will be placed"
+              }
+          },
+          "vmJbPassword": {
+            "type": "securestring",
+            "metadata": {
+              "description": "Password for the Virtual Machine"
+            },
+            "defaultValue": "Hana07061992!"
+          },
+          "customUri": {
+            "type": "string",
+            "metadata": {
+              "description": "Uri for SAP Bits"
+            }
+          },
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Windows Server 2016 Datacenter",
+                "SLES 12 SP3",
+                "SLES 12 SP3 BYOS",
+                "SLES 12 SP2",
+                "SLES 12 SP2 BYOS"
+            ],
+            "defaultValue": "SLES 12 SP3",
+            "metadata": {
+                "description": "The type of the operating system you want to deploy."
+            }
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "StaticIP": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address for the virtual machine"
+            }
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sap-file-server-md/"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
+        }
+    },
+  "variables": {
+    "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+    "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]" ,
+    "vmJbName": "hanajb",
+    "vJbNicName": "hanajbnic",
+    "PIPName": "hanajbpip",
+    "vhdJbStorageAccountName": "[uniqueString(resourceGroup().id, 'storage_jb')]",
+    "scriptFolder": ".",
+    "scriptFileName": "hanastudio.ps1",
+    "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
+    "fileuri":"https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
+    "vmName": "ntpserver",
+    "vNicName": "ntpservernic",
+    "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+    "images": {
+        "Windows Server 2016 Datacenter": {
+            "sku": "2016-Datacenter",
+            "offer": "WindowsServer",
+            "publisher": "MicrosoftWindowsServer",
+            "version": "latest",
+            "OSType": "Windows"
+        },
+        "SLES 12 SP3": {
+            "sku": "12-SP3",
+            "offer": "SLES-SAP",
+            "publisher": "SUSE",
+            "version": "latest",
+            "OSType": "Linux"
+        },
+        "SLES 12 SP3BYOS": {
+            "sku": "12-SP3",
+            "offer": "SLES-SAP-BYOS",
+            "publisher": "SUSE",
+            "OSType": "Linux",
+            "version": "latest"
+        },
+        "SLES 12 SP2": {
+            "sku": "12-SP2",
+            "offer": "SLES-SAP",
+            "publisher": "SUSE",
+            "version": "latest",
+            "OSType": "Linux"
+        },
+        "SLES 12 SP2 BYOS": {
+            "sku": "12-SP2",
+            "offer": "SLES-SAP-BYOS",
+            "publisher": "SUSE",
+            "OSType": "Linux",
+            "version": "latest"
+        }
+    },
+    "internalOSType": "[variables('images')[parameters('osType')].OSType]",
+    "csExtension": {
+        "Windows": {
+            "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
+            "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
+        },
+        "Linux": {
+            "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.sh', parameters('_artifactsLocationSasToken'))]",
+            "scriptCall": "sh ntpserver.sh"
+        }
+    }
+},
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[parameters('vnetName')]",
+            "apiVersion": "2016-09-01",
+            "location": "[resourceGroup().location]",
+          "properties": {
+            "mode": "Incremental",
+            "templateLink": {
+              "uri": "[variables('hanajbUri')]"
+            },
+            "parameters": {
+              
+                "vnetResourceGroup": {
+                    "value": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json]"
+                },
+              "addressPrefix": {
+                "value": "[parameters('addressPrefix')]"
+              },
+              "subnetName": {
+                "value": "[parameters('subnetName')]"
+              },
+              "subnetPrefix": {
+                "value": "[parameters('subnetPrefix')]"
+              },
+              "vnetName": {
+                "value": "[parameters('vnetName')]"
+              }
+            }
+          }
+                  
+        }
+
+    ],
+    "outputs": {}
+}
