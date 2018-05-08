@@ -153,7 +153,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "[variables('vmntpName')]",
+            "name": "[parameters('vmntpName')]",
             "apiVersion": "2016-09-01",
             "properties": {
                 "mode": "Incremental",
