@@ -48,13 +48,6 @@
                 "description": "Uri for SAP Bits"
             }
         },
-        "vmUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
         "osType": {
             "type": "string",
             "allowedValues": [
@@ -67,12 +60,6 @@
             "defaultValue": "SLES 12 SP3",
             "metadata": {
                 "description": "The type of the operating system you want to deploy."
-            }
-        },
-        "vmPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
             }
         },
         "StaticIP": {
@@ -97,19 +84,8 @@
         }
     },
     "variables": {
-        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmJbName": "hanajb",
-        "vJbNicName": "hanajbnic",
-        "PIPName": "hanajbpip",
-        "vhdJbStorageAccountName": "[uniqueString(resourceGroup().id, 'storage_jb')]",
-        "scriptFolder": ".",
-        "scriptFileName": "hanastudio.ps1",
-        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-        "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
-        "vmName": "ntpserver",
-        "vNicName": "ntpservernic",
-        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]"
+        "vmName": "ntpserver"
     },
     "resources": [
         {
@@ -142,7 +118,7 @@
         },
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "[parameters('vnetName')]",
+            "name": "[variables('vmJbName')]",
             "apiVersion": "2016-09-01",
             "properties": {
                 "mode": "Incremental",
@@ -151,11 +127,7 @@
                 },
                 "parameters": {
                     "vmUserName": {
-                        "type": "string",
-                        "metadata": {
-                            "description": "Username for the Virtual Machine"
-                        },
-                        "defaultValue": "testuser"
+                        "value": "[parameters('vmJbUserName')]"
                     },
                     "ExistingNetworkResourceGroup": {
                         "value": "[parameters('vnetResourceGroup')]"
@@ -167,7 +139,7 @@
                         "value": "[parameters('subnetName')]"
                     },
                     "vmPassword": {
-                        "value": "[parameters('vmPassword')]"
+                        "value": "[parameters('vmJbPassword')]"
                     },
                     "customUri": {
                         "value": "[parameters('customUri')]"
