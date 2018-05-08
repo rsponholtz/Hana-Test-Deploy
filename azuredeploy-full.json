@@ -62,10 +62,14 @@
                 "description": "The type of the operating system you want to deploy."
             }
         },
-        "StaticIP": {
+        "vmntpName": {
+            "defaultValue": "ntpserver",
+            "type": "string"
+        },
+        "ntpStaticIp": {
             "type": "string",
             "metadata": {
-                "description": "static ip address for the virtual machine"
+                "description": "static ip address for the NTP virtual machine"
             }
         },
         "_artifactsLocation": {
@@ -85,7 +89,7 @@
     },
     "variables": {
         "vmJbName": "hanajb",
-        "vmName": "ntpserver"
+        "vmName": "ntpserver",
     },
     "resources": [
         {
@@ -143,6 +147,43 @@
                     },
                     "customUri": {
                         "value": "[parameters('customUri')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[variables('vmntpName')]",
+            "apiVersion": "2016-09-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-infra.json"
+                },
+                "parameters": {
+                    "vmUserName": {
+                        "value": "[parameters('vmJbUserName')]"
+                    },
+                    "ExistingNetworkResourceGroup": {
+                        "value": "[parameters('vnetResourceGroup')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "osType": {
+                        "value": "[parameters('osType')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmJbPassword')]"
+                    },
+                    "customUri": {
+                        "value": "[parameters('customUri')]"
+                    },
+                    "StaticIP": {
+                        "value": "[parameters('ntpStaticIp')]"
                     }
                 }
             }
