@@ -168,12 +168,11 @@
           "properties": {
             "mode": "Incremental",
             "templateLink": {
-              "uri": "[variables('hanajbUri')]"
+              "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json"
             },
             "parameters": {
-              
                 "vnetResourceGroup": {
-                    "value": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json]"
+                    "value": "[parameters('vnetResourceGroup')]"
                 },
               "addressPrefix": {
                 "value": "[parameters('addressPrefix')]"
