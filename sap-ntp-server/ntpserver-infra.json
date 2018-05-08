@@ -136,7 +136,7 @@
             "properties": {
                 "ipConfigurations": [
                     {
-                        "name": "ipconfig1",
+                        "name": "ipcftntp",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('StaticIP')]",
@@ -153,7 +153,9 @@
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [],
+            "dependsOn": [
+                "[variables('vNicName')]"
+            ],
             "properties": {
                 "hardwareProfile": {
                     "vmSize": "Standard_D1_v2"
