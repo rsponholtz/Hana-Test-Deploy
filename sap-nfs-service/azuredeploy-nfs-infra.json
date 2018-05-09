@@ -269,7 +269,6 @@
                 "inboundNatPools": []
             },
             "dependsOn": [
-                "[variables('vnetID')]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
             ]
         },
@@ -278,7 +277,6 @@
             "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[variables('vnetID')]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
                 "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
             ],
@@ -344,7 +342,6 @@
             "name": "[concat('SmallLinkedTemplate', parameters('VMName2'))]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[variables('vnetID')]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
                 "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
             ],
