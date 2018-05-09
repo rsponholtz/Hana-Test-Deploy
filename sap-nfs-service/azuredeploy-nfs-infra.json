@@ -118,8 +118,8 @@
         "baseUri": "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM-HSR/master",
         "repoUri": "[variables('baseUri')]",
         "smallUri": "[concat(variables('baseUri'), '/small.json')]",
-        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('NetworkName'))]",
-        "SubnetRef": "[if (equals(parameters('ExistingNetworkResourceGroup'), 'no') , concat(variables('vnetID'),'/subnets/',parameters('SubnetName')),concat(resourceId(parameters('ExistingNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/', parameters('NetworkName')), '/subnets/',parameters('SubnetName')))]",
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
         "vmSize": "[variables('vmSizeArray')[0]]",
         "avSetNameDB": "[concat(variables('prefix'), '-avset-nfs')]",
@@ -157,7 +157,7 @@
                             "privateIPAddress": "[parameters('ILBIP')]",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
-                                "id": "[variables('SubnetRef')]"
+                                "id": "[variables('subnetRef')]"
                             }
                         }
                     }
@@ -298,7 +298,7 @@
                         "value": "[parameters('vmName2')]"
                     },
                     "SubnetRef": {
-                        "value": "[variables('SubnetRef')]"
+                        "value": "[variables('subnetRef')]"
                     },
                     "OperatingSystem": {
                         "value": "[parameters('OperatingSystem')]"
@@ -361,7 +361,7 @@
                         "value": "[parameters('vmName1')]"
                     },
                     "SubnetRef": {
-                        "value": "[variables('SubnetRef')]"
+                        "value": "[variables('subnetRef')]"
                     },
                     "OperatingSystem": {
                         "value": "[parameters('OperatingSystem')]"
