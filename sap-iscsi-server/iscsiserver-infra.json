@@ -49,6 +49,13 @@
                 "description": "Uri for SAP Bits"
             }
         },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "ISCSI VM name"
+            },
+            "defaultValue": "iscsiserver"
+        },
         "StaticIP": {
             "type": "string",
             "metadata": {
@@ -60,7 +67,7 @@
             "metadata": {
                 "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
             },
-            "defaultValue": "https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sap-file-server-md/"
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-file-server-md/"
         },
         "_artifactsLocationSasToken": {
             "type": "securestring",
@@ -73,7 +80,7 @@
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-        "vmName": "iscsiserver",
+        "vmName": "[parameters('vmName')]",
         "vNicName": "iscsiservernic",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {

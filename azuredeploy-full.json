@@ -66,11 +66,23 @@
             "defaultValue": "ntpserver",
             "type": "string"
         },
+        "vmiscsiName": {
+            "defaultValue": "iscsiserver",
+            "type": "string"
+        },
         "ntpStaticIp": {
             "type": "string",
             "metadata": {
                 "description": "static ip address for the NTP virtual machine"
-            }
+            },
+            "defaultValue": "10.0.0.5"
+        },
+        "iscsiStaticIp": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address for the ISCSI virtual machine"
+            },
+            "defaultValue": "10.0.0.6"
         },
         "_artifactsLocation": {
             "type": "string",
@@ -190,6 +202,46 @@
                     },
                     "StaticIP": {
                         "value": "[parameters('ntpStaticIp')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[parameters('vmiscsiName')]",
+            "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
+              ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-infra.json"
+                },
+                "parameters": {
+                    "vmUserName": {
+                        "value": "[parameters('vmJbUserName')]"
+                    },
+                    "ExistingNetworkResourceGroup": {
+                        "value": "[parameters('vnetResourceGroup')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "osType": {
+                        "value": "[parameters('osType')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmJbPassword')]"
+                    },
+                    "customUri": {
+                        "value": "[parameters('customUri')]"
+                    },
+                    "StaticIP": {
+                        "value": "[parameters('iscsiStaticIp')]"
                     }
                 }
             }
