@@ -36,6 +36,13 @@
                 "description": "subnet name"
             }
         },
+        "StaticIP": {
+            "defaultValue": "10.0.0.4",
+            "type": "string",
+            "metadata": {
+                "description": "StaticIP"
+            }
+        },
         "vmPassword": {
             "type": "securestring",
             "metadata": {
@@ -94,7 +101,8 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('StaticIP')]",
                             "publicIPAddress": {
                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('PIPName'))]"
                             },

@@ -70,6 +70,13 @@
             "defaultValue": "iscsiserver",
             "type": "string"
         },
+        "jbStaticIp": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address for the NTP virtual machine"
+            },
+            "defaultValue": "10.0.0.4"
+        },
         "ntpStaticIp": {
             "type": "string",
             "metadata": {
@@ -83,6 +90,41 @@
                 "description": "static ip address for the ISCSI virtual machine"
             },
             "defaultValue": "10.0.0.6"
+        },
+        "nsfStaticIP1": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address 1 for the nsf virtual machine"
+            },
+            "defaultValue": "10.0.0.7"
+        },
+        "nsfStaticIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address 2 for the nsf virtual machine"
+            },
+            "defaultValue": "10.0.0.8"
+        },
+        "nsfiSCSIIP": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address iSCSI for the nsf virtual machine"
+            },
+            "defaultValue": "10.0.0.9"
+        },
+        "nsfILBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address ILB for the nsf virtual machine"
+            },
+            "defaultValue": "10.0.0.10"
+        },
+        "nsfOperatingSystem": {
+            "type": "string",
+            "metadata": {
+                "description": "NSF Operating system"
+            },
+            "defaultValue": "SLES for SAP 12 SP2"
         },
         "_artifactsLocation": {
             "type": "string",
@@ -162,6 +204,9 @@
                     },
                     "customUri": {
                         "value": "[parameters('customUri')]"
+                    },
+                    "StaticIP": {
+                        "value": "[parameters('jbStaticIp')]"
                     }
                 }
             }
@@ -242,6 +287,67 @@
                     },
                     "StaticIP": {
                         "value": "[parameters('iscsiStaticIp')]"
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "NFSDeployment",
+            "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
+              ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/azuredeploy-nfs-infra.json"
+                },
+                "parameters": {
+                    "VMUserName": {
+                        "value": "[parameters('vmJbUserName')]"
+                    },
+                    "ExistingNetworkResourceGroup": {
+                        "value": "[parameters('vnetResourceGroup')]"
+                    },
+                    "VMName1": {
+                        "value": "[parameters('vmName1')]"
+                    },
+                    "VMName2": {
+                        "value": "[parameters('VMName2')]"
+                    },
+                    "VMSize": {
+                        "value": "[parameters('vmSize')]"
+                    },
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
+                    },
+                    "SubnetName": {
+                        "value": "[parameters('subnetName')]"
+                    },
+                    "osType": {
+                        "value": "[parameters('osType')]"
+                    },
+                    "VMPassword": {
+                        "value": "[parameters('vmJbPassword')]"
+                    },
+                    "OperatingSystem": {
+                        "value": "[parameters('nsfOperatingSystem')]"
+                    },
+                    "customUri": {
+                        "value": "[parameters('customUri')]"
+                    },
+                    "StaticIP1": {
+                        "value": "[parameters('nsfStaticIP1')]"
+                    },
+                    "StaticIP2": {
+                        "value": "[parameters('nsfStaticIP2')]"
+                    },
+                    "iSCSIIP": {
+                        "value": "[parameters('nsfiSCSIIP')]"
+                    },
+                    "ILBIP": {
+                        "value": "[parameters('nsfILBIP')]"
                     }
                 }
             }
