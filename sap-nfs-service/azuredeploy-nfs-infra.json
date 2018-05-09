@@ -117,7 +117,7 @@
         "vmName2": "[toLower(parameters('vmName2'))]",
         "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service",
         "repoUri": "[variables('baseUri')]",
-        "smallUri": "[concat(variables('baseUri'), '/small.json')]",
+        "smallUri": "[concat(variables('baseUri'), '/small-nfs.json')]",
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
