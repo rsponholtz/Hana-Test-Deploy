@@ -74,7 +74,7 @@
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmName": "ntpserver",
-        "vNicName": "ntpservernic",
+        "vNicName": "[concat(parameters('vmName'),'nic')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
             "Windows Server 2016 Datacenter": {
