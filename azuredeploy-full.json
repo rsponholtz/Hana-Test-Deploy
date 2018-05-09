@@ -42,6 +42,13 @@
             },
             "defaultValue": "Hana07061992!"
         },
+        "vmSize": {
+            "type": "string",
+            "metadata": {
+                "description": "VM Size for the nsf vms"
+            },
+            "defaultValue": "Standard_E16s_v3 (128 GB)"
+        },
         "customUri": {
             "type": "string",
             "metadata": {
@@ -73,7 +80,7 @@
         "jbStaticIp": {
             "type": "string",
             "metadata": {
-                "description": "static ip address for the NTP virtual machine"
+                "description": "static ip address for the Jump Box virtual machine"
             },
             "defaultValue": "10.0.0.4"
         },
