@@ -124,6 +124,9 @@
             "type": "Microsoft.Resources/deployments",
             "name": "[variables('vmJbName')]",
             "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
+              ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -154,7 +157,10 @@
         {
             "type": "Microsoft.Resources/deployments",
             "name": "[parameters('vmntpName')]",
-            "apiVersion": "2016-09-01",            
+            "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
+              ],
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
