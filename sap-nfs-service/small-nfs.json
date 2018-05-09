@@ -146,7 +146,7 @@
             "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),'SLES-SAP','RHEL-SAP-HANA')]",
             "sku": "[if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2')]"
         },
-        "DataDiskAize": "1023",
+        "DataDiskSize": "1023",
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
     "resources": [
