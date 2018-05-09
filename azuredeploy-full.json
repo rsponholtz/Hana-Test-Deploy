@@ -119,6 +119,20 @@
             },
             "defaultValue": "10.0.0.10"
         },
+        "VMName1": {
+            "type": "string",
+            "metadata": {
+                "description": "nfs vmname 1"
+            },
+            "defaultValue": "nfs1"
+        },
+        "VMName2": {
+            "type": "string",
+            "metadata": {
+                "description": "nfs vmname 2"
+            },
+            "defaultValue": "nfs2"
+        },
         "nsfOperatingSystem": {
             "type": "string",
             "metadata": {
