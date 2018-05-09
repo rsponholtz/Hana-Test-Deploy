@@ -40,7 +40,7 @@ The Server Java Runtime Environment bits can be downloaded [here](http://www.ora
 
 There should be a folder inside your storage account container called SapBits:
 
-![SapBits Image](https://github.com/AzureCAT-GSI/Hana-Test-Deploy/blob/master/media/Structure1.png)
+![SapBits Image](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/Structure1.png)
 
 The following files should be present inside the SapBits folder:
 
