@@ -345,19 +345,13 @@
                     },
                     "SubnetName": {
                         "value": "[parameters('subnetName')]"
-                    },
-                    "osType": {
-                        "value": "[parameters('osType')]"
-                    },
+                    },                    
                     "VMPassword": {
                         "value": "[parameters('vmJbPassword')]"
                     },
                     "OperatingSystem": {
                         "value": "[parameters('nsfOperatingSystem')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
-                    },
+                    },                    
                     "StaticIP1": {
                         "value": "[parameters('nsfStaticIP1')]"
                     },
