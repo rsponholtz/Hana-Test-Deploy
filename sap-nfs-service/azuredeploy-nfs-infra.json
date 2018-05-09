@@ -372,9 +372,6 @@
                     "vmSize": {
                         "value": "[variables('vmSize')]"
                     },
-                    "IPAllocationMethod": {
-                        "value": "[parameters('IPAllocationMethod')]"
-                    },
                     "StaticIP1": {
                         "value": "[parameters('StaticIP2')]"
                     },
