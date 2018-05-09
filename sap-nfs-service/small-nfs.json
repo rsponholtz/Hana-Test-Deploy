@@ -14,13 +14,7 @@
                 "description": "VM Name 2"
             }
         },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "HANAsubnetRef": {
+        "SubnetRef": {
             "type": "string",
             "metadata": {
                 "description": "The Hana subnet reference ID"
@@ -146,7 +140,7 @@
         "api-version": "2017-06-01",
         "api-version-vm": "2017-03-30",
         "nicName": "[concat(parameters('vmName1'),'-static')]",
-        "subnetRef": "[parameters('HANASubnetRef')]",
+        "subnetRef": "[parameters('SubnetRef')]",
         "OperatingSystemSpec": {
             "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
             "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),'SLES-SAP','RHEL-SAP-HANA')]",
