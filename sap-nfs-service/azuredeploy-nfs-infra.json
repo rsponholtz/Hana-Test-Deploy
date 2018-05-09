@@ -37,7 +37,7 @@
                 "Standard_E64s_v3 (448 GB)"
             ]
         },
-        "NetworkName": {
+        "vnetName": {
             "type": "string",
             "defaultValue": "ra-sap-hana-vnet",
             "metadata": {
@@ -269,7 +269,7 @@
                 "inboundNatPools": []
             },
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('NetworkName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
             ]
         },
@@ -278,7 +278,7 @@
             "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('NetworkName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
                 "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
             ],
@@ -344,7 +344,7 @@
             "name": "[concat('SmallLinkedTemplate', parameters('VMName2'))]",
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('NetworkName'))]",
+                "[concat('Microsoft.Network/virtualNetworks/', parameters('vnetName'))]",
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
                 "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
             ],
