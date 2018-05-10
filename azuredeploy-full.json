@@ -29,6 +29,13 @@
             },
             "defaultValue": "testuser"
         },
+        "prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "The nfs prefix"
+            },
+            "defaultValue": "nfs"
+        },
         "ExistingNetworkResourceGroup": {
             "type": "string",
             "metadata": {
@@ -327,6 +334,9 @@
                 "parameters": {
                     "VMUserName": {
                         "value": "[parameters('vmJbUserName')]"
+                    },
+                    "prefix": {
+                        "value": "[parameters('prefix')]"
                     },
                     "ExistingNetworkResourceGroup": {
                         "value": "[parameters('vnetResourceGroup')]"
