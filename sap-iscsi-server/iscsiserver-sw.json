@@ -22,6 +22,60 @@
                 "description": "Uri for SAP Bits"
             }
         },
+        "IQN1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 to present"
+          }
+        },
+        "IQN1client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 client1"
+          }
+        },
+        "IQN1client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 client2"
+          }
+        },
+        "IQN2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 to present"
+          }
+        },
+        "IQN2client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 client1"
+          }
+        },
+        "IQN2client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 client2"
+          }
+        },
+        "IQN3": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 to present"
+          }
+        },
+        "IQN3client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 client1"
+          }
+        },
+        "IQN3client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 client2"
+          }
+        },
         "_artifactsLocation": {
             "type": "string",
             "metadata": {
@@ -110,9 +164,9 @@
                     "fileUris": [
                         "[variables('csExtensionscript')]"
                     ],
-                    "commandToExecute": "sh iscsiserver.sh"
+                    "commandToExecute": "[concat('sh iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
                 },
-                "protectedSettings": {}
+                "protectedSettings": {} 
             }
         }
     ],
