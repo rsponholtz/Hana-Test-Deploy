@@ -141,7 +141,7 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "CustomScriptExtension",
+            "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
             "apiVersion": "2015-06-15",
             "location": "[resourceGroup().location]",
             "dependsOn": [
