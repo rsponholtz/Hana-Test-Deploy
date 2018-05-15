@@ -11,11 +11,9 @@ for (( i=0;i<$ELEMENTS;i++)); do
     echo ${args[${i}]}
 done
 
-URI=$1
+USRNAME=$1
 shift
-HANAUSR=$1
-shift
-HANAPWD=$1
+PWD=$1
 shift
 HANASID=$1
 shift
@@ -29,11 +27,7 @@ VMIPADDR=$1
 shift
 OTHERIPADDR=$1
 shift
-CONFIGHSR=$1
-shift
 ISPRIMARY=$1
-shift
-REPOURI=$1
 shift
 ISCSIIP=$1
 shift
@@ -47,8 +41,8 @@ echo "HANAADMIN:" $HANAADMIN
 
 echo "small.sh receiving:"
 echo "URI:" $URI >> /tmp/variables.txt
-echo "HANAUSR:" $HANAUSR >> /tmp/variables.txt
-echo "HANAPWD:" $HANAPWD >> /tmp/variables.txt
+echo "USRNAME:" $USRNAME >> /tmp/variables.txt
+echo "PWD:" $PWS >> /tmp/variables.txt
 echo "HANASID:" $HANASID >> /tmp/variables.txt
 echo "HANANUMBER:" $HANANUMBER >> /tmp/variables.txt
 echo "VMSIZE:" $VMSIZE >> /tmp/variables.txt
@@ -62,165 +56,15 @@ echo "REPOURI:" $REPOURI >> /tmp/variables.txt
 echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
 echo "LBIP:" $LBIP >> /tmp/variables.txt
 
-mkdir /etc/systemd/login.conf.d
-mkdir /hana
-mkdir /hana/data
-mkdir /hana/log
-mkdir /hana/shared
-mkdir /hana/backup
-mkdir /usr/sap
-
-
-number="$(lsscsi [*] 0 0 4| cut -c2)"
-if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [ "$VMSIZE" == "Standard_E64s_v3" ] || [ "$VMSIZE" == "Standard_GS5" ] ; then
-echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun
-  vgcreate hanavg $hanavg1lun $hanavg2lun
-  lvcreate -l 80%FREE -n datalv hanavg
-  lvcreate -l 20%VG -n loglv hanavg
-  mkfs.xfs /dev/hanavg/datalv
-  mkfs.xfs /dev/hanavg/loglv
-echo "logicalvols end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
   usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
   pvcreate $backupvglun $sharedvglun $usrsapvglun
-  vgcreate backupvg $backupvglun
-  vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
-  lvcreate -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -l 100%FREE -n backuplv backupvg 
   lvcreate -l 100%FREE -n usrsaplv usrsapvg 
-  mkfs -t xfs /dev/sharedvg/sharedlv 
-  mkfs -t xfs /dev/backupvg/backuplv 
   mkfs -t xfs /dev/usrsapvg/usrsaplv
 echo "logicalvols2 end" >> /tmp/parameter.txt
-fi
-
-if [ $VMSIZE == "Standard_M64s" ]; then
-echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  pvcreate hanavg $hanavg1lun $hanavg2lun
-  vgcreate hanavg $hanavg1lun $hanavg2lun
-  lvcreate -l 80%FREE -n datalv hanavg
-  lvcreate -l 20%VG -n loglv hanavg
-  mkfs.xfs /dev/hanavg/datalv
-  mkfs.xfs /dev/hanavg/loglv
-echo "logicalvols end" >> /tmp/parameter.txt
-
-
-#!/bin/bash
-echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
-  vgcreate backupvg $backupvglun1 $backupvglun2
-  vgcreate sharedvg $sharedvglun
-  vgcreate usrsapvg $usrsapvglun 
-  lvcreate -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -l 100%FREE -n backuplv backupvg 
-  lvcreate -l 100%FREE -n usrsaplv usrsapvg 
-  mkfs -t xfs /dev/sharedvg/sharedlv 
-  mkfs -t xfs /dev/backupvg/backuplv 
-  mkfs -t xfs /dev/usrsapvg/usrsaplv
-echo "logicalvols2 end" >> /tmp/parameter.txt
-fi
-
-if [ $VMSIZE == "Standard_M64ms" ] || [ $VMSIZE == "Standard_M128s" ]; then
-echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  hanavg3lun="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun $hanavg3lun
-  vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun
-  lvcreate -l 80%FREE -n datalv hanavg
-  lvcreate -l 20%VG -n loglv hanavg
-  mkfs.xfs /dev/hanavg/datalv
-  mkfs.xfs /dev/hanavg/loglv
-echo "logicalvols end" >> /tmp/parameter.txt
-
-
-#!/bin/bash
-echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
-  vgcreate backupvg $backupvglun1 $backupvglun2
-  vgcreate sharedvg $sharedvglun
-  vgcreate usrsapvg $usrsapvglun
-  lvcreate -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -l 100%FREE -n backuplv backupvg 
-  lvcreate -l 100%FREE -n usrsaplv usrsapvg 
-  mkfs -t xfs /dev/sharedvg/sharedlv 
-  mkfs -t xfs /dev/backupvg/backuplv 
-  mkfs -t xfs /dev/usrsapvg/usrsaplv
-echo "logicalvols2 end" >> /tmp/parameter.txt
-fi
-
-if [ $VMSIZE == "Standard_M128ms" ]; then
-echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 7 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 8 | grep -o '.\{9\}$')"
-  hanavg3lun="$(lsscsi $number 0 0 9 | grep -o '.\{9\}$')"
-  hanavg4lun="$(lsscsi $number 0 0 10 | grep -o '.\{9\}$')"
-  hanavg5lun="$(lsscsi $number 0 0 11 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
-  vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
-  lvcreate -l 80%FREE -n datalv hanavg
-  lvcreate -l 20%VG -n loglv hanavg
-  mkfs.xfs /dev/hanavg/datalv
-  mkfs.xfs /dev/hanavg/loglv
-echo "logicalvols end" >> /tmp/parameter.txt
-
-
-#!/bin/bash
-echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  backupvglun3="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  backupvglun4="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  backupvglun5="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5 $sharedvglun $usrsapvglun
-  vgcreate backupvg $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5
-  vgcreate sharedvg $sharedvglun
-  vgcreate usrsapvg $usrsapvglun
-  lvcreate -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -l 100%FREE -n backuplv backupvg 
-  lvcreate -l 100%FREE -n usrsaplv usrsapvg 
-  mkfs -t xfs /dev/sharedvg/sharedlv 
-  mkfs -t xfs /dev/backupvg/backuplv 
-  mkfs -t xfs /dev/usrsapvg/usrsaplv
-echo "logicalvols2 end" >> /tmp/parameter.txt
-fi
-#!/bin/bash
-echo "mounthanashared start" >> /tmp/parameter.txt
-mount -t xfs /dev/sharedvg/sharedlv /hana/shared
-mount -t xfs /dev/backupvg/backuplv /hana/backup 
-mount -t xfs /dev/usrsapvg/usrsaplv /usr/sap
-mount -t xfs /dev/hanavg/datalv /hana/data
-mount -t xfs /dev/hanavg/loglv /hana/log 
-mkdir /hana/data/sapbits
-echo "mounthanashared end" >> /tmp/parameter.txt
-
-echo "write to fstab start" >> /tmp/parameter.txt
-echo "/dev/mapper/hanavg-datalv /hana/data xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/hanavg-loglv /hana/log xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/sharedvg-sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/backupvg-backuplv /hana/backup xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap xfs defaults 0 0" >> /etc/fstab
-echo "write to fstab end" >> /tmp/parameter.txt
 
 if [ ! -d "/hana/data/sapbits" ]
  then
@@ -294,14 +138,9 @@ EOF
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
 
 #install hana prereqs
-zypper install -y glibc-2.22-51.6
-zypper install -y systemd-228-142.1
-zypper install -y unrar
-zypper in -t pattern -y sap-hana
-#zypper install -y sapconf
-zypper install -y saptune
-zypper install -y libunwind
-zypper install -y libicu
+log "installing packages"
+zypper update -y
+zypper install -y -l sle-ha-release fence-agents drbd drbd-kmp-default drbd-utils
 
 
 # step2
@@ -319,50 +158,6 @@ $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
 EOF
 
-#!/bin/bash
-cd /hana/data/sapbits
-echo "hana download start" >> /tmp/parameter.txt
-/usr/bin/wget --quiet $URI/SapBits/md5sums
-/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe
-/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar
-/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/SAP-HANA-ARM/master/hdbinst.cfg"
-echo "hana download end" >> /tmp/parameter.txt
-
-date >> /tmp/testdate
-cd /hana/data/sapbits
-
-echo "hana unrar start" >> /tmp/parameter.txt
-#!/bin/bash
-cd /hana/data/sapbits
-unrar x 51052325_part1.exe
-echo "hana unrar end" >> /tmp/parameter.txt
-
-echo "hana prepare start" >> /tmp/parameter.txt
-cd /hana/data/sapbits
-
-#!/bin/bash
-cd /hana/data/sapbits
-myhost=`hostname`
-sedcmd="s/REPLACE-WITH-HOSTNAME/$myhost/g"
-sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/hana\/data\/sapbits\/51052325/g"
-sedcmd3="s/root_user=root/root_user=$HANAUSR/g"
-sedcmd4="s/root_password=AweS0me@PW/root_password=$HANAPWD/g"
-sedcmd5="s/master_password=AweS0me@PW/master_password=$HANAPWD/g"
-sedcmd6="s/sid=H10/sid=$HANASID/g"
-sedcmd7="s/number=00/number=$HANANUMBER/g"
-cat hdbinst.cfg | sed $sedcmd | sed $sedcmd2 | sed $sedcmd3 | sed $sedcmd4 | sed $sedcmd5 | sed $sedcmd6 > hdbinst-local.cfg
-echo "hana preapre end" >> /tmp/parameter.txt
-
-##change this to pass passwords on command line
-
-#!/bin/bash
-echo "install hana start" >> /tmp/parameter.txt
-cd /hana/data/sapbits/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
-/hana/data/sapbits/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile /hana/data/sapbits/hdbinst-local.cfg
-echo "install hana end" >> /tmp/parameter.txt
-echo "install hana end" >> /tmp/hanacomplete.txt
 
 ##external dependency on sshpt
     zypper install -y python-pip
@@ -372,51 +167,15 @@ echo "install hana end" >> /tmp/hanacomplete.txt
     #rm -r -f .ssh
     cat /dev/zero |ssh-keygen -q -N "" > /dev/null
 
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "mkdir -p /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chmod 700 /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chown root:root /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "mkdir -p /root/.ssh"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chmod 700 /root/.ssh"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chown root:root /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chmod 700 /root/.ssh/authorized_keys"
     
-#
-if [ "$CONFIGHSR" == "yes" ]; then
-    echo "hsr config start" >> /tmp/parameter.txt	    
-    HANASIDU="${HANASID^^}"
-
-    cd /root
-    wget $REPOURI/scripts/waitfor.sh
-    chmod u+x waitfor.sh
-    SYNCUSER="hsrsync"
-    SYNCPASSWORD="Repl1cate"
-
- ##get rid of user creation, was only needed in hana 1.0   
- ##remove the "initial backup" because it's redundant
-    cat >/tmp/hdbsetupsql <<EOF
-CREATE USER $SYNCUSER PASSWORD $SYNCPASSWORD;
-grant data admin to $SYNCUSER;
-ALTER USER $SYNCUSER DISABLE PASSWORD LIFETIME;
-backup data using file ('initial backup'); 
-BACKUP DATA for $HANASID USING FILE ('backup');
-BACKUP DATA for SYSTEMDB USING FILE ('SYSTEMDB backup');
-EOF
-
-
-chmod a+r /tmp/hdbsetupsql
-su - -c "hdbsql -u system -p $HANAPWD -d SYSTEMDB -I /tmp/hdbsetupsql" $HANAADMIN 
-touch /tmp/hanabackupdone.txt
-./waitfor.sh root $OTHERVMNAME /tmp/hanabackupdone.txt
-
-    
+   
 if [ "$ISPRIMARY" = "yes" ]; then
-	echo "hsr primary start" >> /tmp/parameter.txt	
-
-	#now set the role on the primary
-	cat >/tmp/srenable <<EOF
-hdbnsutil -sr_enable --name=system0 	
-EOF
-	chmod a+r /tmp/srenable
-	su - $HANAADMIN -c "bash /tmp/srenable"
 
 	touch /tmp/readyforsecondary.txt
 	./waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
@@ -435,17 +194,7 @@ EOF
 
 	touch /tmp/readyforcerts.txt
 	./waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
-	cat >/tmp/hsrjoin <<EOF
-sapcontrol -nr $HANANUMBER -function StopSystem HDB
-sapcontrol -nr $HANANUMBER -function WaitforStopped 600 2
-hdbnsutil -sr_register --name=system1 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay
-sapcontrol -nr $HANANUMBER -function StartSystem HDB
-EOF
-
-	chmod a+r /tmp/hsrjoin
-	su - $HANAADMIN -c "bash /tmp/hsrjoin"
     fi
-fi
 
 #Clustering setup
 #start services [A]
@@ -514,6 +263,37 @@ systemctl restart corosync
 
 sleep 10
 
+cat >/etc/drbd.d/NWS_nfs.res <<EOL
+resource NWS_nfs {
+   protocol     C;
+   disk {
+      on-io-error       pass_on;
+   }
+   on $VMNAME {
+      address   $VMIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+   on $OTHERVMNAME {
+      address   $OTHERIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+}
+EOL
+
+log "Create NFS server and root share"
+echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
+systemctl enable nfsserver
+service nfsserver restart
+mkdir /srv/nfs/
+
+drbdadm create-md NWS_nfs
+drbdadm up NWS_nfs
+drbdadm status
+
 cd /tmp
 #configure SAP HANA topology
 HANAID="$HANASID"_HDB"$HANANUMBER"
@@ -575,6 +355,105 @@ ha-cluster-join -y -q cluster
 cd /etc/corosync
 write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
 systemctl restart corosync
+
+cat >/etc/drbd.d/NWS_nfs.res <<EOL
+resource NWS_nfs {
+   protocol     C;
+   disk {
+      on-io-error       pass_on;
+   }
+   on $OTHERVMNAME {
+      address   $OTHERIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+   on $VMNAME {
+      address   $VMIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+}
+EOL
+
+log "Create NFS server and root share"
+echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
+systemctl enable nfsserver
+service nfsserver restart
+mkdir /srv/nfs/
+
+drbdadm create-md NWS_nfs
+drbdadm up NWS_nfs
+drbdadm status
+
+log "waiting for connection"
+  drbdsetup wait-connect-resource NWS_nfs
+  drbdadm status
+
+  drbdadm new-current-uuid --clear-bitmap NWS_nfs
+  drbdadm status
+
+  drbdadm primary --force NWS_nfs
+  drbdadm status
+
+  log "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+  mkfs.xfs /dev/drbd0
+  log "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+
+  mask=$(echo $LBIP | cut -d'/' -f 2)
+  
+  log "Creating NFS directories"
+  mkdir /srv/nfs/NWS
+  chattr +i /srv/nfs/NWS
+  mount /dev/drbd0 /srv/nfs/NWS
+  mkdir /srv/nfs/NWS/sidsys
+  mkdir /srv/nfs/NWS/sapmntsid
+  mkdir /srv/nfs/NWS/trans
+  mkdir /srv/nfs/NWS/ASCS
+  mkdir /srv/nfs/NWS/ASCSERS
+  mkdir /srv/nfs/NWS/SCS
+  mkdir /srv/nfs/NWS/SCSERS
+  umount /srv/nfs/NWS
+
+  log "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+
+  log "Creating NFS resources"
+
+  crm configure property maintenance-mode=true
+  crm configure property stonith-timeout=600
+  
+  crm node standby $OTHERVMNAME
+  crm node standby $VMNAME
+
+  crm configure rsc_defaults resource-stickiness="1"
+
+  crm configure primitive drbd_NWS_nfs ocf:linbit:drbd params drbd_resource="NWS_nfs" op monitor interval="15" role="Master" op monitor interval="30"
+  crm configure ms ms-drbd_NWS_nfs drbd_NWS_nfs meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true" interleave="true"
+  crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs options="sync,dirsync" op monitor interval="10s"
+
+  crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_sidsys ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sidsys" options="rw,no_root_squash" clientspec="*" fsid=2 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_sapmntsid ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sapmntsid" options="rw,no_root_squash" clientspec="*" fsid=3 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_trans ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/trans" options="rw,no_root_squash" clientspec="*" fsid=4 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_ASCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCS" options="rw,no_root_squash" clientspec="*" fsid=5 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_ASCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCSERS" options="rw,no_root_squash" clientspec="*" fsid=6 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_SCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCS" options="rw,no_root_squash" clientspec="*" fsid=7 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_SCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCSERS" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  
+  crm configure primitive vip_NWS_nfs IPaddr2 params ip=$LBIP cidr_netmask=$mask op monitor interval=10 timeout=20
+  crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k $lbprobe" op monitor timeout=20s interval=10 depth=0
+
+  crm configure group g-NWS_nfs fs_NWS_sapmnt exportfs_NWS exportfs_NWS_sidsys exportfs_NWS_sapmntsid exportfs_NWS_trans exportfs_NWS_ASCS exportfs_NWS_ASCSERS exportfs_NWS_SCS exportfs_NWS_SCSERS nc_NWS_nfs vip_NWS_nfs
+  crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start
+  crm configure colocation col-NWS_nfs_on_drbd inf: g-NWS_nfs ms-drbd_NWS_nfs:Master
+
+  crm node online $VMNAME
+  crm node online $OTHERVMNAME
+  crm configure property maintenance-mode=false
 fi
 
 
