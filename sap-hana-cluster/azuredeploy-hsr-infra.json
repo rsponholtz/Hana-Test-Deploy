@@ -14,16 +14,6 @@
                 "description": "Second VM Name"
             }
         },
-        "HANAJumpbox": {
-            "type": "string",
-            "metadata": {
-                "description": "Choose whether to deploy a VM with HANA Studio installed"
-            },
-            "allowedValues": [
-                "yes",
-                "no"
-            ]
-        },
         "VMSize": {
             "type": "string",
             "metadata": {
@@ -81,12 +71,6 @@
             "defaultValue": "10.0.6.0/24",
             "metadata": {
                 "description": "The management subnet prefix"
-            }
-        },
-        "customURI": {
-            "type": "string",
-            "metadata": {
-                "description": "URI where SAP bits are uploaded"
             }
         },
         "VMUserName": {
@@ -199,7 +183,7 @@
     "variables": {
         "vmName1": "[toLower(parameters('vmName1'))]",
         "vmName2": "[toLower(parameters('vmName2'))]",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap_haha-cluster",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap_hana-cluster",
         "repoUri": "[variables('baseUri')]",
         "smallUri": "[concat(variables('baseUri'), '/Vms/small-hsr.json')]",
         "mediumUri": "[concat(variables('baseUri'), '/Vms/medium-hsr.json')]",
@@ -421,47 +405,6 @@
             ]
         },
         {
-            "condition": "[equals(parameters('HanaJumpbox'),'yes')]",
-            "apiVersion": "2016-09-01",
-            "name": "HANAjbLinkedTemplate",
-            "type": "Microsoft.Resources/deployments",
-            "dependsOn": [
-                "[concat('Microsoft.Network/virtualNetworks/', parameters('NetworkName'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[variables('hanajbUri')]"
-                },
-                "parameters": {
-                    "mgmtSubnetRef": {
-                        "value": "[variables('mgmtSubnetRef')]"
-                    },
-                    "vmUserName": {
-                        "value": "[parameters('vmUserName')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmPassword')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
-                    },
-                    "StaticIP1": {
-                        "value": "[parameters('StaticIP1')]"
-                    },
-                    "StaticIP2": {
-                        "value": "[parameters('StaticIP2')]"
-                    },
-                    "vmName1": {
-                        "value": "[parameters('vmName1')]"
-                    },
-                    "vmName2": {
-                        "value": "[parameters('vmName2')]"
-                    }
-                }
-            }
-        },
-        {
             "apiVersion": "2016-09-01",
             "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
             "type": "Microsoft.Resources/deployments",
@@ -484,9 +427,6 @@
                     },
                     "vmName2": {
                         "value": "[parameters('vmName2')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
                     },
                     "HANAsubnetRef": {
                         "value": "[variables('HANAsubnetRef')]"
@@ -573,9 +513,6 @@
                     },
                     "vmName2": {
                         "value": "[parameters('vmName1')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
                     },
                     "HANAsubnetRef": {
                         "value": "[variables('HANAsubnetRef')]"

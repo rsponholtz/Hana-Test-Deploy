@@ -14,12 +14,6 @@
                 "description": "VM Name 2"
             }
         },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
         "HANAsubnetRef": {
             "type": "string",
             "metadata": {
