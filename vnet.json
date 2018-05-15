@@ -2,25 +2,60 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "vnetResourceGroup": {
-            "defaultValue": "",
-            "type": "string"
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string",
+            "metadata": {
+                "description": "Name for the virtual network"
+            }
         },
         "addressPrefix": {
             "defaultValue": "10.0.0.0/16",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "address range for the virtual network in CIDR notation"
+            }        },
+        "DBsubnetName": {
+            "defaultValue": "dbsubnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name for database tier"
+            }
         },
-        "subnetName": {
-            "defaultValue": "subnet",
-            "type": "string"
-        },
-        "subnetPrefix": {
+        "DBsubnetPrefix": {
             "defaultValue": "10.0.0.0/24",
-            "type": "string"
+            "type": "string",
+            "metadata": {
+                "description": "subnet address range for database tier in CIDR notation"
+            }            
         },
-        "vnetName": {
-            "defaultValue": "vnet",
-            "type": "string"
+        "AppsubnetName": {
+            "defaultValue": "appsubnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name for app tier"
+            }            
+        },
+        "AppsubnetPrefix": {
+            "defaultValue": "10.0.1.0/24",
+            "type": "string",
+            "metadata": {
+                "description": "subnet address range for app tier in CIDR notation"
+            }            
+        },
+        "mgtsubnetName": {
+            "defaultValue": "mgtsubnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name for shared services tier"
+            }            
+        },
+        "mgtsubnetPrefix": {
+            "defaultValue": "10.0.2.0/24",
+            "type": "string",
+            "metadata": {
+                "description": "subnet address range for shared services tier in CIDR notation"
+            }            
         }
     },
     "variables": {
@@ -39,11 +74,23 @@
                 },
                 "subnets": [
                     {
-                        "name": "[parameters('subnetName')]",
+                        "name": "[parameters('DBsubnetName')]",
                         "properties": {
-                            "addressPrefix": "[parameters('subnetPrefix')]"
+                            "addressPrefix": "[parameters('DBsubnetPrefix')]"
                         }
-                    }
+                    },
+                    {
+                        "name": "[parameters('AppsubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('AppsubnetPrefix')]"
+                        }
+                    },
+                    {
+                        "name": "[parameters('mgtsubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('mgtsubnetPrefix')]"
+                        }
+                    }                    
                 ]
             }
         }

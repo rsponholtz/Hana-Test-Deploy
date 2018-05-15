@@ -10,14 +10,30 @@
             "defaultValue": "10.0.0.0/16",
             "type": "string"
         },
-        "subnetName": {
-            "defaultValue": "subnet",
+        "DBsubnetName": {
+            "defaultValue": "dbsubnet",
             "type": "string"
         },
-        "subnetPrefix": {
+        "DBsubnetPrefix": {
             "defaultValue": "10.0.0.0/24",
             "type": "string"
         },
+        "AppsubnetName": {
+            "defaultValue": "appsubnet",
+            "type": "string"
+        },
+        "AppsubnetPrefix": {
+            "defaultValue": "10.0.1.0/24",
+            "type": "string"
+        },
+        "mgtsubnetName": {
+            "defaultValue": "mgtsubnet",
+            "type": "string"
+        },
+        "mgtsubnetPrefix": {
+            "defaultValue": "10.0.2.0/24",
+            "type": "string"
+        },        
         "vnetName": {
             "defaultValue": "vnet",
             "type": "string"
@@ -184,21 +200,30 @@
                     "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json"
                 },
                 "parameters": {
-                    "vnetResourceGroup": {
-                        "value": "[parameters('vnetResourceGroup')]"
+                    "vnetName": {
+                        "value": "[parameters('vnetName')]"
                     },
                     "addressPrefix": {
                         "value": "[parameters('addressPrefix')]"
                     },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
+                    "DBsubnetName": {
+                        "value": "[parameters('DBsubnetName')]"
                     },
-                    "subnetPrefix": {
-                        "value": "[parameters('subnetPrefix')]"
+                    "DBsubnetPrefix": {
+                        "value": "[parameters('DBsubnetPrefix')]"
                     },
-                    "vnetName": {
-                        "value": "[parameters('vnetName')]"
-                    }
+                    "AppsubnetName": {
+                        "value": "[parameters('AppsubnetName')]"
+                    },
+                    "AppsubnetPrefix": {
+                        "value": "[parameters('AppsubnetPrefix')]"
+                    },
+                    "mgysubnetName": {
+                        "value": "[parameters('mgtsubnetName')]"
+                    },
+                    "mgtsubnetPrefix": {
+                        "value": "[parameters('mgtsubnetPrefix')]"
+                    },
                 }
             }
         },
