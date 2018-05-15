@@ -1,0 +1,45 @@
+#subscription id in azure
+subscriptionid=
+#resource group name
+rgname=
+#name of the virtual network
+vnetname=vnet
+#name of the database subnet
+dbsubnetname=dbsubnet
+#name of the application tier subnet
+appsubnetname=appsubnet
+#name of the management tier subnet
+mgtsubnetname=mgtsubnet
+#admin username for virtual machines
+vmusername="testuser"
+#password for the admin user
+vmpassword=
+#the uri for SAP bits
+customuri="https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts"
+#ip address for the ntp server
+NTPIP="10.0.2.5"
+#name of the first nfs server
+NFSVMNAME1="nfs1"
+#name of the seciond nfs server
+NFSVMNAME2="nfs2"
+#ip address of the first nfs server
+NFSIP1="10.0.1.7"
+#ip address of the second nfs server
+NFSIP2="10.0.1.8"
+#ip address of the nfs internal load balancer
+NFSILBIP="10.0.1.10"
+#name of the first hana server
+HANAVMNAME1="hana1"
+#name of the second hana server
+HANAVMNAME2="hana2"
+#ip address of the first hana server
+HANAIP1="10.0.0.20"
+#ip address of the second hana server
+HANAIP2="10.0.0.21"
+#ip address of the hana load balancer
+HANAILBIP="10.0.0.22"
+#ip address of the ISCSI server
+ISCSIIP="10.0.2.6"
+#ip address of the jumpbox server
+JBPIP="10.0.2.4"
+
