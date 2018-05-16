@@ -131,18 +131,21 @@
                 "scriptCall": "sh ntpserver.sh"
             }
         },
-        "csExtensionScript": {
+        "csExtensionScriptsaved": {
             "value": "[variables('csExtension')[variables('internalOSType')].script]"
         },
-        "csExtensionscriptCall": {
+        "csExtensionscriptCallsaved": {
             "value": "[variables('csExtension')[variables('internalOSType')].scriptCall]"
-        }
+        },
+        "csExtensionScript": "[concat(parameters('_artifactsLocation'), '/sap-ntp-server/ntpserver.sh', parameters('_artifactsLocationSasToken'))]",
+        "csExtensionscriptCall": "sh ntpserver.sh"
+        
     },
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
-            "apiVersion": "2015-06-15",
+            "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [
             ],

@@ -141,11 +141,17 @@
               "scriptCall": "sh iscsiserver.sh"
             }
           },
-          "csExtensionScript": {
+          "csExtensionScriptsave": {
             "value": "[variables('csExtension')[variables('internalOSType')].script]"
           },
-          "csExtensionscriptCall": {
+          "csExtensionscriptCallsave": {
             "value": "[variables('csExtension')[variables('internalOSType')].scriptCall]"
+          },
+          "csExtensionScript": {
+            "value": "[concat(parameters('_artifactsLocation'), '/sap-iscsi-server/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]",
+          },
+          "csExtensionscriptCall": {
+            "value": "sh iscsiserver.sh"
           }
     },
     "resources": [
