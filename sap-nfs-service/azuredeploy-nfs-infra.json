@@ -7,7 +7,7 @@
             "metadata": {
                 "description": "prefix for resource naming"
             }
-        },       
+        },
         "VMName1": {
             "type": "string",
             "metadata": {
@@ -325,7 +325,9 @@
                     "ISCSIIP": {
                         "value": "[parameters('iSCSIIP')]"
                     },
-                    "loadBalancerName":{"value": "[variables('loadBalancerName')]"},
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
                     "LBIP": {
                         "value": "[parameters('ILBIP')]"
                     },
@@ -387,7 +389,9 @@
                     "ISCSIIP": {
                         "value": "10.0.6.4"
                     },
-                    "loadBalancerName":{"value": "[variables('loadBalancerName')]"},
+                    "loadBalancerName": {
+                        "value": "[variables('loadBalancerName')]"
+                    },
                     "LBIP": {
                         "value": "[parameters('ILBIP')]"
                     },

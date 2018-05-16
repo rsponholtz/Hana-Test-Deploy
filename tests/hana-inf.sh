@@ -1,3 +1,5 @@
+#!/bin/bash
+
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
