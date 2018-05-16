@@ -18,7 +18,7 @@ zypper update -y
 #zypper remove -y  python-rtslib-2.2-30.2.noarch
 #zypper remove -y  python-configshell-1.5-1.44.noarch
 #zypper remove -y  targetcli-2.1-17.1.x86_64
-zypper install -y targetcli dbus-1-python
+zypper install -y targetcli
 zypper install -y yast2-iscsi-lio-server
 
 #step 4
