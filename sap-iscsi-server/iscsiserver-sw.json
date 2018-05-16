@@ -148,7 +148,7 @@
             "value": "[variables('csExtension')[variables('internalOSType')].scriptCall]"
           },
           "csExtensionScript": {
-            "value": "[concat(parameters('_artifactsLocation'), '/sap-iscsi-server/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]",
+            "value": "[concat(parameters('_artifactsLocation'), '/sap-iscsi-server/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]"
           },
           "csExtensionscriptCall": {
             "value": "sh iscsiserver.sh"
