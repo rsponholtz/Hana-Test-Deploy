@@ -1,0 +1,183 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+              "Windows Server 2016 Datacenter",
+              "SLES 12 SP3",
+              "SLES 12 SP3 BYOS",
+              "SLES 12 SP2",
+              "SLES 12 SP2 BYOS"
+            ],
+            "defaultValue": "SLES 12 SP3",
+            "metadata": {
+              "description": "The type of the operating system you want to deploy."
+            }
+          },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            }
+        },
+        "IQN1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 to present"
+          }
+        },
+        "IQN1client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 client1"
+          }
+        },
+        "IQN1client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN1 client2"
+          }
+        },
+        "IQN2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 to present"
+          }
+        },
+        "IQN2client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 client1"
+          }
+        },
+        "IQN2client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN2 client2"
+          }
+        },
+        "IQN3": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 to present"
+          }
+        },
+        "IQN3client1": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 client1"
+          }
+        },
+        "IQN3client2": {
+          "type": "string",
+          "metadata": {
+            "description": "iSCSI IQN3 client2"
+          }
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+              "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
+          },
+          "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
+          }        
+    },
+    "variables": {
+        "vmName": "iscsiserver",
+        "images": {
+            "Windows Server 2016 Datacenter": {
+              "sku": "2016-Datacenter",
+              "offer": "WindowsServer",
+              "publisher": "MicrosoftWindowsServer",
+              "version": "latest",
+              "OSType": "Windows"
+            },
+            "SLES 12 SP3": {
+              "sku": "12-SP3",
+              "offer": "SLES-SAP",
+              "publisher": "SUSE",
+              "version": "latest",
+              "OSType": "Linux"
+            },
+            "SLES 12 SP3BYOS": {
+              "sku": "12-SP3",
+              "offer": "SLES-SAP-BYOS",
+              "publisher": "SUSE",
+              "OSType": "Linux",
+              "version": "latest"
+            },
+          "SLES 12 SP2": {
+            "sku": "12-SP2",
+            "offer": "SLES-SAP",
+            "publisher": "SUSE",
+            "version": "latest",
+            "OSType": "Linux"
+          },
+          "SLES 12 SP2 BYOS": {
+            "sku": "12-SP2",
+            "offer": "SLES-SAP-BYOS",
+            "publisher": "SUSE",
+            "OSType": "Linux",
+            "version": "latest"
+          }
+        },
+        "internalOSType": "[variables('images')[parameters('osType')].OSType]",
+          "csExtension": {
+            "Windows": {
+              "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
+              "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
+            },
+            "Linux": {
+              "script": "[concat(parameters('_artifactsLocation'), '/sap-iscsi-server/iscsiserver.sh', parameters('_artifactsLocationSasToken'))]",
+              "scriptCall": "sh iscsiserver.sh"
+            }
+          },
+          "csExtensionScriptsave": {
+            "value": "[variables('csExtension')[variables('internalOSType')].script]"
+          },
+          "csExtensionscriptCallsave": {
+            "value": "[variables('csExtension')[variables('internalOSType')].scriptCall]"
+          },
+          "csExtensionScriptfoo": {
+            "value": "[concat('https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/', 'sap-iscsi-server/iscsiserver.sh')]"
+          },
+          "csExtensionScript": {
+            "value": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver.sh"
+          },
+          "csExtensionscriptCall": {
+            "value": "sh iscsiserver.sh"
+          }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
+            "apiVersion": "2017-12-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [ ],
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver.sh"
+                    ],
+                    "commandToExecute": "[concat('sh iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
+                },
+                "protectedSettings": {} 
+            }
+        }
+    ],
+    "outputs": {}
+}
