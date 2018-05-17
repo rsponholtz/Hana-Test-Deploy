@@ -8,7 +8,7 @@ IQNClient1="iqn.1991-05.com.microsoft:hana-target:hanavm1"
 IQNClient2="iqn.1991-05.com.microsoft:hana-target:hanavm2"
 
 
-echo "creating hana cluster"
+echo "installing hana software"
 az group deployment create \
 --name HANADeployment \
 --resource-group "$rgname" \

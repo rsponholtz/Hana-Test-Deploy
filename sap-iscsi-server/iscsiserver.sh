@@ -36,6 +36,7 @@ targetcli iscsi/ create "$IQN1"
 targetcli iscsi/"$IQN1"/tpg1/luns/ create /backstores/fileio/cl1a
 targetcli iscsi/"$IQN1"/tpg1/acls/ create "$IQN1CLT1"
 targetcli iscsi/"$IQN1"/tpg1/acls/ create "$IQN1CLT2"
+targetcli iscsi/"$IQN1"/tpg1/ set attribute authentication=0
 targetcli iscsi/"$IQN1"/tpg1/portals create
 targetcli --yes saveconfig
 systemctl restart target
@@ -47,6 +48,7 @@ targetcli iscsi/ create "$IQN2"
 targetcli iscsi/"$IQN2"/tpg1/luns/ create /backstores/fileio/cl2a
 targetcli iscsi/"$IQN2"/tpg1/acls/ create "$IQN2CLT1"
 targetcli iscsi/"$IQN2"/tpg1/acls/ create "$IQN2CLT2"
+targetcli iscsi/"$IQN2"/tpg1/ set attribute authentication=0
 targetcli iscsi/"$IQN2"/tpg1/portals create
 targetcli --yes saveconfig
 systemctl restart target
@@ -58,6 +60,8 @@ targetcli iscsi/ create "$IQN3"
 targetcli iscsi/"$IQN3"/tpg1/luns/ create /backstores/fileio/cl3a
 targetcli iscsi/"$IQN3"/tpg1/acls/ create "$IQN3CLT1"
 targetcli iscsi/"$IQN3"/tpg1/acls/ create "$IQN3CLT2"
+targetcli iscsi/"$IQN3"/tpg1/ set attribute authentication=0
 targetcli iscsi/"$IQN3"/tpg1/portals create
 targetcli --yes saveconfig
 systemctl restart target
+

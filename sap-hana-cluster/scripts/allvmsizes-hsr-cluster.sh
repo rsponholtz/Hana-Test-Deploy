@@ -105,7 +105,7 @@ if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [
 echo "logicalvols start" >> /tmp/parameter.txt
   hanavg1lun="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
   hanavg2lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun
+  pvcreate -ff -y $hanavg1lun $hanavg2lun
   vgcreate hanavg $hanavg1lun $hanavg2lun
   lvcreate -l 80%FREE -n datalv hanavg
   lvcreate -l 20%VG -n loglv hanavg
@@ -118,7 +118,7 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
   usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
   backupvglun="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun $sharedvglun $usrsapvglun
+  pvcreate -y -ff $backupvglun $sharedvglun $usrsapvglun
   vgcreate backupvg $backupvglun
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
@@ -135,7 +135,7 @@ if [ $VMSIZE == "Standard_M64s" ]; then
 echo "logicalvols start" >> /tmp/parameter.txt
   hanavg1lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
   hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  pvcreate hanavg $hanavg1lun $hanavg2lun
+  pvcreate -y -ff hanavg $hanavg1lun $hanavg2lun
   vgcreate hanavg $hanavg1lun $hanavg2lun
   lvcreate -l 80%FREE -n datalv hanavg
   lvcreate -l 20%VG -n loglv hanavg
@@ -150,7 +150,7 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
   backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
   backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
+  pvcreate -y -ff $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
@@ -183,7 +183,7 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
   backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
   backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
+  pvcreate -y -ff $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
@@ -203,7 +203,7 @@ echo "logicalvols start" >> /tmp/parameter.txt
   hanavg3lun="$(lsscsi $number 0 0 9 | grep -o '.\{9\}$')"
   hanavg4lun="$(lsscsi $number 0 0 10 | grep -o '.\{9\}$')"
   hanavg5lun="$(lsscsi $number 0 0 11 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
+  pvcreate -y -ff $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
   vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
   lvcreate -l 80%FREE -n datalv hanavg
   lvcreate -l 20%VG -n loglv hanavg
@@ -221,7 +221,7 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   backupvglun3="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
   backupvglun4="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
   backupvglun5="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5 $sharedvglun $usrsapvglun
+  pvcreate -y -ff $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5 $sharedvglun $usrsapvglun
   vgcreate backupvg $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
