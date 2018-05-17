@@ -10,27 +10,27 @@
             "defaultValue": "10.0.0.0/16",
             "type": "string"
         },
-        "DBsubnetName": {
+        "DBSubnetName": {
             "defaultValue": "dbsubnet",
             "type": "string"
         },
-        "DBsubnetPrefix": {
+        "DBSubnetPrefix": {
             "defaultValue": "10.0.0.0/24",
             "type": "string"
         },
-        "AppsubnetName": {
+        "AppSubnetName": {
             "defaultValue": "appsubnet",
             "type": "string"
         },
-        "AppsubnetPrefix": {
+        "AppSubnetPrefix": {
             "defaultValue": "10.0.1.0/24",
             "type": "string"
         },
-        "mgtsubnetName": {
+        "MgtSubnetName": {
             "defaultValue": "mgtsubnet",
             "type": "string"
         },
-        "mgtsubnetPrefix": {
+        "MgtSubnetPrefix": {
             "defaultValue": "10.0.2.0/24",
             "type": "string"
         },        
@@ -51,12 +51,6 @@
                 "description": "The nfs prefix"
             },
             "defaultValue": "nfs"
-        },
-        "ExistingNetworkResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": "Resource Group for the VNET where the VM will be placed"
-            }
         },
         "vmJbPassword": {
             "type": "securestring",
@@ -206,24 +200,24 @@
                     "addressPrefix": {
                         "value": "[parameters('addressPrefix')]"
                     },
-                    "DBsubnetName": {
-                        "value": "[parameters('DBsubnetName')]"
+                    "DBSubnetName": {
+                        "value": "[parameters('DBSubnetName')]"
                     },
-                    "DBsubnetPrefix": {
-                        "value": "[parameters('DBsubnetPrefix')]"
+                    "DBSubnetPrefix": {
+                        "value": "[parameters('DBSubnetPrefix')]"
                     },
-                    "AppsubnetName": {
-                        "value": "[parameters('AppsubnetName')]"
+                    "AppSubnetName": {
+                        "value": "[parameters('AppSubnetName')]"
                     },
-                    "AppsubnetPrefix": {
-                        "value": "[parameters('AppsubnetPrefix')]"
+                    "AppSubnetPrefix": {
+                        "value": "[parameters('AppSubnetPrefix')]"
                     },
-                    "mgysubnetName": {
-                        "value": "[parameters('mgtsubnetName')]"
+                    "MgtSubnetName": {
+                        "value": "[parameters('MgtSubnetName')]"
                     },
-                    "mgtsubnetPrefix": {
-                        "value": "[parameters('mgtsubnetPrefix')]"
-                    },
+                    "MgtSubnetPrefix": {
+                        "value": "[parameters('MgtSubnetPrefix')]"
+                    }
                 }
             }
         },

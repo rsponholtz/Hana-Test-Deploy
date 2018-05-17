@@ -15,42 +15,42 @@
             "metadata": {
                 "description": "address range for the virtual network in CIDR notation"
             }        },
-        "DBsubnetName": {
+        "DBSubnetName": {
             "defaultValue": "dbsubnet",
             "type": "string",
             "metadata": {
                 "description": "subnet name for database tier"
             }
         },
-        "DBsubnetPrefix": {
+        "DBSubnetPrefix": {
             "defaultValue": "10.0.0.0/24",
             "type": "string",
             "metadata": {
                 "description": "subnet address range for database tier in CIDR notation"
             }            
         },
-        "AppsubnetName": {
+        "AppSubnetName": {
             "defaultValue": "appsubnet",
             "type": "string",
             "metadata": {
                 "description": "subnet name for app tier"
             }            
         },
-        "AppsubnetPrefix": {
+        "AppSubnetPrefix": {
             "defaultValue": "10.0.1.0/24",
             "type": "string",
             "metadata": {
                 "description": "subnet address range for app tier in CIDR notation"
             }            
         },
-        "mgtsubnetName": {
+        "MgtSubnetName": {
             "defaultValue": "mgtsubnet",
             "type": "string",
             "metadata": {
                 "description": "subnet name for shared services tier"
             }            
         },
-        "mgtsubnetPrefix": {
+        "MgtSubnetPrefix": {
             "defaultValue": "10.0.2.0/24",
             "type": "string",
             "metadata": {
@@ -74,21 +74,21 @@
                 },
                 "subnets": [
                     {
-                        "name": "[parameters('DBsubnetName')]",
+                        "name": "[parameters('DBSubnetName')]",
                         "properties": {
-                            "addressPrefix": "[parameters('DBsubnetPrefix')]"
+                            "addressPrefix": "[parameters('DBSubnetPrefix')]"
                         }
                     },
                     {
-                        "name": "[parameters('AppsubnetName')]",
+                        "name": "[parameters('AppSubnetName')]",
                         "properties": {
-                            "addressPrefix": "[parameters('AppsubnetPrefix')]"
+                            "addressPrefix": "[parameters('AppSubnetPrefix')]"
                         }
                     },
                     {
-                        "name": "[parameters('mgtsubnetName')]",
+                        "name": "[parameters('MgtSubnetName')]",
                         "properties": {
-                            "addressPrefix": "[parameters('mgtsubnetPrefix')]"
+                            "addressPrefix": "[parameters('MgtSubnetPrefix')]"
                         }
                     }                    
                 ]

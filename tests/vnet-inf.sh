@@ -15,10 +15,10 @@ az group deployment create \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json" \
 --parameters \
              addressPrefix="10.0.0.0/16" \
-             DBsubnetName=$dbsubnetname \
-             DBsubnetPrefix="10.0.0.0/24" \
-             AppsubnetName=$appsubnetname \
-             AppsubnetPrefix="10.0.1.0/24" \
-             mgtsubnetName=$mgtsubnetname \
-             mgtsubnetPrefix="10.0.2.0/24" \
+             DBSubnetName=$dbsubnetname \
+             DBSubnetPrefix="10.0.0.0/24" \
+             AppSubnetName=$appsubnetname \
+             AppSubnetPrefix="10.0.1.0/24" \
+             MgtSubnetName=$mgtsubnetname \
+             MgtSubnetPrefix="10.0.2.0/24" \
              vnetName=$vnetname
