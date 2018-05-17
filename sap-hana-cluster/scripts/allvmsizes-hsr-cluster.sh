@@ -107,8 +107,8 @@ echo "logicalvols start" >> /tmp/parameter.txt
   hanavg2lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
   pvcreate -ff -y $hanavg1lun $hanavg2lun
   vgcreate hanavg $hanavg1lun $hanavg2lun
-  lvcreate -W -l 80%FREE -n datalv hanavg
-  lvcreate -W -l 20%VG -n loglv hanavg
+  lvcreate -W y  -l 80%FREE -n datalv hanavg
+  lvcreate -W y  -l 20%VG -n loglv hanavg
   mkfs.xfs /dev/hanavg/datalv
   mkfs.xfs /dev/hanavg/loglv
 echo "logicalvols end" >> /tmp/parameter.txt
@@ -122,9 +122,9 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   vgcreate backupvg $backupvglun
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
-  lvcreate -W -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -W -l 100%FREE -n backuplv backupvg 
-  lvcreate -W -l 100%FREE -n usrsaplv usrsapvg 
+  lvcreate -W y  -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -W y  -l 100%FREE -n backuplv backupvg 
+  lvcreate -W y  -l 100%FREE -n usrsaplv usrsapvg 
   mkfs -t xfs /dev/sharedvg/sharedlv 
   mkfs -t xfs /dev/backupvg/backuplv 
   mkfs -t xfs /dev/usrsapvg/usrsaplv
@@ -137,8 +137,8 @@ echo "logicalvols start" >> /tmp/parameter.txt
   hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
   pvcreate -y -ff hanavg $hanavg1lun $hanavg2lun
   vgcreate hanavg $hanavg1lun $hanavg2lun
-  lvcreate -W -l 80%FREE -n datalv hanavg
-  lvcreate -W -l 20%VG -n loglv hanavg
+  lvcreate -W y  -l 80%FREE -n datalv hanavg
+  lvcreate -W y  -l 20%VG -n loglv hanavg
   mkfs.xfs /dev/hanavg/datalv
   mkfs.xfs /dev/hanavg/loglv
 echo "logicalvols end" >> /tmp/parameter.txt
@@ -154,9 +154,9 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
-  lvcreate -W -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -W -l 100%FREE -n backuplv backupvg 
-  lvcreate -W -l 100%FREE -n usrsaplv usrsapvg 
+  lvcreate -W y  -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -W y  -l 100%FREE -n backuplv backupvg 
+  lvcreate -W y  -l 100%FREE -n usrsaplv usrsapvg 
   mkfs -t xfs /dev/sharedvg/sharedlv 
   mkfs -t xfs /dev/backupvg/backuplv 
   mkfs -t xfs /dev/usrsapvg/usrsaplv
@@ -170,8 +170,8 @@ echo "logicalvols start" >> /tmp/parameter.txt
   hanavg3lun="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
   pvcreate $hanavg1lun $hanavg2lun $hanavg3lun
   vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun
-  lvcreate -W -l 80%FREE -n datalv hanavg
-  lvcreate -W -l 20%VG -n loglv hanavg
+  lvcreate -W y  -l 80%FREE -n datalv hanavg
+  lvcreate -W y  -l 20%VG -n loglv hanavg
   mkfs.xfs /dev/hanavg/datalv
   mkfs.xfs /dev/hanavg/loglv
 echo "logicalvols end" >> /tmp/parameter.txt
@@ -187,9 +187,9 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
-  lvcreate -W -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -W -l 100%FREE -n backuplv backupvg 
-  lvcreate -W -l 100%FREE -n usrsaplv usrsapvg 
+  lvcreate -W y  -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -W y  -l 100%FREE -n backuplv backupvg 
+  lvcreate -W y  -l 100%FREE -n usrsaplv usrsapvg 
   mkfs -t xfs /dev/sharedvg/sharedlv 
   mkfs -t xfs /dev/backupvg/backuplv 
   mkfs -t xfs /dev/usrsapvg/usrsaplv
@@ -205,8 +205,8 @@ echo "logicalvols start" >> /tmp/parameter.txt
   hanavg5lun="$(lsscsi $number 0 0 11 | grep -o '.\{9\}$')"
   pvcreate -y -ff $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
   vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
-  lvcreate -W -l 80%FREE -n datalv hanavg
-  lvcreate -W -l 20%VG -n loglv hanavg
+  lvcreate -W y  -l 80%FREE -n datalv hanavg
+  lvcreate -W y  -l 20%VG -n loglv hanavg
   mkfs.xfs /dev/hanavg/datalv
   mkfs.xfs /dev/hanavg/loglv
 echo "logicalvols end" >> /tmp/parameter.txt
@@ -225,9 +225,9 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   vgcreate backupvg $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
-  lvcreate -W -l 100%FREE -n sharedlv sharedvg 
-  lvcreate -W -l 100%FREE -n backuplv backupvg 
-  lvcreate -W -l 100%FREE -n usrsaplv usrsapvg 
+  lvcreate -W y  -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -W y  -l 100%FREE -n backuplv backupvg 
+  lvcreate -W y  -l 100%FREE -n usrsaplv usrsapvg 
   mkfs -t xfs /dev/sharedvg/sharedlv 
   mkfs -t xfs /dev/backupvg/backuplv 
   mkfs -t xfs /dev/usrsapvg/usrsaplv
