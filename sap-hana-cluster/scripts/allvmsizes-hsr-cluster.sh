@@ -37,6 +37,10 @@ REPOURI=$1
 shift
 ISCSIIP=$1
 shift
+IQN=$1
+shift
+IQNCLIENT=$1
+shift
 LBIP=$1
 shift
 SUBEMAIL=$1
@@ -479,13 +483,13 @@ myhost=`hostname`
 cp -f /etc/iscsi/initiatorname.iscsi /etc/iscsi/initiatorname.iscsi.orig
 #change the IQN to the iscsi server
 sed -i "/InitiatorName=/d" "/etc/iscsi/initiatorname.iscsi"
-echo "InitiatorName=iqn.1991-05.com.microsoft:hanajb-hsrtarget-target:$myhost" >> /etc/iscsi/initiatorname.iscsi
+echo "InitiatorName=$IQNCLIENT" >> /etc/iscsi/initiatorname.iscsi
 systemctl restart iscsid
 systemctl restart iscsi
 iscsiadm -m discovery --type=st --portal=$ISCSIIP
 
 
-iscsiadm -m node -T iqn.1991-05.com.microsoft:hanajb-hsrtarget-target --login --portal=$ISCSIIP:3260
+iscsiadm -m node -T $IQN --login --portal=$ISCSIIP:3260
 iscsiadm -m node -p $ISCSIIP:3260 --op=update --name=node.startup --value=automatic
 
 #node1
