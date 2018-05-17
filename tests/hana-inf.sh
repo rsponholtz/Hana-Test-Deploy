@@ -5,7 +5,7 @@ source ./azuredeploy.cfg
 
 echo "creating hana cluster"
 az group deployment create \
---name NFSDeployment \
+--name HANADeployment \
 --resource-group $rgname \
    --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-hana-cluster/azuredeploy-hsr-infra.json" \
    --parameters \

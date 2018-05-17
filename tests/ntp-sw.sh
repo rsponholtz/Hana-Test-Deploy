@@ -5,7 +5,7 @@ source ./azuredeploy.cfg
 
 az account set --subscription "$subscriptionid"
 
-echo "creating ntp server"
+echo "installing ntp server software"
 az group deployment create \
 --name NTPDeployment \
 --resource-group "$rgname" \
