@@ -74,6 +74,8 @@ echo "CONFIGHSR:" $CONFIGHSR >> /tmp/variables.txt
 echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
 echo "REPOURI:" $REPOURI >> /tmp/variables.txt
 echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
+echo "IQN:" $IQN >> /tmp/variables.txt
+echo "IQNCLIENT:" $IQNCLIENT >> /tmp/variables.txt
 echo "LBIP:" $LBIP >> /tmp/variables.txt
 echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
@@ -601,5 +603,3 @@ cd /etc/corosync
 write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
 systemctl restart corosync
 fi
-
-
