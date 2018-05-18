@@ -58,18 +58,13 @@ echo "LBIP:" $LBIP >> /tmp/variables.txt
 
 
 #!/bin/bash
-echo "logicalvols2 start" >> /tmp/parameter.txt
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  pvcreate $backupvglun $sharedvglun $usrsapvglun
-  vgcreate usrsapvg $usrsapvglun 
-  lvcreate -l 100%FREE -n usrsaplv usrsapvg 
-  mkfs -t xfs /dev/usrsapvg/usrsaplv
-echo "logicalvols2 end" >> /tmp/parameter.txt
+echo "logicalvol start" >> /tmp/parameter.txt
+  nfslun="$(lsscsi 3 0 0 0 | grep -o '.\{9\}$')"
+  pvcreate $nfslun
+  vgcreate vg_NFS $nfslun 
+  lvcreate -l 100%FREE -n lv_NFS vg_NFS 
+echo "logicalvol end" >> /tmp/parameter.txt
 
-if [ ! -d "/hana/data/sapbits" ]
- then
- mkdir "/hana/data/sapbits"
-fi
 
 write_corosync_config (){
   BINDIP=$1
@@ -179,14 +174,6 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
 	touch /tmp/readyforsecondary.txt
 	./waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
-	scp /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT root@$OTHERVMNAME:/root/SSFS_$HANASIDU.DAT
-	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "cp /root/SSFS_$HANASIDU.DAT /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
-	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "chown $HANAADMIN:sapsys /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
-
-	scp /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/key/SSFS_$HANASIDU.KEY root@$OTHERVMNAME:/root/SSFS_$HANASIDU.KEY
-	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "cp /root/SSFS_$HANASIDU.KEY /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/key/SSFS_$HANASIDU.KEY"
-	ssh -o BatchMode=yes  -o StrictHostKeyChecking=no root@$OTHERVMNAME "chown $HANAADMIN:sapsys /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/key/SSFS_$HANASIDU.KEY"
-
 	touch /tmp/dohsrjoin.txt
     else
 	#do stuff on the secondary
@@ -207,13 +194,13 @@ myhost=`hostname`
 cp -f /etc/iscsi/initiatorname.iscsi /etc/iscsi/initiatorname.iscsi.orig
 #change the IQN to the iscsi server
 sed -i "/InitiatorName=/d" "/etc/iscsi/initiatorname.iscsi"
-echo "InitiatorName=iqn.1991-05.com.microsoft:hanajb-hsrtarget-target:$myhost" >> /etc/iscsi/initiatorname.iscsi
+echo "InitiatorName=iqn.1991-05.com.microsoft:nfsserver-target:$myhost" >> /etc/iscsi/initiatorname.iscsi
 systemctl restart iscsid
 systemctl restart iscsi
 iscsiadm -m discovery --type=st --portal=$ISCSIIP
 
 
-iscsiadm -m node -T iqn.1991-05.com.microsoft:hanajb-hsrtarget-target --login --portal=$ISCSIIP:3260
+iscsiadm -m node -T iqn.1991-05.com.microsoft:nfsserver-target --login --portal=$ISCSIIP:3260
 iscsiadm -m node -p $ISCSIIP:3260 --op=update --name=node.startup --value=automatic
 
 #node1
@@ -256,7 +243,7 @@ ha-cluster-init -y -q sbd -d $sbdid
 ha-cluster-init -y -q csync2
 ha-cluster-init -y -q -u corosync
 
-ha-cluster-init -y -q cluster name=hanacluster interface=eth0
+ha-cluster-init -y -q cluster name=nfscluster interface=eth0
 cd /etc/corosync
 write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
 systemctl restart corosync
@@ -295,56 +282,7 @@ drbdadm up NWS_nfs
 drbdadm status
 
 cd /tmp
-#configure SAP HANA topology
-HANAID="$HANASID"_HDB"$HANANUMBER"
 
-sudo crm configure property maintenance-mode=true
-
-crm configure primitive rsc_SAPHanaTopology_$HANAID ocf:suse:SAPHanaTopology \
-        operations \$id="rsc_sap2_$HANAID-operations" \
-        op monitor interval="10" timeout="600" \
-        op start interval="0" timeout="600" \
-        op stop interval="0" timeout="300" \
-        params SID="$HANASID" InstanceNumber="$HANANUMBER"
-
-crm configure clone cln_SAPHanaTopology_$HANAID rsc_SAPHanaTopology_$HANAID \
-        meta clone-node-max="1" interleave="true"
-
-crm configure primitive rsc_SAPHana_$HANAID ocf:suse:SAPHana     \
-operations \$id="rsc_sap_$HANAID-operations"   \
-op start interval="0" timeout="3600"    \
-op stop interval="0" timeout="3600"    \
-op promote interval="0" timeout="3600"    \
-op monitor interval="60" role="Master" timeout="700"    \
-op monitor interval="61" role="Slave" timeout="700"   \
-params SID="$HANASID" InstanceNumber="$HANANUMBER" PREFER_SITE_TAKEOVER="true"  \
-DUPLICATE_PRIMARY_TIMEOUT="7200" AUTOMATED_REGISTER="false"
-
-crm configure ms msl_SAPHana_$HANAID rsc_SAPHana_$HANAID meta is-managed="true" \
-notify="true" clone-max="2" clone-node-max="1" target-role="Started" interleave="true"
-
-crm configure primitive rsc_ip_$HANAID ocf:heartbeat:IPaddr2 \
-        operations \$id="rsc_ip_$HANAID-operations" \
-        op monitor interval="10s" timeout="20s" \
-        params ip="$LBIP"
-
-crm configure primitive rsc_nc_$HANAID anything \
-     params binfile="/usr/bin/nc" cmdline_options="-l -k 62503" \
-     op monitor timeout=20s interval=10 depth=0
-
-crm configure group g_ip_$HANAID rsc_ip_$HANAID rsc_nc_$HANAID
-
-#crm configure colocation col_saphana_ip_$HANAID 2000: rsc_ip_$HANAID:Started \
-#    msl_SAPHana_$HANAID:Master
-crm configure colocation col_saphana_ip_$HANAID 2000: rsc_ip_$HANAID:Started  msl_SAPHana_$HANAID:Master
-
-crm configure order ord_SAPHana_$HANAID 2000: cln_SAPHanaTopology_$HANAID  msl_SAPHana_$HANAID
-
-sleep 20
-
-sudo crm resource cleanup rsc_SAPHana_$HANAID
-
-sudo crm configure property maintenance-mode=false
 
 fi
 #node2
