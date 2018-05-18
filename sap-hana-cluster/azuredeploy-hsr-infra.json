@@ -59,20 +59,6 @@
                 "description": "The data subnet prefix"
             }
         },
-        "ManagementSubnetName": {
-            "type": "string",
-            "defaultValue": "SAPMgmtSubnet",
-            "metadata": {
-                "description": "The management subnet name"
-            }
-        },
-        "ManagementSubnetPrefix": {
-            "type": "string",
-            "defaultValue": "10.0.6.0/24",
-            "metadata": {
-                "description": "The management subnet prefix"
-            }
-        },
         "VMUserName": {
             "type": "string",
             "metadata": {
@@ -118,17 +104,6 @@
                 "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
             },
             "defaultValue": "no"
-        },
-        "IPAllocationMethod": {
-            "type": "string",
-            "allowedValues": [
-                "Dynamic",
-                "Static"
-            ],
-            "metadata": {
-                "description": "IP Allocation Method"
-            },
-            "defaultValue": "Static"
         },
         "StaticIP1": {
             "type": "string",
@@ -193,7 +168,6 @@
         "hanaUri": "[concat(variables('baseUri'), '/hanastudio-hsr.ps1')] ",
         "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',parameters('NetworkName'))]",
         "HANAsubnetRef": "[if (equals(parameters('ExistingNetworkResourceGroup'), 'no') , concat(variables('vnetID'),'/subnets/',parameters('HANASubnetName')),concat(resourceId(parameters('ExistingNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/', parameters('NetworkName')), '/subnets/',parameters('HANASubnetName')))]",
-        "mgmtSubnetRef": "[if (equals(parameters('ExistingNetworkResourceGroup'), 'no') , concat(variables('vnetID'),'/subnets/',parameters('ManagementSubnetName')),concat(resourceId(parameters('ExistingNetworkResourceGroup'), 'Microsoft.Network/virtualNetworks/', parameters('NetworkName')), '/subnets/',parameters('ManagementSubnetName')))]",
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
         "vmSize": "[variables('vmSizeArray')[0]]",
         "sidlower": "[toLower(parameters('HANASID'))]",
@@ -246,12 +220,6 @@
                         "name": "[parameters('HANASubnetName')]",
                         "properties": {
                             "addressPrefix": "[parameters('HANASubnetPrefix')]"
-                        }
-                    },
-                    {
-                        "name": "[parameters('ManagementSubnetName')]",
-                        "properties": {
-                            "addressPrefix": "[parameters('ManagementSubnetPrefix')]"
                         }
                     }
                 ]
@@ -449,9 +417,6 @@
                     "vmSize": {
                         "value": "[variables('vmSize')]"
                     },
-                    "IPAllocationMethod": {
-                        "value": "[parameters('IPAllocationMethod')]"
-                    },
                     "StaticIP1": {
                         "value": "[parameters('StaticIP1')]"
                     },
@@ -534,9 +499,6 @@
                     },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
-                    },
-                    "IPAllocationMethod": {
-                        "value": "[parameters('IPAllocationMethod')]"
                     },
                     "StaticIP1": {
                         "value": "[parameters('StaticIP2')]"

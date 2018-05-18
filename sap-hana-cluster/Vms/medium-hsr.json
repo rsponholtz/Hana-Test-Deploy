@@ -66,17 +66,6 @@
                 "description": "Size of VM to deploy"
             }
         },
-        "IPAllocationMethod": {
-            "type": "string",
-            "defaultValue": "Static",
-            "allowedValues": [
-                "Dynamic",
-                "Static"
-            ],
-            "metadata": {
-                "description": "IP Allocation Method"
-            }
-        },
         "StaticIP1": {
             "type": "string",
             "metadata": {
@@ -173,7 +162,7 @@
         "api-version": "2017-06-01",
         "api-version-vm": "2018-04-01",
         "mode": "Push",
-        "nicName": "[if(equals(parameters('IPAllocationMethod'),'Static'),concat(parameters('vmName1'),'-static'),concat(parameters('vmName1'),'-dynamic'))]",
+        "nicName": "[concat(parameters('vmName1'),'-static'))]",
         "subnetRef": "[parameters('HANASubnetRef')]",
         "OperatingSystemSpec": {
             "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
@@ -195,28 +184,6 @@
     },
     "resources": [
         {
-            "condition": "[equals(parameters('IPAllocationMethod'), 'Dynamic')]",
-            "apiVersion": "[variables('api-version')]",
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(parameters('vmName1'),'-dynamic')]",
-            "location": "[resourceGroup().location]",
-            "properties": {
-                "enableAcceleratedNetworking": true,
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "condition": "[equals(parameters('IPAllocationMethod'), 'Static')]",
             "apiVersion": "[variables('api-version')]",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(parameters('vmName1'),'-static')]",
