@@ -15,10 +15,6 @@ USRNAME=$1
 shift
 PWD=$1
 shift
-HANASID=$1
-shift
-HANANUMBER=$1
-shift
 VMNAME=$1
 shift
 OTHERVMNAME=$1
@@ -33,18 +29,11 @@ ISCSIIP=$1
 shift
 LBIP=$1
 
-HANASIDU="${HANASID^^}"
-HANASIDL="${HANASID,,}"
-
-HANAADMIN="$HANASIDL"adm
-echo "HANAADMIN:" $HANAADMIN
 
 echo "small.sh receiving:"
 echo "URI:" $URI >> /tmp/variables.txt
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
 echo "PWD:" $PWS >> /tmp/variables.txt
-echo "HANASID:" $HANASID >> /tmp/variables.txt
-echo "HANANUMBER:" $HANANUMBER >> /tmp/variables.txt
 echo "VMSIZE:" $VMSIZE >> /tmp/variables.txt
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
 echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
