@@ -73,7 +73,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM/master/scripts/allvmsizes-nfs-cluster.sh"
+                        "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
                     "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ', parameters('vmUserName'), ' ', parameters('vmPassword'),' ', variables('vmName1'),' ',variables('vmName2'),' ',parameters('StaticIP1'),' ',parameters('StaticIP2'),' yes yes ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
                 }
@@ -91,7 +91,7 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM/master/scripts/allvmsizes-nfs-cluster.sh"
+                        "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
                     "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ',  parameters('vmUserName'), ' ', parameters('vmPassword'),' ',variables('vmName2'),' ',variables('vmName1'),' ',parameters('StaticIP2'),' ',parameters('StaticIP1'),' yes no ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
                 }
