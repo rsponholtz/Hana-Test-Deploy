@@ -58,12 +58,7 @@
     },
     "variables": {
         "vmName1": "[toLower(parameters('vmName1'))]",
-        "vmName2": "[toLower(parameters('vmName2'))]",
-        "baseUri": "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM-HSR/master",
-        "repoUri": "[variables('baseUri')]",
-        "smallUri": "[concat(variables('baseUri'), '/Vms/small.json')]",
-        "avSetNameDB": "[concat(variables('sidlower'), '-avset-db')]",
-        "loadBalancerName": "[concat(variables('sidlower'), 'hanalb')]"
+        "vmName2": "[toLower(parameters('vmName2'))]"
     },
     "resources": [
         {
@@ -80,7 +75,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM/master/scripts/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ', parameters('vmUserName'), ' ', parameters('vmPassword'),' ', parameters('vmName1'),' ',parameters('vmName2'),' ',parameters('StaticIP1'),' ',parameters('StaticIP2'),' yes yes ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
+                    "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ', parameters('vmUserName'), ' ', parameters('vmPassword'),' ', variables('vmName1'),' ',variables('vmName2'),' ',parameters('StaticIP1'),' ',parameters('StaticIP2'),' yes yes ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
                 }
             }
         },
@@ -98,7 +93,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/rsponholtz/SAP-HANA-ARM/master/scripts/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ',  parameters('vmUserName'), ' ', parameters('vmPassword'),' ',parameters('vmName2'),' ',parameters('vmName1'),' ',parameters('StaticIP2'),' ',parameters('StaticIP1'),' yes no ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
+                    "commandToExecute": "[concat('sh allvmsizes-nfs-cluster.sh ',  parameters('vmUserName'), ' ', parameters('vmPassword'),' ',variables('vmName2'),' ',variables('vmName1'),' ',parameters('StaticIP2'),' ',parameters('StaticIP1'),' yes no ',parameters('ISCSIIP'),' ',parameters('ILBIP'))]"
                 }
             }
         }
