@@ -83,10 +83,14 @@ echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
 #if needed, register the machine
 if [ "$SUBEMAIL" != "" ]; then
-  if [ "$SUBURL" != "" ]; then 
-   SUSEConnect -e $SUBEMAIL -r $SUBID --url $SUBURL
+  if [ "$SUBURL" = "NONE" ]; then 
+    SUSEConnect -e $SUBEMAIL -r $SUBID
   else 
-   SUSEConnect -e $SUBEMAIL -r $SUBID
+    if [ "$SUBURL" != "" ]; then 
+      SUSEConnect -e $SUBEMAIL -r $SUBID --url $SUBURL
+    else 
+      SUSEConnect -e $SUBEMAIL -r $SUBID
+    fi
   fi
 fi
 

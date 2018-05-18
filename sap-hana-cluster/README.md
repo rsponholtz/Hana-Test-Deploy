@@ -1,0 +1,5 @@
+The following templates and configuration scripts will deploy a highly available SAP environment.  To create your own deployment of this, follow each step in order. 
+
+Step | description | Documentation Link | infrastructure deploy template link | software installation template link
+---- | ----------- | ------------------ | ------------- | -----------------------------------
+6 | create hana virtual machine cluster | [documentation link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/sap-hana-high-availability) |  [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-hana-cluster%2Fazuredeploy-hsr-infra.json) |  [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-hana-cluster%2Fazuredeploy-hsr-sw.json)| need to add support for WA and AN, and fill in the disk configuration
