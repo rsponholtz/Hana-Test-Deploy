@@ -11,23 +11,20 @@ for (( i=0;i<$ELEMENTS;i++)); do
     echo ${args[${i}]}
 done
 
-USRNAME=$1
-shift
-NFSPWD=$1
-shift
-VMNAME=$1
-shift
-OTHERVMNAME=$1
-shift
-VMIPADDR=$1
-shift
-OTHERIPADDR=$1
-shift
-ISPRIMARY=$1
-shift
-ISCSIIP=$1
-shift
-LBIP=$1
+USRNAME=${1}
+NFSPWD=${2}
+VMNAME=${3}
+OTHERVMNAME=${4}
+VMIPADDR=${5}
+OTHERIPADDR=${6}
+ISPRIMARY=${7}
+ISCSIIP=${8}
+IQN=${9}
+IQNCLIENT=${10}
+LBIP=${11}
+SUBEMAIL=${12}
+SUBID=${13}
+SUBURL=${14}
 
 
 echo "small.sh receiving:"
@@ -39,7 +36,12 @@ echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
 echo "OTHERIPADDR:" $OTHERIPADDR >> /tmp/variables.txt
 echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
 echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
+echo "IQN:" $IQN >> /tmp/variables.txt
+echo "IQNCLIENT:" $IQNCLIENT >> /tmp/variables.txt
 echo "LBIP:" $LBIP >> /tmp/variables.txt
+echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
+echo "SUBID:" $SUBID >> /tmp/variables.txt
+echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
 
 #!/bin/bash
@@ -179,14 +181,14 @@ myhost=`hostname`
 cp -f /etc/iscsi/initiatorname.iscsi /etc/iscsi/initiatorname.iscsi.orig
 #change the IQN to the iscsi server
 sed -i "/InitiatorName=/d" "/etc/iscsi/initiatorname.iscsi"
-echo "InitiatorName=iqn.1991-05.com.microsoft:nfsserver-target:$myhost" >> /etc/iscsi/initiatorname.iscsi
+echo "InitiatorName=$IQNCLIENT" >> /etc/iscsi/initiatorname.iscsi
 systemctl restart iscsid
 systemctl restart iscsi
 iscsiadm -m discovery --type=st --portal=$ISCSIIP
 
 
-iscsiadm -m node -T iqn.1991-05.com.microsoft:nfsserver-target --login --portal=$ISCSIIP:3260
-iscsiadm -m node -p $ISCSIIP:3260 --op=update --name=node.startup --value=automatic
+iscsiadm -m node -T "$IQN" --login --portal=$ISCSIIP:3260
+iscsiadm -m node -p "$ISCSIIP":3260 --op=update --name=node.startup --value=automatic
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then

@@ -48,12 +48,54 @@
             },
             "defaultValue": "10.0.6.4"
         },
+        "IQN": {
+            "type": "string",
+            "metadata": {
+                "description": "IQN for the iscsi server"
+            },
+            "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
+        },
+        "IQNClient1": {
+            "type": "string",
+            "metadata": {
+                "description": "Client 1 IQN for the iscsi server"
+            },
+            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
+        },
+        "IQNClient2": {
+            "type": "string",
+            "metadata": {
+                "description": "Client 2 IQN for the iscsi server"
+            },
+            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
+        },        
         "ILBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer"
             },
             "defaultValue": "10.0.5.10"
+        },
+        "SubscriptionEmail": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription Email for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SubscriptionID": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription ID for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SMTUri": {
+            "type": "string",
+            "metadata": {
+                "description": "SMT URI, blank for none"
+            },
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -75,7 +117,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\"yes\"',parameters('ISCSIIP'), '\"  \"',parameters('ILBIP'))]"
+                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\"yes\"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         },
@@ -93,7 +135,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\"no\"',parameters('ISCSIIP'), '\"  \"',parameters('ILBIP'))]"
+                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\"no\"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         }
