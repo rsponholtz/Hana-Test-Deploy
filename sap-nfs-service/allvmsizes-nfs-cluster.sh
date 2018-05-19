@@ -31,17 +31,13 @@ LBIP=$1
 
 
 echo "small.sh receiving:"
-echo "URI:" $URI >> /tmp/variables.txt
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
-echo "PWD:" $PWS >> /tmp/variables.txt
-echo "VMSIZE:" $VMSIZE >> /tmp/variables.txt
+echo "PWD:" $PWD >> /tmp/variables.txt
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
 echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
 echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
 echo "OTHERIPADDR:" $OTHERIPADDR >> /tmp/variables.txt
-echo "CONFIGHSR:" $CONFIGHSR >> /tmp/variables.txt
 echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
-echo "REPOURI:" $REPOURI >> /tmp/variables.txt
 echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
 echo "LBIP:" $LBIP >> /tmp/variables.txt
 
