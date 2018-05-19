@@ -117,7 +117,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\"yes\"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\" \"yes\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         },
@@ -135,7 +135,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/allvmsizes-nfs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\"no\"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-nfs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         }
