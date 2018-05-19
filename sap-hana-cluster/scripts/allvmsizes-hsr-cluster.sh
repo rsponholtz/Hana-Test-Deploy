@@ -358,7 +358,15 @@ echo "hana download start" >> /tmp/parameter.txt
 /usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar
 /usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar
 /usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar
-/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/SAP-HANA-ARM/master/hdbinst.cfg"
+
+#retrieve config file.  first try on download location, then go to our repo
+/usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
+rc=$?;
+if [[ $rc != 0 ]];
+then
+/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hdbinst.cfg"
+fi
+
 echo "hana download end" >> /tmp/parameter.txt
 
 date >> /tmp/testdate
