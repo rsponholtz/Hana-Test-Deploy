@@ -170,7 +170,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver.sh"
                     ],
-                    "commandToExecute": "[concat('sh iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
+                    "commandToExecute": "[concat('bash iscsiserver.sh',' \"',parameters('IQN1'),'\" \"',parameters('IQN1client1'),'\" \"',parameters('IQN1client2'),'\" \"',parameters('IQN2'),'\" \"',parameters('IQN2client1'),'\" \"',parameters('IQN2client2') ,'\" \"',parameters('IQN3'),'\" \"',parameters('IQN3client1'),'\" \"',parameters('IQN3client2'),'\"')]"
                 },
                 "protectedSettings": {} 
             }
