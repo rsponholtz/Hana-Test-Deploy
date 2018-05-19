@@ -153,6 +153,13 @@
                 "description": "SMT URI, blank for none"
             },
             "defaultValue": ""
+        },
+        "AVsetName": {
+            "type": "string",
+            "metadata": {
+                "description": "name of the availability set for the VMs"
+            },
+            "defaultValue": "hanaavset"
         }
     },
     "variables": {
@@ -171,7 +178,7 @@
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
         "vmSize": "[variables('vmSizeArray')[0]]",
         "sidlower": "[toLower(parameters('HANASID'))]",
-        "avSetNameDB": "[concat(variables('sidlower'), '-avset-db')]",
+        "avSetNameDB": "[parameters('AVsetName')]",
         "loadBalancerName": "[concat(variables('sidlower'), 'hanalb')]",
         "vmSizes": {
             "Standard_GS5 (448 GB, Certified)": {

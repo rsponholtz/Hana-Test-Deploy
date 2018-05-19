@@ -25,4 +25,7 @@ az group deployment create \
    IQN="$IQN" \
    IQNClient1="$IQNClient1" \
    IQNClient2="$IQNClient2" \
-   ILBIP="$HANAILBIP"
+   ILBIP="$HANAILBIP" \
+   SubscriptionEmail="$slesemail" \
+   SubscriptionID="$slesreg" \
+   SMTUri="$slessmt"
