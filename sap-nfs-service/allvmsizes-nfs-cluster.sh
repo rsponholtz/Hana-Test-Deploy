@@ -13,7 +13,7 @@ done
 
 USRNAME=$1
 shift
-PWD=$1
+NFSPWD=$1
 shift
 VMNAME=$1
 shift
@@ -32,7 +32,7 @@ LBIP=$1
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
-echo "PWD:" $PWD >> /tmp/variables.txt
+echo "NFSPWD:" $NFSPWD >> /tmp/variables.txt
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
 echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
 echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
@@ -147,12 +147,12 @@ EOF
     #rm -r -f .ssh
     cat /dev/zero |ssh-keygen -q -N "" > /dev/null
 
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "mkdir -p /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chmod 700 /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chown root:root /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $PWD --sudo "chmod 700 /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "mkdir -p /root/.ssh"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chown root:root /root/.ssh/authorized_keys"
+    sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
     
    
 if [ "$ISPRIMARY" = "yes" ]; then
