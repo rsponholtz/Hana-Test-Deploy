@@ -158,7 +158,7 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chown root:root /root/.ssh/authorized_keys"
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
     
-    wget $REPOURI/scripts/waitfor.sh
+    wget $REPOURI/waitfor.sh
    
 if [ "$ISPRIMARY" = "yes" ]; then
 
@@ -336,6 +336,9 @@ cd /tmp
   crm configure primitive exportfs_NWS_SCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCS" options="rw,no_root_squash" clientspec="*" fsid=7 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_SCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCSERS" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
   
+  lbprobe="61000"
+  mask="24"
+
   crm configure primitive vip_NWS_nfs IPaddr2 params ip=$LBIP cidr_netmask=$mask op monitor interval=10 timeout=20
   crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k $lbprobe" op monitor timeout=20s interval=10 depth=0
 

@@ -164,13 +164,13 @@
                 ],
                 "loadBalancingRules": [
                     {
-                        "name": "nfs-lb-30313",
+                        "name": "nfs-lb-2049t",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
                             },
-                            "frontendPort": 30313,
-                            "backendPort": 30313,
+                            "frontendPort": 2049,
+                            "backendPort": 2049,
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -185,58 +185,16 @@
                         }
                     },
                     {
-                        "name": "nfs-lb-30315",
+                        "name": "nfs-lb-2049u",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
                             },
-                            "frontendPort": 30315,
-                            "backendPort": 30315,
+                            "frontendPort": 2049,
+                            "backendPort": 2049,
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "nfs-lb-30317",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
-                            },
-                            "frontendPort": 30317,
-                            "backendPort": 30317,
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "nfs-lb-7630",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
-                            },
-                            "frontendPort": 7630,
-                            "backendPort": 7630,
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Tcp",
+                            "protocol": "Udp",
                             "loadDistribution": "Default",
                             "disableOutboundSnat": false,
                             "backendAddressPool": {
@@ -257,7 +215,7 @@
                     {
                         "properties": {
                             "protocol": "Tcp",
-                            "port": 62503,
+                            "port": 61000,
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
                         },
