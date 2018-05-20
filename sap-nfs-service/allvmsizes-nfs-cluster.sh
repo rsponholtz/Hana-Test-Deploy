@@ -238,6 +238,8 @@ cd /etc/corosync
 write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
 systemctl restart corosync
 
+touch /tmp/corosynconfigcomplete.txt
+
 sleep 10
 
 cat >/etc/drbd.d/NWS_nfs.res <<EOL
@@ -345,10 +347,12 @@ cd /tmp
   crm node online $OTHERVMNAME
   crm configure property maintenance-mode=false
 
+	touch /tmp/crmconfigcomplete.txt
 
 fi
 #node2
 if [ "$ISPRIMARY" = "no" ]; then
+	./waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster
