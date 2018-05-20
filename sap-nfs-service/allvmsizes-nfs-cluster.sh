@@ -122,7 +122,7 @@ EOF
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
 
 #install hana prereqs
-log "installing packages"
+echo "installing packages"
 zypper update -y
 zypper install -y -l sle-ha-release fence-agents drbd drbd-kmp-default drbd-utils
 
@@ -269,11 +269,49 @@ mkdir /srv/nfs/
 
 drbdadm create-md NWS_nfs
 drbdadm up NWS_nfs
-drbdadm status
+#drbdadm status
+
+  drbdsetup wait-connect-resource NWS_nfs
+#  drbdadm status
+
+  drbdadm new-current-uuid --clear-bitmap NWS_nfs
+#  drbdadm status
+
+  drbdadm -- --overwrite-data-of-peer --force primary NWS_nfs
+  #drbdadm primary --force NWS_nfs
+#  drbdadm status
+
+  echo "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+  sleep 1m
+  mkfs.xfs /dev/drbd0
+  echo "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+
+ 
+  mask=$(echo $LBIP | cut -d'/' -f 2)
+  
+  echo "Creating NFS directories"
+  mkdir /srv/nfs/NWS
+  chattr +i /srv/nfs/NWS
+  mount /dev/drbd0 /srv/nfs/NWS
+  mkdir /srv/nfs/NWS/sidsys
+  mkdir /srv/nfs/NWS/sapmntsid
+  mkdir /srv/nfs/NWS/trans
+  mkdir /srv/nfs/NWS/ASCS
+  mkdir /srv/nfs/NWS/ASCSERS
+  mkdir /srv/nfs/NWS/SCS
+  mkdir /srv/nfs/NWS/SCSERS
+  umount /srv/nfs/NWS
+
+  echo "waiting for drbd sync"
+  drbdsetup wait-sync-resource NWS_nfs
+
+
 
 cd /tmp
 
-  log "Creating NFS resources"
+  echo "Creating NFS resources"
 
   crm configure property maintenance-mode=true
   crm configure property stonith-timeout=600
@@ -339,7 +377,7 @@ resource NWS_nfs {
 }
 EOL
 
-log "Create NFS server and root share"
+echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
 systemctl enable nfsserver
 service nfsserver restart
@@ -347,41 +385,9 @@ mkdir /srv/nfs/
 
 drbdadm create-md NWS_nfs
 drbdadm up NWS_nfs
-drbdadm status
+#drbdadm status
 
-log "waiting for connection"
-  drbdsetup wait-connect-resource NWS_nfs
-  drbdadm status
-
-  drbdadm new-current-uuid --clear-bitmap NWS_nfs
-  drbdadm status
-
-  drbdadm primary --force NWS_nfs
-  drbdadm status
-
-  log "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
-  mkfs.xfs /dev/drbd0
-  log "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
-
-  mask=$(echo $LBIP | cut -d'/' -f 2)
-  
-  log "Creating NFS directories"
-  mkdir /srv/nfs/NWS
-  chattr +i /srv/nfs/NWS
-  mount /dev/drbd0 /srv/nfs/NWS
-  mkdir /srv/nfs/NWS/sidsys
-  mkdir /srv/nfs/NWS/sapmntsid
-  mkdir /srv/nfs/NWS/trans
-  mkdir /srv/nfs/NWS/ASCS
-  mkdir /srv/nfs/NWS/ASCSERS
-  mkdir /srv/nfs/NWS/SCS
-  mkdir /srv/nfs/NWS/SCSERS
-  umount /srv/nfs/NWS
-
-  log "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
+echo "waiting for connection"
 
 fi
 

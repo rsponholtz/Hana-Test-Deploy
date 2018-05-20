@@ -68,7 +68,7 @@
                 "description": "Client 2 IQN for the iscsi server"
             },
             "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
-        },        
+        },
         "ILBIP": {
             "type": "string",
             "metadata": {
