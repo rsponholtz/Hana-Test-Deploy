@@ -157,20 +157,22 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh"
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chown root:root /root/.ssh/authorized_keys"
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
-    
+
+    cd /root 
     wget $REPOURI/waitfor.sh
-   
+    chmod u+x waitfor.sh
+
 if [ "$ISPRIMARY" = "yes" ]; then
 
 	touch /tmp/readyforsecondary.txt
-	./waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
 	touch /tmp/dohsrjoin.txt
     else
 	#do stuff on the secondary
-	./waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
 
 	touch /tmp/readyforcerts.txt
-	./waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
     fi
 
 #Clustering setup
@@ -355,7 +357,7 @@ cd /tmp
 fi
 #node2
 if [ "$ISPRIMARY" = "no" ]; then
-	./waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster

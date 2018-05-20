@@ -444,7 +444,7 @@ EOF
 chmod a+r /tmp/hdbsetupsql
 su - -c "hdbsql -u system -p $HANAPWD -d SYSTEMDB -I /tmp/hdbsetupsql" $HANAADMIN 
 touch /tmp/hanabackupdone.txt
-./waitfor.sh root $OTHERVMNAME /tmp/hanabackupdone.txt
+/root/waitfor.sh root $OTHERVMNAME /tmp/hanabackupdone.txt
 
     
 if [ "$ISPRIMARY" = "yes" ]; then
@@ -458,7 +458,7 @@ EOF
 	su - $HANAADMIN -c "bash /tmp/srenable"
 
 	touch /tmp/readyforsecondary.txt
-	./waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
 	scp /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT root@$OTHERVMNAME:/root/SSFS_$HANASIDU.DAT
 	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "cp /root/SSFS_$HANASIDU.DAT /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
 	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "chown $HANAADMIN:sapsys /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
@@ -470,10 +470,10 @@ EOF
 	touch /tmp/dohsrjoin.txt
     else
 	#do stuff on the secondary
-	./waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
 
 	touch /tmp/readyforcerts.txt
-	./waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
+	/root/waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
 	cat >/tmp/hsrjoin <<EOF
 sapcontrol -nr $HANANUMBER -function StopSystem HDB
 sapcontrol -nr $HANANUMBER -function WaitforStopped 600 2
