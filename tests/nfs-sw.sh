@@ -17,8 +17,8 @@ az group deployment create \
    VMPassword=$vmpassword \
    StaticIP1=$NFSIP1 \
    StaticIP2=$NFSIP2 \
-   IQN="$IQN" \
-   IQNClient1="$IQNClient1" \
-   IQNClient2="$IQNClient2" \
+   IQN="$IQN1" \
+   IQNClient1="$IQN1CLIENT1" \
+   IQNClient2="$IQN1CLIENT2" \
    iSCSIIP=$ISCSIIP \
    ILBIP=$NFSILBIP

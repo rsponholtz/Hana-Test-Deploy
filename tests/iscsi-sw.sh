@@ -13,12 +13,12 @@ az group deployment create \
    --parameters \
                    osType="SLES 12 SP3" \
 		   customUri="$customuri" \
-IQN1="iqn.1991-05.com.microsoft:nfsserver-target" \
-IQN1client1="iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1" \
-IQN1client2="iqn.1991-05.com.microsoft:nfsserver-target:nfsvm2" \
-IQN2="iqn.1991-05.com.microsoft:hana-target" \
-IQN2client1="iqn.1991-05.com.microsoft:hana-target:hanavm1" \
-IQN2client2="iqn.1991-05.com.microsoft:hana-target:hanavm2" \
-IQN3="iqn.1991-05.com.microsoft:ascs-target" \
-IQN3client1="iqn.1991-05.com.microsoft:ascs-target:ascsvm1" \
-IQN3client2="iqn.1991-05.com.microsoft:ascs-target:ascsvm2" 
+IQN1="$IQN1" \
+IQN1client1="$IQN1CLIENT1" \
+IQN1client2="$IQN1CLIENT2" \
+IQN2="$IQN2" \
+IQN2client1="$IQN2CLIENT1" \
+IQN2client2="$IQN2CLIENT2" \
+IQN3="$IQN3" \
+IQN3client1="$IQN3CLIENT1" \
+IQN3client2="$IQN3CLIENT2" 

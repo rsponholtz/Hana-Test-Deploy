@@ -3,11 +3,6 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-IQN="iqn.1991-05.com.microsoft:hana-target" 
-IQNClient1="iqn.1991-05.com.microsoft:hana-target:hanavm1" 
-IQNClient2="iqn.1991-05.com.microsoft:hana-target:hanavm2"
-
-
 echo "installing hana software"
 az group deployment create \
 --name HANADeployment \
@@ -22,9 +17,9 @@ az group deployment create \
    StaticIP1="$HANAIP1" \
    StaticIP2="$HANAIP2" \
    iSCSIIP="$ISCSIIP" \
-   IQN="$IQN" \
-   IQNClient1="$IQNClient1" \
-   IQNClient2="$IQNClient2" \
+   IQN="$IQN2" \
+   IQNClient1="$IQN2CLIENT1" \
+   IQNClient2="$IQN2CLIENT2" \
    ILBIP="$HANAILBIP" \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
