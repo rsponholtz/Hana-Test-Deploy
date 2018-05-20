@@ -18,13 +18,14 @@ OTHERVMNAME=${4}
 VMIPADDR=${5}
 OTHERIPADDR=${6}
 ISPRIMARY=${7}
-ISCSIIP=${8}
-IQN=${9}
-IQNCLIENT=${10}
-LBIP=${11}
-SUBEMAIL=${12}
-SUBID=${13}
-SUBURL=${14}
+REPOURI=${8}
+ISCSIIP=${9}
+IQN=${10}
+IQNCLIENT=${11}
+LBIP=${12}
+SUBEMAIL=${13}
+SUBID=${14}
+SUBURL=${15}
 
 
 echo "small.sh receiving:"
@@ -35,6 +36,7 @@ echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
 echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
 echo "OTHERIPADDR:" $OTHERIPADDR >> /tmp/variables.txt
 echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
+echo "REPOURI:" $REPOURI >> /tmp/variables.txt
 echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
 echo "IQN:" $IQN >> /tmp/variables.txt
 echo "IQNCLIENT:" $IQNCLIENT >> /tmp/variables.txt
@@ -46,7 +48,7 @@ echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
 #!/bin/bash
 echo "logicalvol start" >> /tmp/parameter.txt
-  nfslun="$(lsscsi 3 0 0 0 | grep -o '.\{9\}$')"
+  nfslun="$(lsscsi 5 0 0 0 | grep -o '.\{9\}$')"
   pvcreate $nfslun
   vgcreate vg_NFS $nfslun 
   lvcreate -l 100%FREE -n lv_NFS vg_NFS 
@@ -156,6 +158,7 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chown root:root /root/.ssh/authorized_keys"
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
     
+    wget $REPOURI/scripts/waitfor.sh
    
 if [ "$ISPRIMARY" = "yes" ]; then
 
@@ -258,7 +261,7 @@ resource NWS_nfs {
 }
 EOL
 
-log "Create NFS server and root share"
+echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
 systemctl enable nfsserver
 service nfsserver restart
