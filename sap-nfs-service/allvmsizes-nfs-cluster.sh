@@ -231,18 +231,6 @@ cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q csync2
-ha-cluster-init -y -q -u corosync
-
-ha-cluster-init -y -q cluster name=nfscluster interface=eth0
-cd /etc/corosync
-write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
-systemctl restart corosync
-
-touch /tmp/corosynconfigcomplete.txt
-
-sleep 10
 
 cat >/etc/drbd.d/NWS_nfs.res <<EOL
 resource NWS_nfs {
@@ -312,6 +300,19 @@ drbdadm up NWS_nfs
   drbdsetup wait-sync-resource NWS_nfs
 
 
+ha-cluster-init -y -q sbd -d $sbdid
+ha-cluster-init -y -q csync2
+ha-cluster-init -y -q -u corosync
+
+ha-cluster-init -y -q cluster name=nfscluster interface=eth0
+cd /etc/corosync
+write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
+systemctl restart corosync
+
+touch /tmp/corosynconfigcomplete.txt
+
+sleep 10
+
 
 cd /tmp
 
@@ -357,13 +358,6 @@ cd /tmp
 fi
 #node2
 if [ "$ISPRIMARY" = "no" ]; then
-	/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
-ha-cluster-join -y -q -c $OTHERVMNAME csync2 
-ha-cluster-join -y -q ssh_merge
-ha-cluster-join -y -q cluster
-cd /etc/corosync
-write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
-systemctl restart corosync
 
 cat >/etc/drbd.d/NWS_nfs.res <<EOL
 resource NWS_nfs {
@@ -395,6 +389,14 @@ mkdir /srv/nfs/
 drbdadm create-md NWS_nfs
 drbdadm up NWS_nfs
 #drbdadm status
+
+/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
+ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+ha-cluster-join -y -q ssh_merge
+ha-cluster-join -y -q cluster
+cd /etc/corosync
+write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
+systemctl restart corosync
 
 echo "waiting for connection"
 
