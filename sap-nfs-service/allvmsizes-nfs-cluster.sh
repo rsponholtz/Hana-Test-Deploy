@@ -60,7 +60,7 @@ write_corosync_config (){
   HOST1IP=$2
   HOST2IP=$3
   mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
-cat > /etc/corosync/corosync.conf <<EOF
+cat > /etc/corosync/corosync.conf.new <<EOF
 totem {
         version:        2
         secauth:        on
@@ -115,6 +115,7 @@ quorum {
 }
 EOF
 
+cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
 }
 
 
@@ -299,18 +300,16 @@ drbdadm up NWS_nfs
   echo "waiting for drbd sync"
   drbdsetup wait-sync-resource NWS_nfs
 
-
+write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
 ha-cluster-init -y -q sbd -d $sbdid
 ha-cluster-init -y -q csync2
 ha-cluster-init -y -q -u corosync
 
 ha-cluster-init -y -q cluster name=nfscluster interface=eth0
 cd /etc/corosync
-write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
 systemctl restart corosync
 
-touch /tmp/corosynconfigcomplete.txt
-
+touch /tmp/corosyncconfigcomplete.txt
 sleep 10
 
 
@@ -390,12 +389,11 @@ drbdadm create-md NWS_nfs
 drbdadm up NWS_nfs
 #drbdadm status
 
+write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
 /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster
-cd /etc/corosync
-write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
 systemctl restart corosync
 
 echo "waiting for connection"
