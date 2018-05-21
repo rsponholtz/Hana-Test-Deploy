@@ -304,9 +304,9 @@ ha-cluster-init -y -q sbd -d $sbdid
 ha-cluster-init -y -q csync2
 ha-cluster-init -y -q -u corosync
 
-write_corosync_config 10.0.1.0 $VMIPADDR $OTHERIPADDR
 
 ha-cluster-init -y -q cluster name=nfscluster interface=eth0
+write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
 cd /etc/corosync
 systemctl restart corosync
 
@@ -394,11 +394,10 @@ drbdadm up NWS_nfs
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster
-write_corosync_config 10.0.1.0 $OTHERIPADDR $VMIPADDR 
+write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
 systemctl restart corosync
 
 echo "waiting for connection"
 
 fi
-
 
