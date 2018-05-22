@@ -54,71 +54,6 @@ echo "logicalvol start" >> /tmp/parameter.txt
   lvcreate -l 100%FREE -n lv_NFS vg_NFS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
-
-write_corosync_config (){
-  BINDIP=$1
-  HOST1IP=$2
-  HOST2IP=$3
-  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
-cat > /etc/corosync/corosync.conf.new <<EOF
-totem {
-        version:        2
-        secauth:        on
-        crypto_hash:    sha1
-        crypto_cipher:  aes256
-        cluster_name:   hacluster
-        clear_node_high_bit: yes
-        token:          5000
-        token_retransmits_before_loss_const: 10
-        join:           60
-        consensus:      6000
-        max_messages:   20
-        interface {
-                ringnumber:     0
-                bindnetaddr:    $BINDIP
-                mcastport:      5405
-                ttl:            1
-        }
- transport:      udpu
-}
-nodelist {
-  node {
-   ring0_addr:$HOST1IP
-   nodeid:1
-  }
-  node {
-   ring0_addr:$HOST2IP
-   nodeid:2
-  }
-  transport:      udpu
-}
-
-logging {
-        fileline:       off
-        to_stderr:      no
-        to_logfile:     no
-        logfile:        /var/log/cluster/corosync.log
-        to_syslog:      yes
-        debug:          off
-        timestamp:      on
-        logger_subsys {
-                subsys: QUORUM
-                debug:  off
-        }
-}
-quorum {
-        # Enable and configure quorum subsystem (default: off)
-        # see also corosync.conf.5 and votequorum.5
-        provider: corosync_votequorum
-        expected_votes: 1
-        two_node: 0
-}
-EOF
-
-cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
-}
-
-
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
 
@@ -163,19 +98,6 @@ EOF
     wget $REPOURI/waitfor.sh
     chmod u+x waitfor.sh
 
-if [ "$ISPRIMARY" = "yes" ]; then
-
-	touch /tmp/readyforsecondary.txt
-	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
-	touch /tmp/dohsrjoin.txt
-    else
-	#do stuff on the secondary
-	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
-
-	touch /tmp/readyforcerts.txt
-	/root/waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
-    fi
-
 #Clustering setup
 #start services [A]
 systemctl enable iscsid
@@ -205,6 +127,7 @@ echo "hana iscsi end" >> /tmp/parameter.txt
 device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
+
 sbd -d $sbdid -1 90 -4 180 create
 else
 
@@ -215,9 +138,7 @@ fi
 #!/bin/bash [A]
 cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
-device="$(lsscsi 6 0 0 0| cut -c59-)"
-diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
-sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
+
 sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
 sbdcmd2='s/SBD_PACEMAKER=/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=/SBD_STARTMODE="always"/g'
@@ -228,13 +149,158 @@ echo "hana sbd end" >> /tmp/parameter.txt
 echo softdog > /etc/modules-load.d/softdog.conf
 modprobe -v softdog
 echo "hana watchdog end" >> /tmp/parameter.txt
+
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
 
-cat >/etc/drbd.d/NWS_nfs.res <<EOL
-resource NWS_nfs {
+ha-cluster-init -y -q csync2
+ha-cluster-init -y -q -u corosync
+ha-cluster-init -y -q sbd -d $sbdid
+ha-cluster-init -y -q cluster name=nfscluster interface=eth0
+
+write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
+cd /etc/corosync
+systemctl restart corosync
+touch /tmp/corosyncconfig1.txt	
+/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+
+fi
+#node2
+if [ "$ISPRIMARY" = "no" ]; then
+
+/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+ha-cluster-join -y -q ssh_merge
+ha-cluster-join -y -q cluster
+write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
+systemctl restart corosync
+
+echo "waiting for connection"
+touch /tmp/corosyncconfig2.txt	
+
+fi
+
+
+write_corosync_config (){
+  BINDIP=$1
+  HOST1IP=$2
+  HOST2IP=$3
+  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
+cat > /etc/corosync/corosync.conf.new <<EOF
+totem {
+        version:        2
+        secauth:        on
+        crypto_hash:    sha1
+        crypto_cipher:  aes256
+        cluster_name:   hacluster
+        clear_node_high_bit: yes
+        token:          5000
+        token_retransmits_before_loss_const: 10
+        join:           60
+        consensus:      6000
+        max_messages:   20
+        interface {
+                ringnumber:     0
+                bindnetaddr:    $BINDIP
+                mcastport:      5405
+                ttl:            1
+        }
+ transport:      udpu
+}
+nodelist {
+  node {
+   ring0_addr:$HOST1IP
+   nodeid:1
+  }
+  node {
+   ring0_addr:$HOST2IP
+   nodeid:2
+  }
+}
+
+logging {
+        fileline:       off
+        to_stderr:      no
+        to_logfile:     no
+        logfile:        /var/log/cluster/corosync.log
+        to_syslog:      yes
+        debug:          off
+        timestamp:      on
+        logger_subsys {
+                subsys: QUORUM
+                debug:  off
+        }
+}
+quorum {
+        # Enable and configure quorum subsystem (default: off)
+        # see also corosync.conf.5 and votequorum.5
+        provider: corosync_votequorum
+        expected_votes: 1
+        two_node: 0
+}
+EOF
+
+cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
+}
+
+
+
+cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
+
+write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
+cd /etc/corosync
+systemctl restart corosync
+
+fi
+#node2
+if [ "$ISPRIMARY" = "no" ]; then
+
+write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
+systemctl restart corosync
+
+fi
+
+#get the VM size via the instance api
+VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
+mv /etc/drbd.d/global_common.conf /etc/drbd.d/global_common.conf-orig 
+cat >/etc/drbd.d/global_common.conf <<EOF
+global {
+        usage-count no;
+}
+common {
+        handlers {
+                fence-peer "/usr/lib/drbd/crm-fence-peer.sh";
+                after-resync-target /usr/lib/drbd/crm-unfence-peer.sh;
+                split-brain "/usr/lib/drbd/notify-split-brain.sh root";
+                pri-lost-after-sb "/usr/lib/drbd/notify-pri-lost-after-sb.sh; /usr/lib/drbd/notify-emergency-reboot.sh; echo b > /proc/sysrq-trigger ; reboot -f";
+        }
+        startup {
+                wfc-timeout 0;
+        }
+        options {
+        }
+
+        disk {
+                resync-rate 50M;
+        }
+        net {
+                after-sb-0pri discard-younger-primary;
+                after-sb-1pri discard-secondary;
+                after-sb-2pri call-pri-lost-after-sb;
+        }
+}
+EOF
+
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
+
+cat >/etc/drbd.d/NWS-nfs.res <<EOF
+resource NWS-nfs {
    protocol     C;
    disk {
       on-io-error       pass_on;
@@ -252,7 +318,7 @@ resource NWS_nfs {
       meta-disk internal;
    }
 }
-EOL
+EOF
 
 echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
@@ -260,26 +326,26 @@ systemctl enable nfsserver
 service nfsserver restart
 mkdir /srv/nfs/
 
-drbdadm create-md NWS_nfs
-drbdadm up NWS_nfs
+drbdadm create-md NWS-nfs
+drbdadm up NWS-nfs
 #drbdadm status
 
-  drbdsetup wait-connect-resource NWS_nfs
+  drbdsetup wait-connect-resource NWS-nfs
 #  drbdadm status
 
-  drbdadm new-current-uuid --clear-bitmap NWS_nfs
+  drbdadm new-current-uuid --clear-bitmap NWS-nfs
 #  drbdadm status
 
-  drbdadm -- --overwrite-data-of-peer --force primary NWS_nfs
+  drbdadm -- --overwrite-data-of-peer --force primary NWS-nfs
   #drbdadm primary --force NWS_nfs
 #  drbdadm status
 
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
+  drbdsetup wait-sync-resource NWS-nfs
   sleep 1m
   mkfs.xfs /dev/drbd0
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
+  drbdsetup wait-sync-resource NWS-nfs
 
  
   mask=$(echo $LBIP | cut -d'/' -f 2)
@@ -298,35 +364,62 @@ drbdadm up NWS_nfs
   umount /srv/nfs/NWS
 
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS_nfs
+  drbdsetup wait-sync-resource NWS-nfs
 
-ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q csync2
-ha-cluster-init -y -q -u corosync
+fi
+#node2
+if [ "$ISPRIMARY" = "no" ]; then
+
+cat >/etc/drbd.d/NWS-nfs.res <<EOL
+resource NWS-nfs {
+   protocol     C;
+   disk {
+      on-io-error       pass_on;
+   }
+   on $OTHERVMNAME {
+      address   $OTHERIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+   on $VMNAME {
+      address   $VMIPADDR:7790;
+      device    /dev/drbd0;
+      disk      /dev/vg_NFS/lv_NFS;
+      meta-disk internal;
+   }
+}
+EOL
+
+echo "Create NFS server and root share"
+echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
+systemctl enable nfsserver
+service nfsserver restart
+mkdir /srv/nfs/
+
+drbdadm create-md NWS-nfs
+drbdadm up NWS-nfs
+#drbdadm status
+
+echo "waiting for connection"
+
+fi
 
 
-ha-cluster-init -y -q cluster name=nfscluster interface=eth0
-write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
-cd /etc/corosync
-systemctl restart corosync
-
-touch /tmp/corosyncconfigcomplete.txt
-sleep 10
-
-
-cd /tmp
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
 
   echo "Creating NFS resources"
 
   crm configure property maintenance-mode=true
   crm configure property stonith-timeout=600
   
-  crm node standby $OTHERVMNAME
-  crm node standby $VMNAME
+#  crm node standby $OTHERVMNAME
+#  crm node standby $VMNAME
 
-  crm configure rsc_defaults resource-stickiness="1"
-
-  crm configure primitive drbd_NWS_nfs ocf:linbit:drbd params drbd_resource="NWS_nfs" op monitor interval="15" role="Master" op monitor interval="30"
+#  crm configure rsc_defaults resource-stickiness="1"
+#
+  crm configure primitive drbd_NWS_nfs ocf:linbit:drbd params drbd_resource="NWS-nfs" op monitor interval="15" role="Master" op monitor interval="30" role="Slave"
   crm configure ms ms-drbd_NWS_nfs drbd_NWS_nfs meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true" interleave="true"
   crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs options="sync,dirsync" op monitor interval="10s"
 
@@ -349,53 +442,15 @@ cd /tmp
   crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start
   crm configure colocation col-NWS_nfs_on_drbd inf: g-NWS_nfs ms-drbd_NWS_nfs:Master
 
-  crm node online $VMNAME
-  crm node online $OTHERVMNAME
+#  crm node online $VMNAME
+#  crm node online $OTHERVMNAME
   crm configure property maintenance-mode=false
 
-	touch /tmp/crmconfigcomplete.txt
+  touch /tmp/crmconfigcomplete.txt
 
 fi
 #node2
 if [ "$ISPRIMARY" = "no" ]; then
-
-cat >/etc/drbd.d/NWS_nfs.res <<EOL
-resource NWS_nfs {
-   protocol     C;
-   disk {
-      on-io-error       pass_on;
-   }
-   on $OTHERVMNAME {
-      address   $OTHERIPADDR:7790;
-      device    /dev/drbd0;
-      disk      /dev/vg_NFS/lv_NFS;
-      meta-disk internal;
-   }
-   on $VMNAME {
-      address   $VMIPADDR:7790;
-      device    /dev/drbd0;
-      disk      /dev/vg_NFS/lv_NFS;
-      meta-disk internal;
-   }
-}
-EOL
-
-echo "Create NFS server and root share"
-echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
-systemctl enable nfsserver
-service nfsserver restart
-mkdir /srv/nfs/
-
-drbdadm create-md NWS_nfs
-drbdadm up NWS_nfs
-#drbdadm status
-
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfigcomplete.txt	
-ha-cluster-join -y -q -c $OTHERVMNAME csync2 
-ha-cluster-join -y -q ssh_merge
-ha-cluster-join -y -q cluster
-write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
-systemctl restart corosync
 
 echo "waiting for connection"
 
