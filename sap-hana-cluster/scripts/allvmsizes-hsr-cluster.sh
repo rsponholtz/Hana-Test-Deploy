@@ -92,6 +92,7 @@ if [ "$SUBEMAIL" != "" ]; then
       SUSEConnect -e $SUBEMAIL -r $SUBID
     fi
   fi
+  SUSEConnect -p sle-module-public-cloud/12/x86_64 
 fi
 
 
