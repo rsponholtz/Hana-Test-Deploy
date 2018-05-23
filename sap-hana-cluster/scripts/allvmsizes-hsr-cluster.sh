@@ -95,6 +95,8 @@ if [ "$SUBEMAIL" != "" ]; then
   SUSEConnect -p sle-module-public-cloud/12/x86_64 
 fi
 
+cp waitfor.sh /root
+chmod u+x /root/waitfor.sh
 
 mkdir /etc/systemd/login.conf.d
 mkdir /hana
@@ -425,8 +427,8 @@ if [ "$CONFIGHSR" == "yes" ]; then
     HANASIDU="${HANASID^^}"
 
     cd /root
-    wget $REPOURI/scripts/waitfor.sh
-    chmod u+x waitfor.sh
+#    wget $REPOURI/scripts/waitfor.sh
+#    chmod u+x waitfor.sh
     SYNCUSER="hsrsync"
     SYNCPASSWORD="Repl1cate"
 
@@ -543,10 +545,9 @@ cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-ha-cluster-init -y -q sbd -d $sbdid
 ha-cluster-init -y -q csync2
 ha-cluster-init -y -q -u corosync
-
+ha-cluster-init -y -q sbd -d $sbdid
 ha-cluster-init -y -q cluster name=hanacluster interface=eth0
 cd /etc/corosync
 write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
