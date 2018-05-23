@@ -128,7 +128,7 @@ cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
 }
 
 
-register_subscription()  "$SUBEMAIL"  "$SUBID" "$SUBURL"
+register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
