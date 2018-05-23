@@ -240,6 +240,7 @@ touch /tmp/corosyncconfig1.txt
 systemctl stop corosync
 write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
 systemctl start corosync
+systemctl start pacemaker
 touch /tmp/corosyncconfig3.txt	
 
 fi
@@ -254,10 +255,9 @@ touch /tmp/corosyncconfig2.txt
 /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
 write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
 systemctl restart corosync
-
+systemctl start pacemaker
 
 echo "waiting for connection"
-touch /tmp/corosyncconfig2.txt	
 
 fi
 
