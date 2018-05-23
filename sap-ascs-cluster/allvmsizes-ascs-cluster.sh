@@ -234,13 +234,13 @@ if [ "$ISPRIMARY" = "yes" ]; then
 ha-cluster-init -y -q csync2
 ha-cluster-init -y -q -u corosync
 ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q cluster name=nfscluster interface=eth0
-
-write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
-cd /etc/corosync
-systemctl restart corosync
+ha-cluster-init -y -q cluster name=ascscluster interface=eth0
 touch /tmp/corosyncconfig1.txt	
 /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+systemctl stop corosync
+write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
+systemctl start corosync
+touch /tmp/corosyncconfig3.txt	
 
 fi
 #node2
@@ -250,8 +250,11 @@ if [ "$ISPRIMARY" = "no" ]; then
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster
+touch /tmp/corosyncconfig2.txt	
+/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
 write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
 systemctl restart corosync
+
 
 echo "waiting for connection"
 touch /tmp/corosyncconfig2.txt	
