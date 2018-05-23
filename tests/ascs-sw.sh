@@ -17,7 +17,7 @@ az group deployment create \
    VMPassword=$vmpassword \
    StaticIP1=$ASCSIP1 \
    StaticIP2=$ASCSIP2 \
-   IQN="$IQN1" \
+   IQN="$ASCSIQN" \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
    iSCSIIP=$ISCSIIP \

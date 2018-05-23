@@ -45,6 +45,90 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
+register_subscription() {
+  SUBEMAIL=$1
+  SUBID=$2
+  SUBURL=$3
+
+#if needed, register the machine
+if [ "$SUBEMAIL" != "" ]; then
+  if [ "$SUBURL" = "NONE" ]; then 
+    SUSEConnect -e $SUBEMAIL -r $SUBID
+  else 
+    if [ "$SUBURL" != "" ]; then 
+      SUSEConnect -e $SUBEMAIL -r $SUBID --url $SUBURL
+    else 
+      SUSEConnect -e $SUBEMAIL -r $SUBID
+    fi
+  fi
+  SUSEConnect -p sle-module-public-cloud/12/x86_64 
+fi
+}
+
+write_corosync_config (){
+  BINDIP=$1
+  HOST1IP=$2
+  HOST2IP=$3
+  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
+cat > /etc/corosync/corosync.conf.new <<EOF
+totem {
+        version:        2
+        secauth:        on
+        crypto_hash:    sha1
+        crypto_cipher:  aes256
+        cluster_name:   hacluster
+        clear_node_high_bit: yes
+        token:          5000
+        token_retransmits_before_loss_const: 10
+        join:           60
+        consensus:      6000
+        max_messages:   20
+        interface {
+                ringnumber:     0
+                bindnetaddr:    $BINDIP
+                mcastport:      5405
+                ttl:            1
+        }
+ transport:      udpu
+}
+nodelist {
+  node {
+   ring0_addr:$HOST1IP
+   nodeid:1
+  }
+  node {
+   ring0_addr:$HOST2IP
+   nodeid:2
+  }
+}
+
+logging {
+        fileline:       off
+        to_stderr:      no
+        to_logfile:     no
+        logfile:        /var/log/cluster/corosync.log
+        to_syslog:      yes
+        debug:          off
+        timestamp:      on
+        logger_subsys {
+                subsys: QUORUM
+                debug:  off
+        }
+}
+quorum {
+        # Enable and configure quorum subsystem (default: off)
+        # see also corosync.conf.5 and votequorum.5
+        provider: corosync_votequorum
+        expected_votes: 1
+        two_node: 0
+}
+EOF
+
+cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
+}
+
+
+register_subscription()  "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
@@ -175,85 +259,6 @@ touch /tmp/corosyncconfig2.txt
 fi
 
 
-write_corosync_config (){
-  BINDIP=$1
-  HOST1IP=$2
-  HOST2IP=$3
-  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
-cat > /etc/corosync/corosync.conf.new <<EOF
-totem {
-        version:        2
-        secauth:        on
-        crypto_hash:    sha1
-        crypto_cipher:  aes256
-        cluster_name:   hacluster
-        clear_node_high_bit: yes
-        token:          5000
-        token_retransmits_before_loss_const: 10
-        join:           60
-        consensus:      6000
-        max_messages:   20
-        interface {
-                ringnumber:     0
-                bindnetaddr:    $BINDIP
-                mcastport:      5405
-                ttl:            1
-        }
- transport:      udpu
-}
-nodelist {
-  node {
-   ring0_addr:$HOST1IP
-   nodeid:1
-  }
-  node {
-   ring0_addr:$HOST2IP
-   nodeid:2
-  }
-}
-
-logging {
-        fileline:       off
-        to_stderr:      no
-        to_logfile:     no
-        logfile:        /var/log/cluster/corosync.log
-        to_syslog:      yes
-        debug:          off
-        timestamp:      on
-        logger_subsys {
-                subsys: QUORUM
-                debug:  off
-        }
-}
-quorum {
-        # Enable and configure quorum subsystem (default: off)
-        # see also corosync.conf.5 and votequorum.5
-        provider: corosync_votequorum
-        expected_votes: 1
-        two_node: 0
-}
-EOF
-
-cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
-}
-
-
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
-
-#node1
-if [ "$ISPRIMARY" = "yes" ]; then
-
-write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
-cd /etc/corosync
-systemctl restart corosync
-
-fi
-#node2
-if [ "$ISPRIMARY" = "no" ]; then
-
-write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
-systemctl restart corosync
-
-fi
 
