@@ -17,9 +17,9 @@ az group deployment create \
    StaticIP1="$HANAIP1" \
    StaticIP2="$HANAIP2" \
    iSCSIIP="$ISCSIIP" \
-   IQN="$IQN2" \
-   IQNClient1="$IQN2CLIENT1" \
-   IQNClient2="$IQN2CLIENT2" \
+   IQN="$HANAIQN" \
+   IQNClient1="$HANAIQNCLIENT1" \
+   IQNClient2="$HANAIQNCLIENT2" \
    ILBIP="$HANAILBIP" \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \

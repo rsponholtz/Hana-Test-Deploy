@@ -1,0 +1,246 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName1": {
+            "type": "string",
+            "metadata": {
+                "description": "VM Name"
+            }
+        },
+        "vmName2": {
+            "type": "string",
+            "metadata": {
+                "description": "VM Name 2"
+            }
+        },
+        "SubnetRef": {
+            "type": "string",
+            "metadata": {
+                "description": "The Hana subnet reference ID"
+            }
+        },
+        "OperatingSystem": {
+            "type": "string",
+            "metadata": {
+                "description": "Operating system for HANA Machine"
+            },
+            "defaultValue": "SLES for SAP 12 SP2",
+            "allowedValues": [
+                "SLES for SAP 12 SP2",
+                "RHEL 7.2 for SAP HANA"
+            ]
+        },
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            },
+            "defaultValue": "Hana07061992!"
+        },
+        "hanaSid": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP HANA System ID"
+            },
+            "defaultValue": "H10"
+        },
+        "hanaNumber": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP HANA Instance Number"
+            },
+            "defaultValue": "00"
+        },
+        "vmSize": {
+            "type": "string",
+            "metadata": {
+                "description": "Size of VM to deploy"
+            }
+        },
+        "StaticIP1": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.5.4"
+        },
+        "StaticIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the other HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.5.5"
+        },
+        "HSRINST": {
+            "type": "string",
+            "metadata": {
+                "description": "Should we configure HSR for the VM"
+            },
+            "defaultValue": "no",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]
+        },
+        "ISPRIMARY": {
+            "type": "string",
+            "metadata": {
+                "description": "Is this the primary HANA instance"
+            },
+            "defaultValue": "yes",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]
+        },
+        "repoUri": {
+            "type": "string",
+            "metadata": {
+                "description": "URI to scripts repo"
+            },
+            "defaultValue": "no"
+        },
+        "ISCSIIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for machine providing ISCSI storage"
+            },
+            "defaultValue": "10.0.6.4"
+        },
+        "loadBalancerName": {
+            "type": "string",
+            "metadata": {
+                "description": "load balancer name"
+            },
+            "defaultValue": "hanalb"
+        },
+        "LBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the internal load balancer"
+            },
+            "defaultValue": "10.0.5.10"
+        },
+        "avSetObj": {
+            "type": "object",
+            "metadata": {
+                "description": "Availability set."
+            }
+        }
+    },
+    "variables": {
+        "api-version": "2017-06-01",
+        "api-version-vm": "2017-03-30",
+        "nicName": "[concat(parameters('vmName1'),'-static')]",
+        "subnetRef": "[parameters('SubnetRef')]",
+        "OperatingSystemSpec": {
+            "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
+            "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),'SLES-SAP','RHEL-SAP-HANA')]",
+            "sku": "[if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2')]"
+        },
+        "DataDiskSize": "1023",
+        "internalAVSetObj": "[parameters('avSetObj')]"
+    },
+    "resources": [
+        {
+            "apiVersion": "[variables('api-version')]",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(parameters('vmName1'),'-static')]",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('StaticIP1')]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Compute/disks",
+            "name": "[concat(parameters('vmName1'),'-data')]",
+            "apiVersion": "[variables('api-version-vm')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": "[variables('DataDiskSize')]"
+            }
+        },
+        {
+            "apiVersion": "[variables('api-version-vm')]",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[parameters('vmName1')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]",
+                "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data'))]"
+            ],
+            "properties": {
+                "availabilitySet": "[variables('internalAVSetObj')]",
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('vmName1')]",
+                    "adminUsername": "[parameters('vmUserName')]",
+                    "adminPassword": "[parameters('vmPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
+                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
+                        "sku": "[variables('OperatingSystemSpec').sku]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "createOption": "attach",
+                            "managedDisk": {
+                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data'))]"
+                            }
+                        }
+                    ]
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": [
+            ]
+        }
+    ],
+    "outputs": {}
+}

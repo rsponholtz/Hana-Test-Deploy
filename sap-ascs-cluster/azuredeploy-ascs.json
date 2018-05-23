@@ -117,10 +117,10 @@
         }
     },
     "variables": {
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster",
         "repoUri": "[variables('baseUri')]",
-        "infraUri": "[concat(variables('baseUri'), '/azuredeploy-nfs-infra.json')]",
-        "swUri": "[concat(variables('baseUri'), '/azuredeploy-nfs-sw.json')]"
+        "infraUri": "[concat(variables('baseUri'), '/azuredeploy-ascs-infra.json')]",
+        "swUri": "[concat(variables('baseUri'), '/azuredeploy-ascs-sw.json')]"
     },
     "resources": [
         {

@@ -27,8 +27,6 @@
             },
             "defaultValue": "Standard_GS5 (448 GB, Certified)",
             "allowedValues": [
-                "Standard_D2s_v3",
-                "Standard_D4s_v3",
                 "Standard_GS5 (448 GB, Certified)",
                 "Standard_M64s (1 TB)",
                 "Standard_M64ms (1.7 TB)",
@@ -117,15 +115,15 @@
         "prefix": "[toLower(parameters('prefix'))]",
         "vmName1": "[toLower(parameters('vmName1'))]",
         "vmName2": "[toLower(parameters('vmName2'))]",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster",
         "repoUri": "[variables('baseUri')]",
-        "smallUri": "[concat(variables('baseUri'), '/small-nfs.json')]",
+        "smallUri": "[concat(variables('baseUri'), '/small-ascs.json')]",
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
         "vmSize": "[variables('vmSizeArray')[0]]",
-        "avSetNameDB": "[concat(variables('prefix'), '-avset-nfs')]",
-        "loadBalancerName": "[concat(variables('prefix'), 'nfslb')]"
+        "avSetNameDB": "[concat(variables('prefix'), '-avset-ascs')]",
+        "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]"
     },
     "resources": [
         {
@@ -166,7 +164,7 @@
                 ],
                 "loadBalancingRules": [
                     {
-                        "name": "nfs-lb-2049t",
+                        "name": "ascs-lb-2049t",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
@@ -187,7 +185,7 @@
                         }
                     },
                     {
-                        "name": "nfs-lb-2049u",
+                        "name": "ascs-lb-2049u",
                         "properties": {
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
