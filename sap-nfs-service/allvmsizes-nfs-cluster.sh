@@ -264,9 +264,6 @@ iscsiadm -m discovery --type=st --portal=$ISCSIIP
 iscsiadm -m node -T "$IQN" --login --portal=$ISCSIIP:3260
 iscsiadm -m node -p "$ISCSIIP":3260 --op=update --name=node.startup --value=automatic
 
-#node1
-if [ "$ISPRIMARY" = "yes" ]; then
-
 sleep 10 
 echo "hana iscsi end" >> /tmp/parameter.txt
 
@@ -274,11 +271,9 @@ device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
-sbd -d $sbdid -1 90 -4 180 create
-else
-
-echo "hana iscsi end" >> /tmp/parameter.txt
-sleep 10 
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
+  sbd -d $sbdid -1 90 -4 180 create
 fi
 
 #!/bin/bash [A]
