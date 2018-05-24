@@ -189,6 +189,44 @@ EOF
 
 }
 
+
+setup_cluster() {
+  ISPRIMARY=$1
+  SBDID=$2
+  VMNAME=$3
+  OTHERVMNAME=$4 
+  CLUSTERNAME=$5 
+  #node1
+  if [ "$ISPRIMARY" = "yes" ]; then
+    ha-cluster-init -y -q csync2
+    ha-cluster-init -y -q -u corosync
+    ha-cluster-init -y -q sbd -d $SBDID
+    ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
+    touch /tmp/corosyncconfig1.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    systemctl stop corosync
+    systemctl stop pacemaker
+    write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
+    systemctl start corosync
+    systemctl start pacemaker
+    touch /tmp/corosyncconfig3.txt	
+
+    sleep 10
+  else
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+    ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+    ha-cluster-join -y -q ssh_merge
+    ha-cluster-join -y -q cluster
+    systemctl stop corosync
+    systemctl stop pacemaker
+    touch /tmp/corosyncconfig2.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
+    write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
+    systemctl restart corosync
+    systemctl start pacemaker
+  fi
+}
+
 ##end of bash function definitions
 
 
@@ -580,24 +618,10 @@ modprobe -v softdog
 echo "hana watchdog end" >> /tmp/parameter.txt
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
+setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "hanacluster"
+
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-ha-cluster-init -y -q csync2
-ha-cluster-init -y -q -u corosync
-ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q cluster name=hanacluster interface=eth0
-touch /tmp/corosyncconfig1.txt	
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
-systemctl stop corosync
-systemctl stop pacemaker
-write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
-systemctl start corosync
-systemctl start pacemaker
-touch /tmp/corosyncconfig3.txt	
-
-sleep 10
-
-cd /tmp
 #configure SAP HANA topology
 HANAID="$HANASID"_HDB"$HANANUMBER"
 
@@ -651,16 +675,3 @@ sudo crm configure property maintenance-mode=false
 
 fi
 #node2
-if [ "$ISPRIMARY" = "no" ]; then
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
-ha-cluster-join -y -q -c $OTHERVMNAME csync2 
-ha-cluster-join -y -q ssh_merge
-ha-cluster-join -y -q cluster
-systemctl stop corosync
-systemctl stop pacemaker
-touch /tmp/corosyncconfig2.txt	
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
-write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
-systemctl restart corosync
-systemctl start pacemaker
-fi
