@@ -149,42 +149,51 @@ cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
 
 
 setup_cluster() {
-  ISPRIMARY=$1
-  SBDID=$2
-  VMNAME=$3
-  OTHERVMNAME=$4 
-  CLUSTERNAME=$5 
+  P_ISPRIMARY=$1
+  P_SBDID=$2
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
+  P_CLUSTERNAME=$5 
+
+  echo "setup cluster"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_SBDID:" $P_SBDID >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+  echo "P_CLUSTERNAME:" $P_CLUSTERNAME>> /tmp/variables.txt
+
   #node1
-  if [ "$ISPRIMARY" = "yes" ]; then
+  if [ "$P_ISPRIMARY" = "yes" ]; then
     ha-cluster-init -y -q csync2
     ha-cluster-init -y -q -u corosync
-    ha-cluster-init -y -q sbd -d $SBDID
-    ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
+    ha-cluster-init -y -q sbd -d $P_SBDID
+    ha-cluster-init -y -q cluster name=$P_CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig2.txt	
     systemctl stop corosync
     systemctl stop pacemaker
-    write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
+    write_corosync_config 10.0.5.0 $P_VMNAME $P_OTHERVMNAME
     systemctl start corosync
     systemctl start pacemaker
     touch /tmp/corosyncconfig3.txt	
 
     sleep 10
   else
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
-    ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig1.txt	
+    ha-cluster-join -y -q -c $P_OTHERVMNAME csync2 
     ha-cluster-join -y -q ssh_merge
     ha-cluster-join -y -q cluster
     systemctl stop corosync
     systemctl stop pacemaker
     touch /tmp/corosyncconfig2.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
-    write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
+    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig3.txt	
+    write_corosync_config 10.0.5.0 $P_OTHERVMNAME $VMNAME 
     systemctl restart corosync
     systemctl start pacemaker
   fi
 }
 
+declare -fxr setup_cluster
 
 ##end of bash function definitions
 
@@ -289,5 +298,5 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "ascscluster"
+setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "ascscluster"
 
