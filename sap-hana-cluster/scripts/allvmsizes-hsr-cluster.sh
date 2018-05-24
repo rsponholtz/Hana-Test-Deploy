@@ -81,6 +81,37 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
+
+#!/bin/bash
+
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -r cmd="$@"
+    local -i attempt_num=1
+
+    until $cmd
+    do
+        if (( attempt_num == max_attempts ))
+        then
+            echo "Attempt $attempt_num failed and there are no more attempts left!"
+            return 1
+        else
+            echo "Attempt $attempt_num failed! Trying again in $attempt_num seconds..."
+            sleep $(( attempt_num++ ))
+        fi
+    done
+}
+
+declare -fxr retry
+
+
+##bash function definitions
+
+register_subscription() {
+  SUBEMAIL=$1
+  SUBID=$2
+  SUBURL=$3
+
 #if needed, register the machine
 if [ "$SUBEMAIL" != "" ]; then
   if [ "$SUBURL" = "NONE" ]; then 
@@ -94,6 +125,113 @@ if [ "$SUBEMAIL" != "" ]; then
   fi
   SUSEConnect -p sle-module-public-cloud/12/x86_64 
 fi
+}
+
+write_corosync_config (){
+  BINDIP=$1
+  HOST1IP=$2
+  HOST2IP=$3
+  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
+cat > /etc/corosync/corosync.conf <<EOF
+totem {
+        version:        2
+        secauth:        on
+        crypto_hash:    sha1
+        crypto_cipher:  aes256
+        cluster_name:   hacluster
+        clear_node_high_bit: yes
+        token:          5000
+        token_retransmits_before_loss_const: 10
+        join:           60
+        consensus:      6000
+        max_messages:   20
+        interface {
+                ringnumber:     0
+                bindnetaddr:    $BINDIP
+                mcastport:      5405
+                ttl:            1
+        }
+ transport:      udpu
+}
+nodelist {
+  node {
+   ring0_addr:$HOST1IP
+   nodeid:1
+  }
+  node {
+   ring0_addr:$HOST2IP
+   nodeid:2
+  }
+  transport:      udpu
+}
+
+logging {
+        fileline:       off
+        to_stderr:      no
+        to_logfile:     no
+        logfile:        /var/log/cluster/corosync.log
+        to_syslog:      yes
+        debug:          off
+        timestamp:      on
+        logger_subsys {
+                subsys: QUORUM
+                debug:  off
+        }
+}
+quorum {
+        # Enable and configure quorum subsystem (default: off)
+        # see also corosync.conf.5 and votequorum.5
+        provider: corosync_votequorum
+        expected_votes: 1
+        two_node: 0
+}
+EOF
+
+}
+
+
+setup_cluster() {
+  ISPRIMARY=$1
+  SBDID=$2
+  VMNAME=$3
+  OTHERVMNAME=$4 
+  CLUSTERNAME=$5 
+  #node1
+  if [ "$ISPRIMARY" = "yes" ]; then
+    ha-cluster-init -y -q csync2
+    ha-cluster-init -y -q -u corosync
+    ha-cluster-init -y -q sbd -d $SBDID
+    ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
+    touch /tmp/corosyncconfig1.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    systemctl stop corosync
+    systemctl stop pacemaker
+    write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
+    systemctl start corosync
+    systemctl start pacemaker
+    touch /tmp/corosyncconfig3.txt	
+
+    sleep 10
+  else
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+    ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+    ha-cluster-join -y -q ssh_merge
+    ha-cluster-join -y -q cluster
+    systemctl stop corosync
+    systemctl stop pacemaker
+    touch /tmp/corosyncconfig2.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
+    write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
+    systemctl restart corosync
+    systemctl start pacemaker
+  fi
+}
+
+##end of bash function definitions
+
+
+register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
+
 
 cp waitfor.sh /root
 chmod u+x /root/waitfor.sh
@@ -263,79 +401,16 @@ if [ ! -d "/hana/data/sapbits" ]
  mkdir "/hana/data/sapbits"
 fi
 
-write_corosync_config (){
-  BINDIP=$1
-  HOST1IP=$2
-  HOST2IP=$3
-  mv /etc/corosync/corosync.conf /etc/corosync/corosync.conf.orig 
-cat > /etc/corosync/corosync.conf <<EOF
-totem {
-        version:        2
-        secauth:        on
-        crypto_hash:    sha1
-        crypto_cipher:  aes256
-        cluster_name:   hacluster
-        clear_node_high_bit: yes
-        token:          5000
-        token_retransmits_before_loss_const: 10
-        join:           60
-        consensus:      6000
-        max_messages:   20
-        interface {
-                ringnumber:     0
-                bindnetaddr:    $BINDIP
-                mcastport:      5405
-                ttl:            1
-        }
- transport:      udpu
-}
-nodelist {
-  node {
-   ring0_addr:$HOST1IP
-   nodeid:1
-  }
-  node {
-   ring0_addr:$HOST2IP
-   nodeid:2
-  }
-  transport:      udpu
-}
-
-logging {
-        fileline:       off
-        to_stderr:      no
-        to_logfile:     no
-        logfile:        /var/log/cluster/corosync.log
-        to_syslog:      yes
-        debug:          off
-        timestamp:      on
-        logger_subsys {
-                subsys: QUORUM
-                debug:  off
-        }
-}
-quorum {
-        # Enable and configure quorum subsystem (default: off)
-        # see also corosync.conf.5 and votequorum.5
-        provider: corosync_votequorum
-        expected_votes: 1
-        two_node: 0
-}
-EOF
-
-}
-
-
 
 #install hana prereqs
-zypper install -y glibc-2.22-51.6
-zypper install -y systemd-228-142.1
-zypper install -y unrar
-zypper in -t pattern -y sap-hana
+retry 5 "zypper install -y glibc-2.22-51.6"
+retry 5 "zypper install -y systemd-228-142.1"
+retry 5 "zypper install -y unrar"
+retry 5 "zypper in -t pattern -y sap-hana"
 #zypper install -y sapconf
-zypper install -y saptune
-zypper install -y libunwind
-zypper install -y libicu
+retry 5 "zypper install -y saptune"
+retry 5 "zypper install -y libunwind"
+retry 5 "zypper install -y libicu"
 
 
 # step2
@@ -356,18 +431,18 @@ EOF
 #!/bin/bash
 cd /hana/data/sapbits
 echo "hana download start" >> /tmp/parameter.txt
-/usr/bin/wget --quiet $URI/SapBits/md5sums
-/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe
-/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/md5sums"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar"
 
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
 rc=$?;
 if [[ $rc != 0 ]];
 then
-/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hdbinst.cfg"
+retry 5 "/usr/bin/wget --quiet https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hdbinst.cfg"
 fi
 
 echo "hana download end" >> /tmp/parameter.txt
@@ -407,8 +482,8 @@ echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
 ##external dependency on sshpt
-    zypper install -y python-pip
-    pip install sshpt
+    retry 5 "zypper install -y python-pip"
+    retry 5 "pip install sshpt"
     #set up passwordless ssh on both sides
     cd ~/
     #rm -r -f .ssh
@@ -543,19 +618,10 @@ modprobe -v softdog
 echo "hana watchdog end" >> /tmp/parameter.txt
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
+setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "hanacluster"
+
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-ha-cluster-init -y -q csync2
-ha-cluster-init -y -q -u corosync
-ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q cluster name=hanacluster interface=eth0
-cd /etc/corosync
-write_corosync_config 10.0.5.0 $VMIPADDR $OTHERIPADDR
-systemctl restart corosync
-
-sleep 10
-
-cd /tmp
 #configure SAP HANA topology
 HANAID="$HANASID"_HDB"$HANANUMBER"
 
@@ -607,13 +673,4 @@ sudo crm resource cleanup rsc_SAPHana_$HANAID
 
 sudo crm configure property maintenance-mode=false
 
-fi
-#node2
-if [ "$ISPRIMARY" = "no" ]; then
-ha-cluster-join -y -q -c $OTHERVMNAME csync2 
-ha-cluster-join -y -q ssh_merge
-ha-cluster-join -y -q cluster
-cd /etc/corosync
-write_corosync_config 10.0.5.0 $OTHERIPADDR $VMIPADDR 
-systemctl restart corosync
 fi

@@ -45,6 +45,26 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -r cmd="$@"
+    local -i attempt_num=1
+
+    until $cmd
+    do
+        if (( attempt_num == max_attempts ))
+        then
+            echo "Attempt $attempt_num failed and there are no more attempts left!"
+            return 1
+        else
+            echo "Attempt $attempt_num failed! Trying again in $attempt_num seconds..."
+            sleep $(( attempt_num++ ))
+        fi
+    done
+}
+
+declare -fxr retry
+
 register_subscription() {
   SUBEMAIL=$1
   SUBID=$2
@@ -128,6 +148,47 @@ cp /etc/corosync/corosync.conf.new /etc/corosync/corosync.conf
 }
 
 
+setup_cluster() {
+  ISPRIMARY=$1
+  SBDID=$2
+  VMNAME=$3
+  OTHERVMNAME=$4 
+  CLUSTERNAME=$5 
+  #node1
+  if [ "$ISPRIMARY" = "yes" ]; then
+    ha-cluster-init -y -q csync2
+    ha-cluster-init -y -q -u corosync
+    ha-cluster-init -y -q sbd -d $SBDID
+    ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
+    touch /tmp/corosyncconfig1.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    systemctl stop corosync
+    systemctl stop pacemaker
+    write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
+    systemctl start corosync
+    systemctl start pacemaker
+    touch /tmp/corosyncconfig3.txt	
+
+    sleep 10
+  else
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+    ha-cluster-join -y -q -c $OTHERVMNAME csync2 
+    ha-cluster-join -y -q ssh_merge
+    ha-cluster-join -y -q cluster
+    systemctl stop corosync
+    systemctl stop pacemaker
+    touch /tmp/corosyncconfig2.txt	
+    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
+    write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
+    systemctl restart corosync
+    systemctl start pacemaker
+  fi
+}
+
+
+##end of bash function definitions
+
+
 register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #get the VM size via the instance api
@@ -135,8 +196,8 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 
 #install hana prereqs
 echo "installing packages"
-zypper update -y
-zypper install -y -l sle-ha-release fence-agents 
+retry 5 "zypper update -y"
+retry 5 "zypper install -y -l sle-ha-release fence-agents" 
 
 
 # step2
@@ -156,8 +217,8 @@ EOF
 
 
 ##external dependency on sshpt
-    zypper install -y python-pip
-    pip install sshpt
+    retry 5 "zypper install -y python-pip"
+    retry 5 "pip install sshpt"
     #set up passwordless ssh on both sides
     cd ~/
     #rm -r -f .ssh
@@ -228,40 +289,5 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-#node1
-if [ "$ISPRIMARY" = "yes" ]; then
-
-ha-cluster-init -y -q csync2
-ha-cluster-init -y -q -u corosync
-ha-cluster-init -y -q sbd -d $sbdid
-ha-cluster-init -y -q cluster name=ascscluster interface=eth0
-touch /tmp/corosyncconfig1.txt	
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
-systemctl stop corosync
-write_corosync_config 10.0.1.0 $VMNAME $OTHERVMNAME
-systemctl start corosync
-systemctl start pacemaker
-touch /tmp/corosyncconfig3.txt	
-
-fi
-#node2
-if [ "$ISPRIMARY" = "no" ]; then
-
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
-ha-cluster-join -y -q -c $OTHERVMNAME csync2 
-ha-cluster-join -y -q ssh_merge
-ha-cluster-join -y -q cluster
-touch /tmp/corosyncconfig2.txt	
-/root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
-write_corosync_config 10.0.1.0 $OTHERVMNAME $VMNAME 
-systemctl restart corosync
-systemctl start pacemaker
-
-echo "waiting for connection"
-
-fi
-
-
-
-cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
+setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "ascscluster"
 
