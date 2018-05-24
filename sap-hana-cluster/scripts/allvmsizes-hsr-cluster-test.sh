@@ -81,6 +81,30 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
+
+#!/bin/bash
+
+retry() {
+    local -r -i max_attempts="$1"; shift
+    local -r cmd="$@"
+    local -i attempt_num=1
+
+    until $cmd
+    do
+        if (( attempt_num == max_attempts ))
+        then
+            echo "Attempt $attempt_num failed and there are no more attempts left!"
+            return 1
+        else
+            echo "Attempt $attempt_num failed! Trying again in $attempt_num seconds..."
+            sleep $(( attempt_num++ ))
+        fi
+    done
+}
+
+declare -fxr retry
+
+
 ##bash function definitions
 
 register_subscription() {
@@ -341,14 +365,14 @@ fi
 
 
 #install hana prereqs
-zypper install -y glibc-2.22-51.6
-zypper install -y systemd-228-142.1
-zypper install -y unrar
-zypper in -t pattern -y sap-hana
+retry 5 "zypper install -y glibc-2.22-51.6"
+retry 5 "zypper install -y systemd-228-142.1"
+retry 5 "zypper install -y unrar"
+retry 5 "zypper in -t pattern -y sap-hana"
 #zypper install -y sapconf
-zypper install -y saptune
-zypper install -y libunwind
-zypper install -y libicu
+retry 5 "zypper install -y saptune"
+retry 5 "zypper install -y libunwind"
+retry 5 "zypper install -y libicu"
 
 
 # step2
@@ -369,18 +393,18 @@ EOF
 #!/bin/bash
 cd /hana/data/sapbits
 echo "hana download start" >> /tmp/parameter.txt
-/usr/bin/wget --quiet $URI/SapBits/md5sums
-/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe
-/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar
-/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/md5sums"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar"
+retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar"
 
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
 rc=$?;
 if [[ $rc != 0 ]];
 then
-/usr/bin/wget --quiet "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hdbinst.cfg"
+retry 5 "/usr/bin/wget --quiet https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hdbinst.cfg"
 fi
 
 echo "hana download end" >> /tmp/parameter.txt
@@ -420,8 +444,8 @@ echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
 ##external dependency on sshpt
-    zypper install -y python-pip
-    pip install sshpt
+    retry 5 "zypper install -y python-pip"
+    retry 5 "pip install sshpt"
     #set up passwordless ssh on both sides
     cd ~/
     #rm -r -f .ssh
