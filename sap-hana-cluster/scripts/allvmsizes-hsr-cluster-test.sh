@@ -589,6 +589,7 @@ ha-cluster-init -y -q cluster name=hanacluster interface=eth0
 touch /tmp/corosyncconfig1.txt	
 /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
 systemctl stop corosync
+systemctl stop pacemaker
 write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
 systemctl start corosync
 systemctl start pacemaker
@@ -655,6 +656,8 @@ if [ "$ISPRIMARY" = "no" ]; then
 ha-cluster-join -y -q -c $OTHERVMNAME csync2 
 ha-cluster-join -y -q ssh_merge
 ha-cluster-join -y -q cluster
+systemctl stop corosync
+systemctl stop pacemaker
 touch /tmp/corosyncconfig2.txt	
 /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
 write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
