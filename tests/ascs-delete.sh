@@ -5,10 +5,10 @@ source ./azuredeploy.cfg
 
 az account set --subscription $subscriptionid
 
-echo "deleting nfs servers"
-az vm delete --yes --resource-group $rgname --name $NFSVMNAME1
-az vm delete --yes --resource-group $rgname --name $NFSVMNAME2
-az disk delete --yes --resource-group $rgname --name $NFSVMNAME1-data
-az network nic delete --resource-group $rgname --name $NFSVMNAME1-static
-az disk delete --yes --resource-group $rgname --name $NFSVMNAME2-data
-az network nic delete --resource-group $rgname --name $NFSVMNAME2-static
+echo "deleting ascs servers"
+az vm delete --yes --resource-group $rgname --name $ASCSVMNAME1
+az vm delete --yes --resource-group $rgname --name $ASCSVMNAME2
+az disk delete --yes --resource-group $rgname --name $ASCSVMNAME1-data
+az network nic delete --resource-group $rgname --name $ASCSVMNAME1-static
+az disk delete --yes --resource-group $rgname --name $ASCSVMNAME2-data
+az network nic delete --resource-group $rgname --name $ASCSVMNAME2-static
