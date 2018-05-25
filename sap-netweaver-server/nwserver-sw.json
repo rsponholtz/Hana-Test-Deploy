@@ -1,127 +1,165 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "osType": {
-          "type": "string",
-          "allowedValues": [
-              "Windows Server 2016 Datacenter",
-              "SLES 12 SP3",
-              "SLES 12 SP3 BYOS",
-              "SLES 12 SP2",
-              "SLES 12 SP2 BYOS"
-          ],
-          "defaultValue": "SLES 12 SP3",
-          "metadata": {
-              "description": "The type of the operating system you want to deploy."
-          }
-      },
-      "customUri": {
-          "type": "string",
-          "metadata": {
-              "description": "Uri for SAP Bits"
-          },
-          "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
-      },
-      "_artifactsLocation": {
-          "type": "string",
-          "metadata": {
-              "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-          },
-          "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server"
-      },
-      "_artifactsLocationSasToken": {
-          "type": "securestring",
-          "metadata": {
-              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-          },
-          "defaultValue": ""
-      },
-      "vmName": {
-          "type": "string",
-          "metadata": {
-              "description": "Netweaver VM name"
-          },
-          "defaultValue": "nwVm"
-      }
-  },
-  "variables": {
-      "vmName": "[parameters('vmName')]",
-      "images": {
-        "Windows Server 2016 Datacenter": {
-          "sku": "2016-Datacenter",
-          "offer": "WindowsServer",
-          "publisher": "MicrosoftWindowsServer",
-          "version": "latest",
-          "OSType": "Windows"
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "NumberOfVmsToMake": {
+            "type": "int",
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "metadata": {
+                "description": "The number of Virutal Machines to install the software on."
+            },
+            "defaultValue": 2
         },
-        "SLES 12 SP3": {
-          "sku": "12-SP3",
-          "offer": "SLES-SAP",
-          "publisher": "SUSE",
-          "version": "latest",
-          "OSType": "Linux"
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Netweaver VM name. The true vmName will vmName then a dash then the number. Example: nwVm-1"
+            },
+            "defaultValue": "nwVm"
         },
-        "SLES 12 SP3BYOS": {
-          "sku": "12-SP3",
-          "offer": "SLES-SAP-BYOS",
-          "publisher": "SUSE",
-          "OSType": "Linux",
-          "version": "latest"
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Windows Server 2016 Datacenter",
+                "SLES 12 SP3",
+                "SLES 12 SP3 BYOS",
+                "SLES 12 SP2",
+                "SLES 12 SP2 BYOS"
+            ],
+            "defaultValue": "SLES 12 SP3",
+            "metadata": {
+                "description": "The type of the operating system you want to deploy."
+            }
         },
-      "SLES 12 SP2": {
-        "sku": "12-SP2",
-        "offer": "SLES-SAP",
-        "publisher": "SUSE",
-        "version": "latest",
-        "OSType": "Linux"
-      },
-      "SLES 12 SP2 BYOS": {
-        "sku": "12-SP2",
-        "offer": "SLES-SAP-BYOS",
-        "publisher": "SUSE",
-        "OSType": "Linux",
-        "version": "latest"
-      }
-    },
-    "internalOSType": "[variables('images')[parameters('osType')].OSType]",
-      "csExtension": {
-        "Windows": {
-          "script": "[concat(parameters('_artifactsLocation'), '/noop.ps1', parameters('_artifactsLocationSasToken'))]",
-          "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            },
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
         },
-        "Linux": {
-          "script": "[concat(parameters('_artifactsLocation'), '/noop.sh', parameters('_artifactsLocationSasToken'))]",
-          "scriptCall": "sh noop.sh"
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
         }
-      },
-      "csExtensionScript": {
-        "value": "[variables('csExtension')[variables('internalOSType')].script]"
-      },
-      "csExtensionscriptCall": {
-        "value": "[variables('csExtension')[variables('internalOSType')].scriptCall]"
-      }
-  },
-  "resources": [
-      {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
-          "apiVersion": "2017-12-01",
-          "location": "[resourceGroup().location]",
-          "properties": {
-              "publisher": "Microsoft.Azure.Extensions",
-              "type": "CustomScript",
-              "typeHandlerVersion": "2.0",
-              "autoUpgradeMinorVersion": true,
-              "settings": {
-                  "fileUris": [
-                    "[concat(parameters('_artifactsLocation'), '/noop.sh', parameters('_artifactsLocationSasToken'))]"
-                  ],
-                  "commandToExecute": "sh noop.sh"
-              },
-              "protectedSettings": {} 
-          }
-      }
-  ],
-  "outputs": {}
+    },
+    "variables": {
+        "vmName": "[parameters('vmName')]",
+        "images": {
+            "Windows Server 2016 Datacenter": {
+                "sku": "2016-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
+                "version": "latest",
+                "OSType": "Windows"
+            },
+            "SLES 12 SP3": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP3BYOS": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },
+            "SLES 12 SP2": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP2 BYOS": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            }
+        },
+        "downloadWindows": "[concat(parameters('_artifactsLocation'), '/noop.ps1', parameters('_artifactsLocationSasToken'))]",
+        "downloadLinux": "[concat(parameters('_artifactsLocation'), '/noop.sh', parameters('_artifactsLocationSasToken'))]",
+        "extensionToUse": "[if(contains(parameters('osType'), 'Windows Server'), 'Windows', 'Linux')]",
+        "scriptTypeToDeploy": "[if(contains(parameters('osType'), 'Windows'), 'powershell.exe -ExecutionPolicy bypass -File noop.ps1', 'sh noop.sh')]",
+        "scriptTypeToDowload": "[if(contains(parameters('osType'), 'Windows'), variables('downloadWindows'), variables('downloadLinux'))]",
+        "linuxVmName": "[if(contains(variables('extensionToUse'), 'Linux'), variables('vmName'), 'linVmName')]",
+        "windowsVmName": "[if(contains(variables('extensionToUse'), 'Windows'), variables('vmName'), 'winVmName')]"
+    },
+    "resources": [
+        {
+            "condition": "[equals(variables('extensionToUse'), 'Linux')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('linuxVmName'), '-', copyindex(),'/', 'CustomScript')]",
+            "apiVersion": "2017-12-01",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "nwVMLook",
+                "count": "[parameters('NumberOfVmsToMake')]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('scriptTypeToDowload')]"
+                    ],
+                    "commandToExecute": "[variables('scriptTypeToDeploy')]"
+                },
+                "protectedSettings": {}
+            }
+        },
+        {
+            "condition": "[equals(variables('extensionToUse'), 'Windows')]",
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('windowsVmName'), '-', copyindex(),'/', 'CustomScript')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "copy": {
+                "name": "nwVMLook",
+                "count": "[parameters('NumberOfVmsToMake')]"
+            },
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.9",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('scriptTypeToDowload')]"
+                    ],
+                    "commandToExecute": "[variables('scriptTypeToDeploy')]"
+                },
+                "protectedSettings": {}
+            }
+        }
+    ],
+    "outputs": {}
 }

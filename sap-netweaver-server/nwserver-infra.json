@@ -1,189 +1,295 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "vmUserName": {
-          "type": "string",
-          "metadata": {
-              "description": "Username for the Virtual Machine"
-          },
-          "defaultValue": "testuser"
-      },
-      "ExistingNetworkResourceGroup": {
-          "type": "string",
-          "metadata": {
-              "description": "Resource Group for the VNET where the VM will be placed"
-          }
-      },
-      "vnetName": {
-          "defaultValue": "vnet",
-          "type": "string"
-      },
-      "subnetName": {
-          "defaultValue": "subnet",
-          "type": "string"
-      },
-      "osType": {
-          "type": "string",
-          "allowedValues": [
-              "Windows Server 2016 Datacenter",
-              "SLES 12 SP3",
-              "SLES 12 SP3 BYOS",
-              "SLES 12 SP2",
-              "SLES 12 SP2 BYOS"
-          ],
-          "defaultValue": "SLES 12 SP3",
-          "metadata": {
-              "description": "The type of the operating system you want to deploy."
-          }
-      },
-      "vmPassword": {
-          "type": "securestring",
-          "metadata": {
-              "description": "Password for the Virtual Machine"
-          }
-      },
-      "customUri": {
-          "type": "string",
-          "metadata": {
-              "description": "Uri for SAP Bits"
-          }
-      },
-      "vmName": {
-          "type": "string",
-          "metadata": {
-              "description": "Netweaver VM name"
-          },
-          "defaultValue": "nwVm"
-      },
-      "StaticIP": {
-          "type": "string",
-          "metadata": {
-              "description": "static ip address for the virtual machine"
-          },
-          "defaultValue": "10.0.0.21"
-      },
-      "_artifactsLocation": {
-          "type": "string",
-          "metadata": {
-              "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-          },
-          "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/"
-      },
-      "_artifactsLocationSasToken": {
-          "type": "securestring",
-          "metadata": {
-              "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-          },
-          "defaultValue": ""
-      }
-  },
-  "variables": {
-      "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
-      "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
-      "vmName": "[parameters('vmName')]",
-      "vNicName": "netweavernic",
-      "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
-      "images": {
-          "Windows Server 2016 Datacenter": {
-              "sku": "2016-Datacenter",
-              "offer": "WindowsServer",
-              "publisher": "MicrosoftWindowsServer",
-              "version": "latest",
-              "OSType": "Windows"
-          },
-          "SLES 12 SP3": {
-              "sku": "12-SP3",
-              "offer": "SLES-SAP",
-              "publisher": "SUSE",
-              "version": "latest",
-              "OSType": "Linux"
-          },
-          "SLES 12 SP3BYOS": {
-              "sku": "12-SP3",
-              "offer": "SLES-SAP-BYOS",
-              "publisher": "SUSE",
-              "OSType": "Linux",
-              "version": "latest"
-          },
-          "SLES 12 SP2": {
-              "sku": "12-SP2",
-              "offer": "SLES-SAP",
-              "publisher": "SUSE",
-              "version": "latest",
-              "OSType": "Linux"
-          },
-          "SLES 12 SP2 BYOS": {
-              "sku": "12-SP2",
-              "offer": "SLES-SAP-BYOS",
-              "publisher": "SUSE",
-              "OSType": "Linux",
-              "version": "latest"
-          }
-      },
-      "internalOSType": "[variables('images')[parameters('osType')].OSType]",      
-      "scriptFolder": "."
-  },
-  "resources": [
-      {
-          "apiVersion": "2016-09-01",
-          "type": "Microsoft.Network/networkInterfaces",
-          "name": "[variables('vNicName')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [],
-          "properties": {
-              "ipConfigurations": [
-                  {
-                      "name": "ipconfig1",
-                      "properties": {
-                          "privateIPAllocationMethod": "Static",
-                          "privateIPAddress": "[parameters('StaticIP')]",
-                          "subnet": {
-                              "id": "[variables('subnetRef')]"
-                          }
-                      }
-                  }
-              ]
-          }
-      },
-      {
-          "apiVersion": "2017-12-01",
-          "type": "Microsoft.Compute/virtualMachines",
-          "name": "[variables('vmName')]",
-          "location": "[resourceGroup().location]",
-          "dependsOn": [
-              "[variables('vNicName')]"
-          ],
-          "properties": {
-              "hardwareProfile": {
-                  "vmSize": "Standard_D1_v2"
-              },
-              "osProfile": {
-                  "computerName": "[variables('vmName')]",
-                  "adminUsername": "[parameters('vmUserName')]",
-                  "adminPassword": "[parameters('vmPassword')]"
-              },
-              "storageProfile": {
-                  "imageReference": {
-                      "publisher": "[variables('images')[parameters('osType')].publisher]",
-                      "offer": "[variables('images')[parameters('osType')].offer]",
-                      "sku": "[variables('images')[parameters('osType')].sku]",
-                      "version": "latest"
-                  },
-                  "osDisk": {
-                      "createOption": "FromImage"
-                  }
-              },
-              "networkProfile": {
-                  "networkInterfaces": [
-                      {
-                          "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
-                      }
-                  ]
-              }
-          }
-      }
-  ],
-  "outputs": {}
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "NumberOfVmsToMake": {
+            "type": "int",
+            "allowedValues": [
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8,
+                9,
+                10
+            ],
+            "metadata": {
+                "description": "The number of Virutal Machines to make for this deployment."
+            },
+            "defaultValue": 2
+        },
+        "DataDisksPerVm": {
+            "type": "int",
+            "allowedValues": [
+                0,
+                1,
+                2,
+                3,
+                4,
+                5,
+                6,
+                7,
+                8
+            ],
+            "metadata": {
+                "description": "The number of data disks per Virtual Machine being created."
+            },
+            "defaultValue": 0
+        },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Netweaver VM name"
+            },
+            "defaultValue": "nwVm"
+        },
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            },
+            "defaultValue": "P@ssw0rdForCat"
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
+        "subnetName": {
+            "defaultValue": "appsubnet",
+            "type": "string"
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource Group for the VNET where the VM will be placed"
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "allowedValues": [
+                "Standard_DS2_v2",
+                "Standard_DS13_v2",
+                "Standard_DS14_v2"
+            ],
+            "metadata": {
+                "description": "The vmSize to create based on your specifications."
+            },
+            "defaultValue": "Standard_DS2_v2"
+        },
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Windows Server 2016 Datacenter",
+                "SLES 12 SP3",
+                "SLES 12 SP3 BYOS",
+                "SLES 12 SP2",
+                "SLES 12 SP2 BYOS"
+            ],
+            "defaultValue": "SLES 12 SP3",
+            "metadata": {
+                "description": "The type of the operating system you want to deploy."
+            }
+        },
+        "appAvailSetName": {
+            "type": "string",
+            "metadata": {
+                "description": "The availability set name for the VMs."
+            },
+            "defaultValue": "avset-nw"
+        },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            },
+            "defaultValue": ""
+        },
+        "StaticIPStartRange": {
+            "type": "string",
+            "metadata": {
+                "description": "The static ip address starting range. Example: If you create 5 VMs, then you will need 5 static IPs. If you enter 10.0.1.4 then the IPs will be 10.0.1.41, 10.0.1.42, 10.0.1.43, 10.0.1.44, 10.0.1.45"
+            },
+            "defaultValue": "10.0.1.4"
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
+        }
+    },
+    "variables": {
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmName": "[parameters('vmName')]",
+        "vNicName": "nwnic",
+        "avSetNameApp": "[parameters('appAvailSetName')]",
+        "avSetNameId": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameApp'))]",
+        "images": {
+            "Windows Server 2016 Datacenter": {
+                "sku": "2016-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
+                "version": "latest",
+                "OSType": "Windows"
+            },
+            "SLES 12 SP3": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP3BYOS": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },
+            "SLES 12 SP2": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP2 BYOS": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            }
+        },
+        "internalOSType": "[variables('images')[parameters('osType')].OSType]",
+        "scriptFolder": ".",
+        "ipNamePrefix": "ipconfig",
+        "vmDataDiskSize": "100",
+        "storageAccountType": "Premium_LRS",
+        "copy": [
+            {
+                "name": "dataDisks",
+                "count": "[if(equals(parameters('DataDisksPerVm'),0),1, parameters('DataDisksPerVm'))]",
+                "input": {
+                    "lun": "[copyIndex('dataDisks')]",
+                    "createOption": "Empty",
+                    "diskSizeGB": "[variables('vmDataDiskSize')]",
+                    "managedDisk": {
+                        "storageAccountType": "[variables('storageAccountType')]"
+                    }
+                }
+            }
+        ]
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('avSetNameApp')]",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "sku": {
+                "name": "Aligned"
+            },
+            "properties": {
+                "platformFaultDomainCount": 3,
+                "platformUpdateDomainCount": 20
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('vNicName'), '-', copyindex())]",
+            "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/availabilitySets/', variables('avSetNameApp'))]"
+            ],
+            "copy": {
+                "name": "nicDILoop",
+                "count": "[parameters('NumberOfVmsToMake')]"
+            },
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "[concat(variables('ipNamePrefix'), '-', copyindex())]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[concat(parameters('StaticIPStartRange'), copyindex())]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2017-12-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[concat(variables('vmName'), '-', copyindex())]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "nicDILoop"
+            ],
+            "copy": {
+                "name": "nwVMLook",
+                "count": "[parameters('NumberOfVmsToMake')]"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[concat(variables('vmName'), '-', copyindex())]",
+                    "adminUsername": "[parameters('vmUserName')]",
+                    "adminPassword": "[parameters('vmPassword')]"
+                },
+                "availabilitySet": {
+                    "id": "[variables('avSetNameId')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('images')[parameters('osType')].publisher]",
+                        "offer": "[variables('images')[parameters('osType')].offer]",
+                        "sku": "[variables('images')[parameters('osType')].sku]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('storageAccountType')]"
+                        }
+                    },
+                    "dataDisks": "[if(equals(parameters('DataDisksPerVm'),0),json('null'),variables('dataDisks'))]"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('vNicName'), '-', copyindex()))]"
+                        }
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {}
 }
-
