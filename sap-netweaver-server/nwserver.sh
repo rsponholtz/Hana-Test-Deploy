@@ -9,4 +9,4 @@ function log()
 
 
 
-log "noop"
+log "nwserver sh"

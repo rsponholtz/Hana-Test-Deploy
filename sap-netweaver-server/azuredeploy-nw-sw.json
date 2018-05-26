@@ -103,14 +103,17 @@
                 "version": "latest"
             }
         },
-        "downloadWindows": "[concat(parameters('_artifactsLocation'), '/noop.ps1', parameters('_artifactsLocationSasToken'))]",
-        "downloadLinux": "[concat(parameters('_artifactsLocation'), '/noop.sh', parameters('_artifactsLocationSasToken'))]",
+        "linuxshFile": "nwserver.sh",
+        "windowspsFile": "nwserver.ps1",
+        "commandRunLinux": "[concat('sh ', variables('linuxshFile'))]",
+        "commandRunWindows": "[concat('powershell.exe -ExecutionPolicy bypass -File ', variables('windowspsFile'))]",
+        "downloadWindows": "[concat(parameters('_artifactsLocation'), '/', variables('windowspsFile'), parameters('_artifactsLocationSasToken'))]",
+        "downloadLinux": "[concat(parameters('_artifactsLocation'), '/', variables('linuxshFile'), parameters('_artifactsLocationSasToken'))]",
         "extensionToUse": "[if(contains(parameters('osType'), 'Windows Server'), 'Windows', 'Linux')]",
-        "scriptTypeToDeploy": "[if(contains(parameters('osType'), 'Windows'), 'powershell.exe -ExecutionPolicy bypass -File noop.ps1', 'sh noop.sh')]",
+        "scriptTypeToDeploy": "[if(contains(parameters('osType'), 'Windows'), variables('commandRunWindows'), variables('commandRunLinux'))]",
         "scriptTypeToDowload": "[if(contains(parameters('osType'), 'Windows'), variables('downloadWindows'), variables('downloadLinux'))]",
         "linuxVmName": "[if(contains(variables('extensionToUse'), 'Linux'), variables('vmName'), 'linVmName')]",
-        "windowsVmName": "[if(contains(variables('extensionToUse'), 'Windows'), variables('vmName'), 'winVmName')]"
-    },
+        "windowsVmName": "[if(contains(variables('extensionToUse'), 'Windows'), variables('vmName'), 'winVmName')]"    },
     "resources": [
         {
             "condition": "[equals(variables('extensionToUse'), 'Linux')]",

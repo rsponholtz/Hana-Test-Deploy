@@ -1,4 +1,4 @@
-﻿param
+param
 (
     [String] $DBDataLUNS = "0,1,2",	
     [String] $DBLogLUNS = "3",
@@ -25,4 +25,4 @@ function Log
 	$message | Out-File -Append -FilePath ("c:" + [char]92 + "sapcd" + [char]92 + "log.txt");
 }
 
-Log "noop"
+Log "nwserver ps1"
