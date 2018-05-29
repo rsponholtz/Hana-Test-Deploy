@@ -100,6 +100,18 @@
                 "description": "The type of the operating system you want to deploy."
             }
         },
+        "FaultDomainMax": {
+            "type": "int",
+            "allowedValues": [
+                1,
+                2,
+                3
+            ],
+            "metadata": {
+                "description": "The number of data disks per Virtual Machine being created."
+            },
+            "defaultValue": 2
+        },
         "appAvailSetName": {
             "type": "string",
             "metadata": {
@@ -211,7 +223,7 @@
                 "name": "Aligned"
             },
             "properties": {
-                "platformFaultDomainCount": 3,
+                "platformFaultDomainCount": "[parameters('FaultDomainMax')]",
                 "platformUpdateDomainCount": 20
             }
         },
