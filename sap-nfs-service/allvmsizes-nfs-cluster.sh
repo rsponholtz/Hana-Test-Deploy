@@ -22,12 +22,12 @@ URI=${8}
 HANASID=${9}
 REPOURI=${10}
 ISCSIIP=${11}
-IQN=${11}
-IQNCLIENT=${12}
-LBIP=${13}
-SUBEMAIL=${14}
-SUBID=${15}
-SUBURL=${16}
+IQN=${12}
+IQNCLIENT=${13}
+LBIP=${14}
+SUBEMAIL=${15}
+SUBID=${16}
+SUBURL=${17}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -210,11 +210,35 @@ download_sapbits() {
 
   #unpack some of this
   retry 5 "zypper install -y unrar"
-  #unrar x 51052325_part1.exe
-  #mkdir 51050423_3
-  #cd 51050423_3
-  #unzip -q ..\51050423_3.ZIP
-  #cd ..
+
+mkdir 51050423_3
+cd 51050423_3
+unzip ../51050423_3.ZIP
+cd ..
+
+mkdir 51050829
+cd 51050829
+zypper install -y unrar
+cd ..
+
+chmod u+x SAPCAR_1014-80000935.EXE
+ln -s ./SAPCAR_1014-80000935.EXE sapcar
+
+mkdir SWPM20SP00_2
+cd SWPM20SP00_2
+../sapcar -xf ../SWPM20SP00_2-80003424.SAR
+cd ..
+
+mkdir 51050829
+cd 51050829
+unrar x ../51050829_JAVA_part1.exe
+cd ..
+
+mkdir 51052190
+cd 51052190
+unrar x ../51052190_part1.exe
+cd ..
+
 
 }
 
