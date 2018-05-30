@@ -1,5 +1,6 @@
 param
 (
+    [String] $Description = "empty",	
     [String] $DBDataLUNS = "0,1,2",	
     [String] $DBLogLUNS = "3",
     [string] $DBDataDrive = "S:",
@@ -25,4 +26,5 @@ function Log
 	$message | Out-File -Append -FilePath ("c:" + [char]92 + "sapcd" + [char]92 + "log.txt");
 }
 
+Write-Host "File Description: " $Description
 Log "nwserver ps1"

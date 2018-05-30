@@ -108,7 +108,7 @@
                 3
             ],
             "metadata": {
-                "description": "The number of data disks per Virtual Machine being created."
+                "description": "The number of fault domains for the availability set."
             },
             "defaultValue": 2
         },
@@ -126,12 +126,12 @@
             },
             "defaultValue": ""
         },
-        "StaticIPStartRange": {
+        "StaticIPStartAddress": {
             "type": "string",
             "metadata": {
-                "description": "The static ip address starting range. Example: If you create 5 VMs, then you will need 5 static IPs. If you enter 10.0.1.4 then the IPs will be 10.0.1.41, 10.0.1.42, 10.0.1.43, 10.0.1.44, 10.0.1.45"
+                "description": "The static ip address to start with. For more than one VM the address will be sequential. Example: If you create 5 VMs, then you will need 5 static IPs. If you enter 10.0.1.41 then the IPs will be 10.0.1.41, 10.0.1.42, 10.0.1.43, 10.0.1.44, 10.0.1.45"
             },
-            "defaultValue": "10.0.1.4"
+            "defaultValue": "10.0.1.49"
         },
         "_artifactsLocation": {
             "type": "string",
@@ -154,6 +154,9 @@
         "vmName": "[parameters('vmName')]",
         "vNicName": "nwnic",
         "avSetNameApp": "[parameters('appAvailSetName')]",
+        "ipDot": ".",
+        "ipStartingIndex": "[substring(parameters('StaticIPStartAddress'), add(lastIndexOf(parameters('StaticIPStartAddress'), variables('ipDot')), 1))]",
+        "ipPrefix": "[substring(parameters('StaticIPStartAddress'), 0, add(lastIndexOf(parameters('StaticIPStartAddress'), variables('ipDot')), 1))]",
         "avSetNameId": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameApp'))]",
         "images": {
             "Windows Server 2016 Datacenter": {
@@ -245,7 +248,7 @@
                         "name": "[concat(variables('ipNamePrefix'), '-', copyindex())]",
                         "properties": {
                             "privateIPAllocationMethod": "Static",
-                            "privateIPAddress": "[concat(parameters('StaticIPStartRange'), copyindex())]",
+                            "privateIPAddress": "[concat(variables('ipPrefix'), add(int(variables('ipStartingIndex')), copyindex()))]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
                             }
