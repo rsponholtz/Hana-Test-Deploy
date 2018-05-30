@@ -295,3 +295,13 @@ cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "ascscluster"
 
+#!/bin/bash
+echo "logicalvol start" >> /tmp/parameter.txt
+  nfslun="$(lsscsi 5 0 0 0 | grep -o '.\{9\}$')"
+  pvcreate $nfslun
+  vgcreate vg_ASCS $nfslun 
+  lvcreate -l 100%FREE -n lv_ASCS vg_ASCS 
+echo "logicalvol end" >> /tmp/parameter.txt
+
+ mkfs -t xfs /dev/sharedvg/sharedlv 
+ mount -t xfs /dev/sharedvg/sharedlv /hana/shared

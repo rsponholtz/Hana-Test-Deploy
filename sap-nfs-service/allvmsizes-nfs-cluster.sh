@@ -18,15 +18,16 @@ OTHERVMNAME=${4}
 VMIPADDR=${5}
 OTHERIPADDR=${6}
 ISPRIMARY=${7}
-REPOURI=${8}
-ISCSIIP=${9}
-IQN=${10}
-IQNCLIENT=${11}
-LBIP=${12}
-SUBEMAIL=${13}
-SUBID=${14}
-SUBURL=${15}
-
+HANASID=${8}
+URI=${9}
+REPOURI=${10}
+ISCSIIP=${11}
+IQN=${11}
+IQNCLIENT=${12}
+LBIP=${13}
+SUBEMAIL=${14}
+SUBID=${15}
+SUBURL=${16}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -188,7 +189,26 @@ setup_cluster() {
   fi
 }
 
+download_sapbits() {
+    URI=$1
 
+  cd  /srv/nfs/NWS/SapBits
+
+  retry 5 "wget $URI/SapBits/51050423_3.ZIP"
+  retry 5 "wget $URI/SapBits/51050829_JAVA_part2.rar" 
+  retry 5 "wget $URI/SapBits/51052190_part1.exe"
+  retry 5 "wget $URI/SapBits/51052190_part2.rar"
+  retry 5 "wget $URI/SapBits/51052190_part3.rar"
+  retry 5 "wget $URI/SapBits/51052190_part4.rar"
+  retry 5 "wget $URI/SapBits/51052190_part5.rar"
+  retry 5 "wget $URI/SapBits/51052318_part1.exe"
+  retry 5 "wget $URI/SapBits/51052318_part2.rar"
+  retry 5 "wget $URI/SapBits/70SWPM10SP23_1-20009701.sar"
+  retry 5 "wget $URI/SapBits/SAPCAR_1014-80000935.EXE"
+  retry 5 "wget $URI/SapBits/SWPM10SP23_1-20009701.SAR"
+
+  #unpack some of this
+}
 
 register_subscription  "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
@@ -385,13 +405,14 @@ drbdadm up NWS-nfs
   mkdir /srv/nfs/NWS
   chattr +i /srv/nfs/NWS
   mount /dev/drbd0 /srv/nfs/NWS
-  mkdir /srv/nfs/NWS/sidsys
-  mkdir /srv/nfs/NWS/sapmntsid
+  mkdir /srv/nfs/NWS/"$HANASID"sys
+  mkdir /srv/nfs/NWS/sapmnt"$HANASID"
   mkdir /srv/nfs/NWS/trans
   mkdir /srv/nfs/NWS/ASCS
   mkdir /srv/nfs/NWS/ASCSERS
   mkdir /srv/nfs/NWS/SCS
   mkdir /srv/nfs/NWS/SCSERS
+  mkdir /srv/nfs/NWS/SapBits
   umount /srv/nfs/NWS
 
   echo "waiting for drbd sync"
@@ -455,13 +476,14 @@ if [ "$ISPRIMARY" = "yes" ]; then
   crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs options="sync,dirsync" op monitor interval="10s"
 
   crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive exportfs_NWS_sidsys ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sidsys" options="rw,no_root_squash" clientspec="*" fsid=2 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive exportfs_NWS_sapmntsid ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sapmntsid" options="rw,no_root_squash" clientspec="*" fsid=3 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_"$HANASID"sys ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/$HANASIDsys" options="rw,no_root_squash" clientspec="*" fsid=2 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_sapmnt"$HANASID" ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sapmnt$HANASID" options="rw,no_root_squash" clientspec="*" fsid=3 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_trans ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/trans" options="rw,no_root_squash" clientspec="*" fsid=4 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_ASCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCS" options="rw,no_root_squash" clientspec="*" fsid=5 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_ASCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCSERS" options="rw,no_root_squash" clientspec="*" fsid=6 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_SCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCS" options="rw,no_root_squash" clientspec="*" fsid=7 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive exportfs_NWS_SCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCSERS" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
+  crm configure primitive exportfs_NWS_SapBits ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SapBits" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
   
   lbprobe="61000"
   mask="24"
@@ -479,6 +501,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
   touch /tmp/crmconfigcomplete.txt
 
+  download_sapbits "$URI"
 fi
 #node2
 if [ "$ISPRIMARY" = "no" ]; then
