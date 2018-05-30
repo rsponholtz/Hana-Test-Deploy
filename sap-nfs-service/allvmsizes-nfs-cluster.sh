@@ -18,8 +18,8 @@ OTHERVMNAME=${4}
 VMIPADDR=${5}
 OTHERIPADDR=${6}
 ISPRIMARY=${7}
-HANASID=${8}
-URI=${9}
+URI=${8}
+HANASID=${9}
 REPOURI=${10}
 ISCSIIP=${11}
 IQN=${11}
@@ -205,9 +205,16 @@ download_sapbits() {
   retry 5 "wget $URI/SapBits/51052318_part2.rar"
   retry 5 "wget $URI/SapBits/70SWPM10SP23_1-20009701.sar"
   retry 5 "wget $URI/SapBits/SAPCAR_1014-80000935.EXE"
-  retry 5 "wget $URI/SapBits/SWPM10SP23_1-20009701.SAR"
+  retry 5 "wget $URI/SapBits/SWPM20SP00_2-80003424.SAR"
 
   #unpack some of this
+  retry 5 "zypper install -y unrar"
+  #unrar x 51052325_part1.exe
+  #mkdir 51050423_3
+  #cd 51050423_3
+  #unzip -q ..\51050423_3.ZIP
+  #cd ..
+
 }
 
 register_subscription  "$SUBEMAIL"  "$SUBID" "$SUBURL"

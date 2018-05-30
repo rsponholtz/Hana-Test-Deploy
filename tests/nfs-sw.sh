@@ -15,6 +15,7 @@ az group deployment create \
    VMName2=$NFSVMNAME2 \
    VMUserName="testuser" \
    VMPassword=$vmpassword \
+   customURI="$customuri" \
    StaticIP1=$NFSIP1 \
    StaticIP2=$NFSIP2 \
    IQN="$NFSIQN" \
