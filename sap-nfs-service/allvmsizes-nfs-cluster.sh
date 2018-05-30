@@ -195,6 +195,7 @@ download_sapbits() {
   cd  /srv/nfs/NWS/SapBits
 
   retry 5 "wget $URI/SapBits/51050423_3.ZIP"
+  retry 5 "wget $URI/SapBits/51050829_JAVA_part1.exe"   
   retry 5 "wget $URI/SapBits/51050829_JAVA_part2.rar" 
   retry 5 "wget $URI/SapBits/51052190_part1.exe"
   retry 5 "wget $URI/SapBits/51052190_part2.rar"
