@@ -18,14 +18,16 @@ OTHERVMNAME=${4}
 VMIPADDR=${5}
 OTHERIPADDR=${6}
 ISPRIMARY=${7}
-REPOURI=${8}
-ISCSIIP=${9}
-IQN=${10}
-IQNCLIENT=${11}
-LBIP=${12}
-SUBEMAIL=${13}
-SUBID=${14}
-SUBURL=${15}
+URI=${8}
+HANASID=${9}
+REPOURI=${10}
+ISCSIIP=${11}
+IQN=${12}
+IQNCLIENT=${13}
+LBIP=${14}
+SUBEMAIL=${15}
+SUBID=${16}
+SUBURL=${17}
 
 
 echo "small.sh receiving:"
@@ -195,6 +197,60 @@ setup_cluster() {
 
 declare -fxr setup_cluster
 
+
+download_sapbits() {
+    URI=$1
+
+  cd  /srv/nfs/NWS/SapBits
+
+  retry 5 "wget $URI/SapBits/51050423_3.ZIP"
+  retry 5 "wget $URI/SapBits/51050829_JAVA_part1.exe"   
+  retry 5 "wget $URI/SapBits/51050829_JAVA_part2.rar" 
+  retry 5 "wget $URI/SapBits/51052190_part1.exe"
+  retry 5 "wget $URI/SapBits/51052190_part2.rar"
+  retry 5 "wget $URI/SapBits/51052190_part3.rar"
+  retry 5 "wget $URI/SapBits/51052190_part4.rar"
+  retry 5 "wget $URI/SapBits/51052190_part5.rar"
+  retry 5 "wget $URI/SapBits/51052318_part1.exe"
+  retry 5 "wget $URI/SapBits/51052318_part2.rar"
+  retry 5 "wget $URI/SapBits/SAPCAR_1014-80000935.EXE"
+  retry 5 "wget $URI/SapBits/SWPM10SP23_1-20009701.SAR"
+
+  #unpack some of this
+  retry 5 "zypper install -y unrar"
+
+mkdir 51050423_3
+cd 51050423_3
+unzip ../51050423_3.ZIP
+cd ..
+
+mkdir 51050829
+cd 51050829
+zypper install -y unrar
+cd ..
+
+chmod u+x SAPCAR_1014-80000935.EXE
+ln -s ./SAPCAR_1014-80000935.EXE sapcar
+
+mkdir SWPM10SP23_1
+cd SWPM10SP23_1
+../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+cd ..
+
+mkdir 51050829
+cd 51050829
+unrar x ../51050829_JAVA_part1.exe
+cd ..
+
+mkdir 51052190
+cd 51052190
+unrar x ../51052190_part1.exe
+cd ..
+
+
+}
+
+
 ##end of bash function definitions
 
 
@@ -303,5 +359,46 @@ echo "logicalvol start" >> /tmp/parameter.txt
   lvcreate -l 100%FREE -n lv_ASCS vg_ASCS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
- mkfs -t xfs /dev/sharedvg/sharedlv 
- mount -t xfs /dev/sharedvg/sharedlv /hana/shared
+mkfs -t xfs /dev/sharedvg/sharedlv 
+mount -t xfs /dev/sharedvg/sharedlv /hana/shared
+echo "/dev/sharedvg/sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
+
+mount -t nfs nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51050423_3.ZIP 
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51050829_JAVA_part2.rar 
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part1.exe
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part2.rar
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part3.rar
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part4.rar
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part5.rar
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052318_part1.exe
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052318_part2.rar
+
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPCAR_1014-80000935.EXE
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SWPM10SP23_1-20009701.SAR
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPEXEDB_200-80002572.SAR
+wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPEXE_200-80002573.SAR
+
+cd /hana/shared
+mkdir 51050423_3
+cd 51050423_3
+unzip ../51050423_3.ZIP
+
+mkdir 51050829
+cd 51050829
+zypper install -y unrar
+
+chmod u+x SAPCAR_1014-80000935.EXE
+ln -s ./SAPCAR_1014-80000935.EXE sapcar
+
+mkdir SWPM10SP23_1
+cd SWPM10SP23_1
+../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+
