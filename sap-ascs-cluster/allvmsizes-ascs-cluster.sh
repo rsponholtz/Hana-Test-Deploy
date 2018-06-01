@@ -351,5 +351,9 @@ mkdir /sapmnt
 mount -t nfs nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt
 echo "nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt xfs defaults 0 0" >> /etc/fstab
 
+mkdir -p /usr/sap/$HANASID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
+mount -t nfs nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS
+echo "nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS xfs defaults 0 0" >> /etc/fstab
+
 cd /sapbits
 download_sapbits $URI
