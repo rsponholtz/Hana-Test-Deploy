@@ -1,0 +1,208 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource Group for the VNET where the VM will be placed"
+            }
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
+        "subnetName": {
+            "defaultValue": "subnet",
+            "type": "string"
+        },
+        "osType": {
+            "type": "string",
+            "allowedValues": [
+                "Windows Server 2016 Datacenter",
+                "SLES 12 SP3",
+                "SLES 12 SP3 BYOS",
+                "SLES 12 SP2",
+                "SLES 12 SP2 BYOS"
+            ],
+            "defaultValue": "SLES 12 SP3",
+            "metadata": {
+                "description": "The type of the operating system you want to deploy."
+            }
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            }
+        },
+        "StaticIP": {
+            "type": "string",
+            "metadata": {
+                "description": "static ip address for the virtual machine"
+            }
+        },
+        "_artifactsLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
+            },
+            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
+        },
+        "_artifactsLocationSasToken": {
+            "type": "securestring",
+            "metadata": {
+                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
+            },
+            "defaultValue": ""
+        },
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Virtual Machine"
+            },
+            "defaultValue": "sapbits"
+        }
+    },
+    "variables": {
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmName": "[parameters('vmName')]",
+        "vNicName": "[concat(parameters('vmName'),'nic')]",
+        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+        "images": {
+            "Windows Server 2016 Datacenter": {
+                "sku": "2016-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
+                "version": "latest",
+                "OSType": "Windows"
+            },
+            "SLES 12 SP3": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP3BYOS": {
+                "sku": "12-SP3",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },
+            "SLES 12 SP2": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP2 BYOS": {
+                "sku": "12-SP2",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            }
+        },
+        "internalOSType": "[variables('images')[parameters('osType')].OSType]",
+        "csExtension": {
+            "Windows": {
+                "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
+                "scriptCall": "powershell.exe -ExecutionPolicy bypass -File noop.ps1"
+            },
+            "Linux": {
+                "script": "[concat(parameters('_artifactsLocation'), '/sap-ntp-server/noop.sh', parameters('_artifactsLocationSasToken'))]",
+                "scriptCall": "sh ntpserver.sh"
+            }
+        },
+        "scriptFolder": "."
+    },
+    "resources": [
+        {
+            "apiVersion": "2016-09-01",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[variables('vNicName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [],
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipcftsapbits",
+                        "properties": {
+                            "privateIPAllocationMethod": "Static",
+                            "privateIPAddress": "[parameters('StaticIP')]",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2017-12-01",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('vmName')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[variables('vNicName')]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D2s_v3"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmName')]",
+                    "adminUsername": "[parameters('vmUserName')]",
+                    "adminPassword": "[parameters('vmPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "[variables('images')[parameters('osType')].publisher]",
+                        "offer": "[variables('images')[parameters('osType')].offer]",
+                        "sku": "[variables('images')[parameters('osType')].sku]",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "createOption": "FromImage"
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "createOption": "Attach",
+                            "managedDisk": {
+                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data'))]"
+                            }
+                        }
+                    ]                    
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('vNicName'))]"
+                        }
+                    ]
+                }
+            },
+            "resources": []
+        }
+    ],
+    "outputs": {}
+}
+
