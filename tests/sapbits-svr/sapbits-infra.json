@@ -187,7 +187,7 @@
                             "lun": 0,
                             "createOption": "Attach",
                             "managedDisk": {
-                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data'))]"
+                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName'),'-data'))]"
                             }
                         }
                     ]                    

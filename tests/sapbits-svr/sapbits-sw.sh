@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Reading config...." >&2
-source ./azuredeploy.cfg
+source ../azuredeploy.cfg
 
 az account set --subscription "$subscriptionid"
 
