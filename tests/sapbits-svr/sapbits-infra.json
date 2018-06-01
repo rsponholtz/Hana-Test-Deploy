@@ -78,6 +78,7 @@
         }
     },
     "variables": {
+        "DataDiskSize": "1023",
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmName": "[parameters('vmName')]",
@@ -155,6 +156,22 @@
                 ]
             }
         },
+        {
+            "type": "Microsoft.Compute/disks",
+            "name": "[concat(parameters('vmName1'),'-data')]",
+            "apiVersion": "[variables('api-version-vm')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": "[variables('DataDiskSize')]"
+            }
+        },        
         {
             "apiVersion": "2017-12-01",
             "type": "Microsoft.Compute/virtualMachines",
