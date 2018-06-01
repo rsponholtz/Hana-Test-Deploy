@@ -79,6 +79,8 @@
     },
     "variables": {
         "DataDiskSize": "1023",
+        "api-version": "2017-06-01",
+        "api-version-vm": "2017-03-30",        
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
         "vmName": "[parameters('vmName')]",
