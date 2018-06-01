@@ -215,19 +215,11 @@ download_sapbits() {
   retry 5 "wget $URI/SapBits/51052318_part2.rar"
   retry 5 "wget $URI/SapBits/SAPCAR_1014-80000935.EXE"
   retry 5 "wget $URI/SapBits/SWPM10SP23_1-20009701.SAR"
-
+  retry 5 "wget $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
+  retry 5 "wget $URI/SapBits/SAPEXE_200-80002573.SAR"
+  retry 5 "wget $URI/SapBits/SAPEXEDB_200-80002572.SAR"
   #unpack some of this
   retry 5 "zypper install -y unrar"
-
-mkdir 51050423_3
-cd 51050423_3
-unzip ../51050423_3.ZIP
-cd ..
-
-mkdir 51050829
-cd 51050829
-zypper install -y unrar
-cd ..
 
 chmod u+x SAPCAR_1014-80000935.EXE
 ln -s ./SAPCAR_1014-80000935.EXE sapcar
@@ -235,16 +227,6 @@ ln -s ./SAPCAR_1014-80000935.EXE sapcar
 mkdir SWPM10SP23_1
 cd SWPM10SP23_1
 ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-cd ..
-
-mkdir 51050829
-cd 51050829
-unrar x ../51050829_JAVA_part1.exe
-cd ..
-
-mkdir 51052190
-cd 51052190
-unrar x ../51052190_part1.exe
 cd ..
 
 
@@ -263,7 +245,7 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 echo "installing packages"
 retry 5 "zypper update -y"
 retry 5 "zypper install -y -l sle-ha-release fence-agents" 
-
+retry 5 "zypper install -y unrar"
 
 # step2
 echo $URI >> /tmp/url.txt
@@ -359,46 +341,15 @@ echo "logicalvol start" >> /tmp/parameter.txt
   lvcreate -l 100%FREE -n lv_ASCS vg_ASCS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
-mkfs -t xfs /dev/sharedvg/sharedlv 
-mount -t xfs /dev/sharedvg/sharedlv /hana/shared
-echo "/dev/sharedvg/sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
+mkdir /sapbits
+mkfs -t xfs  /dev/vg_ASCS/lv_ASCS 
+ mount -t xfs /dev/vg_ASCS/lv_ASCS /sapbits
+echo "/dev/vg_ASCS/lv_ASCS /sapbits xfs defaults 0 0" >> /etc/fstab
 
+mkdir /sapmnt
+#we should be mounting /usr/sap instead
 mount -t nfs nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt
+echo "nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt xfs defaults 0 0" >> /etc/fstab
 
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51050423_3.ZIP 
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51050829_JAVA_part2.rar 
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part1.exe
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part2.rar
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part3.rar
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part4.rar
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052190_part5.rar
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052318_part1.exe
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/51052318_part2.rar
-
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPCAR_1014-80000935.EXE
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SWPM10SP23_1-20009701.SAR
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPEXEDB_200-80002572.SAR
-wget https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts/SapBits/SAPEXE_200-80002573.SAR
-
-cd /hana/shared
-mkdir 51050423_3
-cd 51050423_3
-unzip ../51050423_3.ZIP
-
-mkdir 51050829
-cd 51050829
-zypper install -y unrar
-
-chmod u+x SAPCAR_1014-80000935.EXE
-ln -s ./SAPCAR_1014-80000935.EXE sapcar
-
-mkdir SWPM10SP23_1
-cd SWPM10SP23_1
-../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-
+cd /sapbits
+download_sapbits $URI
