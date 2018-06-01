@@ -158,7 +158,7 @@
         },
         {
             "type": "Microsoft.Compute/disks",
-            "name": "[concat(parameters('vmName1'),'-data')]",
+            "name": "[concat(parameters('vmName'),'-data')]",
             "apiVersion": "[variables('api-version-vm')]",
             "location": "[resourceGroup().location]",
             "sku": {
