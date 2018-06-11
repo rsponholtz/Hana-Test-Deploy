@@ -18,7 +18,7 @@ az group deployment create \
    SubnetName=$appsubnetname \
    VMUserName="testuser" \
    VMPassword=$vmpassword \
-   OperatingSystem="SLES for SAP 12 SP2" \
+   OperatingSystem="SLES for SAP 12 SP3" \
    ExistingNetworkResourceGroup=$rgname \
    StaticIP1=$NFSIP1 \
    StaticIP2=$NFSIP2 \
