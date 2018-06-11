@@ -1,0 +1,224 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "prefix for resource naming"
+            }
+        },
+        "VMName1": {
+            "type": "string",
+            "metadata": {
+                "description": "First VM Name"
+            }
+        },
+        "VMName2": {
+            "type": "string",
+            "metadata": {
+                "description": "Second VM Name"
+            }
+        },
+        "VMSize": {
+            "type": "string",
+            "metadata": {
+                "description": "VM Size"
+            },
+            "defaultValue": "Standard_GS5 (448 GB, Certified)",
+            "allowedValues": [
+                "Standard_D2s_v3",
+                "Standard_D4s_v3",
+                "Standard_GS5 (448 GB, Certified)",
+                "Standard_M64s (1 TB)",
+                "Standard_M64ms (1.7 TB)",
+                "Standard_M128s (2 TB)",
+                "Standard_M128ms (3.8 TB)",
+                "Standard_E16s_v3 (128 GB)",
+                "Standard_E32s_v3 (256 GB)",
+                "Standard_E64s_v3 (448 GB)"
+            ]
+        },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "ra-sap-hana-vnet",
+            "metadata": {
+                "description": "The HANA VNET"
+            }
+        },
+        "SubnetName": {
+            "type": "string",
+            "defaultValue": "SAPDataSubnet",
+            "metadata": {
+                "description": "The data subnet name"
+            }
+        },
+        "VMUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machines"
+            },
+            "defaultValue": "testuser"
+        },
+        "VMPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "OperatingSystem": {
+            "type": "string",
+            "metadata": {
+                "description": "Operating system for HANA Machine"
+            },
+            "defaultValue": "SLES for SAP 12 SP2",
+            "allowedValues": [
+                "SLES for SAP 12 SP2",
+                "RHEL 7.2 for SAP HANA"
+            ]
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+            },
+            "defaultValue": "no"
+        },
+        "StaticIP1": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.5.4"
+        },
+        "StaticIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.5.5"
+        },
+        "iSCSIIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the iscsi server"
+            },
+            "defaultValue": "10.0.6.4"
+        },
+        "ILBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the internal load balancer"
+            },
+            "defaultValue": "10.0.5.10"
+        }
+    },
+    "variables": {
+        "prefix": "[toLower(parameters('prefix'))]",
+        "vmName1": "[toLower(parameters('vmName1'))]",
+        "vmName2": "[toLower(parameters('vmName2'))]",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service",
+        "repoUri": "[variables('baseUri')]",
+        "smallUri": "[concat(variables('baseUri'), '/small-nfs.json')]",
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmSizeArray": "[split(parameters('vmSize'),' ')]",
+        "vmSize": "[variables('vmSizeArray')[0]]",
+        "avSetNameDB": "[concat(variables('prefix'), '-avset-nfs')]",
+        "loadBalancerName": "[concat(variables('prefix'), 'nfslb')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "name": "[variables('loadBalancerName')]",
+            "apiVersion": "2018-01-01",
+            "location": "[resourceGroup().location]",
+            "scale": null,
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "name": "LoadBalancerFrontEnd",
+                        "properties": {
+                            "privateIPAddress": "[parameters('ILBIP')]",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "name": "nfs-lb-2049t",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                            },
+                            "frontendPort": 2049,
+                            "backendPort": 2049,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "nfs-lb-2049u",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                            },
+                            "frontendPort": 2049,
+                            "backendPort": 2049,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Udp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                            }
+                        }
+                    }
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "BackendPool1"
+                    }
+                ],
+                "probes": [
+                    {
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 61000,
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        },
+                        "name": "lbprobe"
+                    }
+                ],
+                "inboundNatRules": [],
+                "outboundNatRules": [],
+                "inboundNatPools": []
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+            ]
+        }
+    ],
+    "outputs": {}
+}
