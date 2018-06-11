@@ -215,9 +215,7 @@
                 "outboundNatRules": [],
                 "inboundNatPools": []
             },
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
-            ]
+            "dependsOn": [     ]
         }
     ],
     "outputs": {}
