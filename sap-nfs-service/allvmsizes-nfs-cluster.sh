@@ -162,8 +162,7 @@ setup_cluster() {
   if [ "$ISPRIMARY" = "yes" ]; then
     ha-cluster-init -y -q csync2
     ha-cluster-init -y -q -u corosync
-##    ha-cluster-init -y -q sbd -d $SBDID
-    ha-cluster-init -y -q sbd 
+    ha-cluster-init -y -q -s $SBDID sbd 
     ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
     /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
