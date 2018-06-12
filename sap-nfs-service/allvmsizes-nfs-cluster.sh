@@ -346,7 +346,6 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-
 setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "nfscluster"
 
 #get the VM size via the instance api
@@ -435,6 +434,7 @@ drbdadm up NWS-nfs
   mask=$(echo $LBIP | cut -d'/' -f 2)
   
   echo "Creating NFS directories"
+  mkdir /srv/nfs/
   mkdir /srv/nfs/NWS
   chattr +i /srv/nfs/NWS
   mount /dev/drbd0 /srv/nfs/NWS
@@ -480,7 +480,6 @@ echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
 systemctl enable nfsserver
 service nfsserver restart
-mkdir /srv/nfs/
 
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
@@ -498,6 +497,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
   crm configure property maintenance-mode=true
   crm configure property stonith-timeout=600
+  crm configure property \$id="cib-bootstrap-options" stonith-enabled=true
   
 #  crm node standby $OTHERVMNAME
 #  crm node standby $VMNAME
@@ -516,10 +516,8 @@ if [ "$ISPRIMARY" = "yes" ]; then
   crm configure primitive ex_NWS_ASCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCSERS" options="rw,no_root_squash" clientspec="*" fsid=6 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive ex_NWS_SCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCS" options="rw,no_root_squash" clientspec="*" fsid=7 wait_for_leasetime_on_stop=true op monitor interval="30s"
   crm configure primitive ex_NWS_SCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCSERS" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_SapBits ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SapBits" options="rw,no_root_squash" clientspec="*" fsid=9 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  
-#  crm configure property \$id="cib-bootstrap-options" stonith-enabled=true
-  
+  #crm configure primitive ex_NWS_SapBits ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SapBits" options="rw,no_root_squash" clientspec="*" fsid=9 wait_for_leasetime_on_stop=true op monitor interval="30s"
+    
   lbprobe="61000"
   mask="24"
 
@@ -529,6 +527,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
   crm configure group g-NWS_nfs fs_NWS_sapmnt ex_NWS ex_NWS_trans ex_NWS_ASCS ex_NWS_ASCSERS ex_NWS_SCS ex_NWS_SCSERS nc_NWS_nfs vip_NWS_nfs ex_NWS_sapmnt"$HANASID" ex_NWS_"$HANASID"sys
   crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start
   crm configure colocation col-NWS_nfs_on_drbd inf: g-NWS_nfs ms-drbd_NWS_nfs:Master
+
 
 #  crm node online $VMNAME
 #  crm node online $OTHERVMNAME
