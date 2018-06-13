@@ -200,7 +200,7 @@ setup_cluster() {
   if [ "$ISPRIMARY" = "yes" ]; then
     ha-cluster-init -y -q csync2
     ha-cluster-init -y -q -u corosync
-    ha-cluster-init -y -q sbd -d $SBDID
+    ha-cluster-init -y -q -s $SBDID sbd 
     ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
     /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
@@ -627,6 +627,8 @@ HANAID="$HANASID"_HDB"$HANANUMBER"
 
 sudo crm configure property maintenance-mode=true
 
+crm configure property \$id="cib-bootstrap-options" stonith-enabled=true
+
 crm configure primitive rsc_SAPHanaTopology_$HANAID ocf:suse:SAPHanaTopology \
         operations \$id="rsc_sap2_$HANAID-operations" \
         op monitor interval="10" timeout="600" \
@@ -636,6 +638,7 @@ crm configure primitive rsc_SAPHanaTopology_$HANAID ocf:suse:SAPHanaTopology \
 
 crm configure clone cln_SAPHanaTopology_$HANAID rsc_SAPHanaTopology_$HANAID \
         meta clone-node-max="1" interleave="true"
+
 
 crm configure primitive rsc_SAPHana_$HANAID ocf:suse:SAPHana     \
 operations \$id="rsc_sap_$HANAID-operations"   \

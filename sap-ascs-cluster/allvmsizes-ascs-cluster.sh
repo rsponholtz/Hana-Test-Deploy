@@ -168,7 +168,7 @@ setup_cluster() {
   if [ "$P_ISPRIMARY" = "yes" ]; then
     ha-cluster-init -y -q csync2
     ha-cluster-init -y -q -u corosync
-    ha-cluster-init -y -q sbd -d $P_SBDID
+    ha-cluster-init -y -q -s $SBDID sbd 
     ha-cluster-init -y -q cluster name=$P_CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
     /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig2.txt	
@@ -356,4 +356,4 @@ mount -t nfs nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS
 echo "nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS xfs defaults 0 0" >> /etc/fstab
 
 cd /sapbits
-download_sapbits $URI
+#download_sapbits $URI
