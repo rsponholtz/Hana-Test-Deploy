@@ -268,9 +268,11 @@ install_ascs() {
 
 
   if [ "$P_ISPRIMARY" = "yes" ]; then
-
+  echo "setup ascs"
+ 
   #/sapbits/SWPM10SP23_1/sapinst
   else
+  echo "setup ers"
   #/sapbits/SWPM10SP23_1/sapinst
   #profile directory /sapmnt/SID/profile
   fi
