@@ -23,4 +23,5 @@ az group deployment create \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
    iSCSIIP=$ISCSIIP \
-   ILBIP=$ASCSILBIP
+   ILBIP=$ASCSILBIP \
+   NFSILBIP=$NFSILBIP

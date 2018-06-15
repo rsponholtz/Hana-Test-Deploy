@@ -28,6 +28,7 @@ LBIP=${14}
 SUBEMAIL=${15}
 SUBID=${16}
 SUBURL=${17}
+NFSILBIP=${18}
 
 
 echo "small.sh receiving:"
@@ -46,6 +47,7 @@ echo "LBIP:" $LBIP >> /tmp/variables.txt
 echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
+echo "NFSILBIP:" $NFSILBIP >> /tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -260,6 +262,7 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
+$NFSILBIP nfsnfslb
 EOF
 
 
@@ -348,12 +351,13 @@ echo "/dev/vg_ASCS/lv_ASCS /sapbits xfs defaults 0 0" >> /etc/fstab
 
 mkdir /sapmnt
 #we should be mounting /usr/sap instead
-mount -t nfs nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt
-echo "nfs1:/srv/nfs/NWS/sapmntH10 /sapmnt xfs defaults 0 0" >> /etc/fstab
+mount -t nfs4 nfsnfslb:/NWS/sapmntH10 /sapmnt
+
+echo "nfsnfslb:/NWS/sapmntH10 /sapmnt nfs4 defaults 0 0" >> /etc/fstab
 
 mkdir -p /usr/sap/$HANASID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
-mount -t nfs nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS
-echo "nfs1:/srv/nfs/NWS/ASCS /usr/sap/$HANASID/SYS xfs defaults 0 0" >> /etc/fstab
+mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS
+echo "nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS nfs4 defaults 0 0" >> /etc/fstab
 
 cd /sapbits
 #download_sapbits $URI
