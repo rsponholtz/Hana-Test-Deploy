@@ -412,6 +412,8 @@ retry 5 "zypper install -y saptune"
 retry 5 "zypper install -y libunwind"
 retry 5 "zypper install -y libicu"
 
+saptune solution apply HANA
+saptune daemon start
 
 # step2
 echo $URI >> /tmp/url.txt

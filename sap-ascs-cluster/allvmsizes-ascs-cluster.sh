@@ -82,10 +82,10 @@ do
     RESULT=$?
     if [ "$RESULT" = "255" ]; then
         (>&2 echo "waitfor failed in ssh")
-        exit 255
+        return 255
     fi
 done
-exit 0
+return 0
 }
 
 declare -fxr waitfor
