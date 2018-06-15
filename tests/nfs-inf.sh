@@ -14,7 +14,7 @@ az group deployment create \
    VMSize="Standard_D2s_v3" \
    vnetName=$vnetname \
    SubnetName=$appsubnetname \
-   VMUserName="testuser" \
+   VMUserName=$vmusername \
    VMPassword=$vmpassword \
    OperatingSystem="SLES for SAP 12 SP3" \
    ExistingNetworkResourceGroup=$rgname \

@@ -11,7 +11,7 @@ az group deployment create \
    --parameters \
    VMName1=$NFSVMNAME1 \
    VMName2=$NFSVMNAME2 \
-   VMUserName="testuser" \
+   VMUserName=$vmusername \
    VMPassword=$vmpassword \
    customURI="$customuri" \
    StaticIP1=$NFSIP1 \

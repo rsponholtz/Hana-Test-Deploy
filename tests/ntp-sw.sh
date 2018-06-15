@@ -9,7 +9,7 @@ az group deployment create \
 --resource-group "$rgname" \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-sw.json" \
 --parameters \
-vmUserName=testuser \
+vmUserName=$vmusername \
 ExistingNetworkResourceGroup="$rgname" \
 vnetName="$vnetname" \
 subnetName="$mgtsubnetname" \

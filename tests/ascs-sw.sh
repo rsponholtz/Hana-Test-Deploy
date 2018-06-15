@@ -11,7 +11,7 @@ az group deployment create \
    --parameters \
    VMName1=$ASCSVMNAME1 \
    VMName2=$ASCSVMNAME2 \
-   VMUserName="testuser" \
+   VMUserName=$vmusername \
    VMPassword=$vmpassword \
    customURI="$customuri" \
    StaticIP1=$ASCSIP1 \

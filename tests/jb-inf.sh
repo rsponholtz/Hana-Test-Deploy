@@ -10,7 +10,7 @@ az group deployment create \
 --resource-group $rgname \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/Vms/hanajumpbox.json" \
 --parameters vmName=hanajumpbox \
-   vmUserName=testuser \
+   vmUserName=$vmusername \
    StaticIP=$JBPIP \
    ExistingNetworkResourceGroup=$rgname \
    vnetName=$vnetname \
