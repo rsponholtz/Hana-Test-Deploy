@@ -69,6 +69,27 @@ retry() {
 
 declare -fxr retry
 
+waitfor() {
+P_USER=$1
+P_HOST=$2
+P_FILESPEC=$3
+
+RESULT=1
+while [ $RESULT = 1 ]
+do
+    sleep 1
+    ssh -q -n -o BatchMode=yes -o StrictHostKeyChecking=no "$P_USER@$P_HOST" "test -e $P_FILESPEC"
+    RESULT=$?
+    if [ "$RESULT" = "255" ]; then
+        (>&2 echo "waitfor failed in ssh")
+        exit 255
+    fi
+done
+exit 0
+}
+
+declare -fxr waitfor
+
 register_subscription() {
   SUBEMAIL=$1
   SUBID=$2
@@ -173,7 +194,7 @@ setup_cluster() {
     ha-cluster-init -y -q -s $P_SBDID sbd 
     ha-cluster-init -y -q cluster name=$P_CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
-    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig2.txt	
+    waitfor root $P_OTHERVMNAME /tmp/corosyncconfig2.txt	
     systemctl stop corosync
     systemctl stop pacemaker
     write_corosync_config 10.0.5.0 $P_VMNAME $P_OTHERVMNAME
@@ -183,14 +204,14 @@ setup_cluster() {
 
     sleep 10
   else
-    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig1.txt	
+    waitfor root $P_OTHERVMNAME /tmp/corosyncconfig1.txt	
     ha-cluster-join -y -q -c $P_OTHERVMNAME csync2 
     ha-cluster-join -y -q ssh_merge
     ha-cluster-join -y -q cluster
     systemctl stop corosync
     systemctl stop pacemaker
     touch /tmp/corosyncconfig2.txt	
-    /root/waitfor.sh root $P_OTHERVMNAME /tmp/corosyncconfig3.txt	
+    waitfor root $P_OTHERVMNAME /tmp/corosyncconfig3.txt	
     write_corosync_config 10.0.5.0 $P_OTHERVMNAME $VMNAME 
     systemctl restart corosync
     systemctl start pacemaker
@@ -232,6 +253,26 @@ cd SWPM10SP23_1
 cd ..
 
 
+}
+
+install_ascs() {
+  P_ISPRIMARY=$1
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
+
+  echo "setup cluster"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+
+
+  if [ "$P_ISPRIMARY" = "yes" ]; then
+
+  /sapbits/SWPM10SP23_1/sapinst
+  else
+  /sapbits/SWPM10SP23_1/sapinst
+  #profile directory /sapmnt/SID/profile
+  fi
 }
 
 
@@ -282,8 +323,8 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $ASCSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
 
     cd /root 
-    wget $REPOURI/waitfor.sh
-    chmod u+x waitfor.sh
+    #wget $REPOURI/waitfor.sh
+    #chmod u+x waitfor.sh
 
 #Clustering setup
 #start services [A]
@@ -360,4 +401,5 @@ mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS
 echo "nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS nfs4 defaults 0 0" >> /etc/fstab
 
 cd /sapbits
-#download_sapbits $URI
+download_sapbits $URI
+install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
