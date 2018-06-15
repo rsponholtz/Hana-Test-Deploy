@@ -110,7 +110,8 @@ if [ "$SUBEMAIL" != "" ]; then
 fi
 }
 
-write_corosync_config (){
+write_corosync_config ()
+{
   BINDIP=$1
   HOST1IP=$2
   HOST2IP=$3
