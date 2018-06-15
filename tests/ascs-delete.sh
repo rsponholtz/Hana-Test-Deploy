@@ -3,8 +3,6 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-az account set --subscription $subscriptionid
-
 echo "deleting ascs servers"
 az vm delete --yes --resource-group $rgname --name $ASCSVMNAME1
 az vm delete --yes --resource-group $rgname --name $ASCSVMNAME2

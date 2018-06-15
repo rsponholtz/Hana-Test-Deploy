@@ -3,8 +3,6 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-az account set --subscription $subscriptionid
-
 echo "deleting nfs servers"
 az vm delete --yes --resource-group $rgname --name $NFSVMNAME1
 az vm delete --yes --resource-group $rgname --name $NFSVMNAME2

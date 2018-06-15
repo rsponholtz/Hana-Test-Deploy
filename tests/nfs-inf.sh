@@ -3,8 +3,6 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-az account set --subscription $subscriptionid
-
 echo "creating nfs cluster"
 az group deployment create \
 --name NFSDeployment \

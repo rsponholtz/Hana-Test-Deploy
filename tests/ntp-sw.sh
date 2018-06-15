@@ -3,8 +3,6 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-az account set --subscription "$subscriptionid"
-
 echo "installing ntp server software"
 az group deployment create \
 --name NTPDeployment \
