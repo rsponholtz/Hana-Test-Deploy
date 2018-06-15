@@ -269,9 +269,9 @@ install_ascs() {
 
   if [ "$P_ISPRIMARY" = "yes" ]; then
 
-  /sapbits/SWPM10SP23_1/sapinst
+  #/sapbits/SWPM10SP23_1/sapinst
   else
-  /sapbits/SWPM10SP23_1/sapinst
+  #/sapbits/SWPM10SP23_1/sapinst
   #profile directory /sapmnt/SID/profile
   fi
 }
