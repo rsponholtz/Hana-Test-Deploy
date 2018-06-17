@@ -268,14 +268,58 @@ cd ..
 }
 
 write_ascs_ini_file() {
-  cd /root
-  mkdir silent_install
-  cd silent_install
+  P_ISPRIMARY=$1
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
 
-cat > /root/silent_install/ascs.params <<EOF
+  echo "setup cluster"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+
+  cd /silent_install
+  cat > /silent_install/ascs.params <<EOF
+NW_GetMasterPassword.masterPwd = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_GetSidNoProfiles.sid = S40
+NW_SAPCrypto.SAPCryptoFile = /sapbits/SAPEXE_200-80002573.SAR
+NW_SCS_Instance.instanceNumber = 00
+NW_SCS_Instance.scsVirtualHostname = ascs1
+NW_Unpack.sapExeSar = /sapbits/SAPEXE_200-80002573.SAR
+NW_getFQDN.setFQDN = false
+archives.downloadBasket = /sapbits
+hostAgent.sapAdmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+nwUsers.sapadmUID = 1050
+nwUsers.sapsysGID = 1001
+nwUsers.sidAdmUID = 1040
 nwUsers.sidadmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
 EOF
 }
+
+write_ers_ini_file() {
+  P_ISPRIMARY=$1
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
+
+  echo "setup cluster"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+
+  cd /silent_install
+  cat > /silent_install/ers.params <<EOF
+NW_getFQDN.setFQDN = false
+NW_readProfileDir.profileDir = /sapmnt/S40/profile
+archives.downloadBasket = /sapbits
+hostAgent.sapAdmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+nwUsers.sapadmUID = 1050
+nwUsers.sapsysGID = 1001
+nwUsers.sidAdmUID = 1040
+nwUsers.sidadmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+nw_instance_ers.ersInstanceNumber = 10
+nw_instance_ers.ersVirtualHostname = ascs2
+EOF
+}
+
 
 install_ascs() {
   P_ISPRIMARY=$1
@@ -289,14 +333,41 @@ install_ascs() {
 
 
   if [ "$P_ISPRIMARY" = "yes" ]; then
+    echo "setup ascs"
+    cd /tmp
+    rm -r -f sapinst_instdir
+    cd /silent_install
+    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./inifile.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=
+false
+
+  fi
+}
+
+
+install_ers() {
+  P_ISPRIMARY=$1
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
+
+  echo "setup cluster"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+
+  if [ "$P_ISPRIMARY" = "yes" ]; then
   echo "setup ascs"
- 
-  #/sapbits/SWPM10SP23_1/sapinst
   else
+
+  #!/bin/bash
   echo "setup ers"
+    cd /tmp
+    rm -r -f sapinst_instdir
+    cd /silent_install
+    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./inifile.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
   #/sapbits/SWPM10SP23_1/sapinst
   #profile directory /sapmnt/SID/profile
   fi
+##as s40adm, do stopsap
 }
 
 
@@ -427,5 +498,20 @@ echo "nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS nfs4 defaults 0 0" >> /etc/fstab
 cd /sapbits
 download_sapbits $URI
 create_temp_swapfile "/sapbits/tempswap" 2000000
-write_ascs_ini_file 
-install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+
+
+groupadd -g 1000 sapinst
+mkdir /silent_install
+cd /silent_install
+chown root:sapinst /silent_install
+chmod g+rwx /silent_install
+chmod o+rx /silent_install
+
+#initialize sbd on node1
+if [ "$ISPRIMARY" = "yes" ]; then
+  write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+else
+  write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+fi
