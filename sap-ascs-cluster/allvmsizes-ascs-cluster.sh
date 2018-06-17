@@ -337,9 +337,8 @@ install_ascs() {
     cd /tmp
     rm -r -f sapinst_instdir
     cd /silent_install
-    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./inifile.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=
-false
-
+    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+    touch /tmp/ascscomplete.txt
   fi
 }
 
@@ -363,11 +362,35 @@ install_ers() {
     cd /tmp
     rm -r -f sapinst_instdir
     cd /silent_install
-    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./inifile.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+    waitfor root $P_OTHERVMNAME /tmp/ascscomplete.txt
+    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ers.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+    touch /tmp/erscomplete.txt
   #/sapbits/SWPM10SP23_1/sapinst
   #profile directory /sapmnt/SID/profile
   fi
 ##as s40adm, do stopsap
+}
+
+install_database() {
+  P_ISPRIMARY=$1
+  P_VMNAME=$3
+  P_OTHERVMNAME=$4 
+
+  echo "setup database"
+  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
+  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
+  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+
+
+  if [ "$P_ISPRIMARY" = "yes" ]; then
+    echo "setup ascs"
+    cd /tmp
+    rm -r -f sapinst_instdir
+    cd /silent_install
+    waitfor root $P_OTHERVMNAME /tmp/erscomplete.txt
+#    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+    touch /tmp/ascscomplete.txt
+  fi
 }
 
 
@@ -511,6 +534,7 @@ chmod o+rx /silent_install
 if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  install_database
 else
   write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
