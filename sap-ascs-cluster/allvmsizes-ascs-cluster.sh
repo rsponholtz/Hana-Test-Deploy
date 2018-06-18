@@ -235,60 +235,75 @@ declare -fxr setup_cluster
 
 
 download_sapbits() {
-    URI=$1
+  URI=$1
+  SBDIR=$2
 
-  cd  /srv/nfs/NWS/SapBits
+  test -e $SBDIR/download_complete.txt
+  RESULT=$?
+  echo $RESULT
+  if [ "$RESULT" = "1" ]; then
+    #need to download the sap bits
+    cd  $SBDIR
 
-  retry 5 "wget  --quiet $URI/SapBits/51050423_3.ZIP"
-  retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part1.exe"   
-  retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part2.rar" 
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
-  retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
-  retry 5 "wget  --quiet $URI/SapBits/SAPCAR_1014-80000935.EXE"
-  retry 5 "wget  --quiet $URI/SapBits/SWPM10SP23_1-20009701.SAR"
-  retry 5 "wget  --quiet $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
-  retry 5 "wget  --quiet $URI/SapBits/SAPEXE_200-80002573.SAR"
-  retry 5 "wget  --quiet $URI/SapBits/SAPEXEDB_200-80002572.SAR"
-  retry 5 "wget  --quiet $URI/SapBits/51052325."
-  #unpack some of this
-  retry 5 "zypper install -y unrar"
+    retry 5 "wget  --quiet $URI/SapBits/51050423_3.ZIP"
+    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part1.exe"   
+    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part2.rar" 
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
+    retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
+    retry 5 "wget  --quiet $URI/SapBits/SAPCAR_1014-80000935.EXE"
+    retry 5 "wget  --quiet $URI/SapBits/SWPM10SP23_1-20009701.SAR"
+    retry 5 "wget  --quiet $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
+    retry 5 "wget  --quiet $URI/SapBits/SAPEXE_200-80002573.SAR"
+    retry 5 "wget  --quiet $URI/SapBits/SAPEXEDB_200-80002572.SAR"
+    #unpack some of this
+    retry 5 "zypper install -y unrar"
 
-chmod u+x SAPCAR_1014-80000935.EXE
-ln -s ./SAPCAR_1014-80000935.EXE sapcar
+    chmod u+x SAPCAR_1014-80000935.EXE
+    ln -s ./SAPCAR_1014-80000935.EXE sapcar
 
-mkdir SWPM10SP23_1
-cd SWPM10SP23_1
-../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-cd ..
-
+    mkdir SWPM10SP23_1
+    cd SWPM10SP23_1
+    ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+    cd $SBDIR
+    touch $SBDIR/download_complete.txt
+  fi
 }
 
 download_dbbits() {
-    URI=$1
+  URI=$1
+  SBDIR=$2
 
-  cd  /srv/nfs/NWS/SapBits
+  test -e $SBDIR/dbdownload_complete.txt
+  RESULT=$?
+  echo $RESULT
+  if [ "$RESULT" = "1" ]; then
+      #need to download the sap bits
 
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
-  retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
-  retry 5 "wget  --quiet $URI/SapBits/51052325_part1.exe"
-  retry 5 "wget  --quiet $URI/SapBits/51052325_part2.rar"  
-  retry 5 "wget  --quiet $URI/SapBits/51052325_part3.rar"  
-  retry 5 "wget  --quiet $URI/SapBits/51052325_part4.rar"  
-  #unpack some of this
-  retry 5 "zypper install -y unrar"
+    cd  $SBDIR
 
-  unrar x 51052325_part1.exe
-  unrar x 51052190_part1.exe
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
+    retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
+    retry 5 "wget  --quiet $URI/SapBits/51052325_part1.exe"
+    retry 5 "wget  --quiet $URI/SapBits/51052325_part2.rar"  
+    retry 5 "wget  --quiet $URI/SapBits/51052325_part3.rar"  
+    retry 5 "wget  --quiet $URI/SapBits/51052325_part4.rar"  
+    #unpack some of this
+    retry 5 "zypper install -y unrar"
+
+    unrar x 51052325_part1.exe
+    unrar x 51052190_part1.exe
+    touch $SBDIR/dbdownload_complete.txt
+  fi
 }
 
 write_ascs_ini_file() {
@@ -444,7 +459,9 @@ install_database() {
     cd /silent_db
     write_db_ini_file    
     echo  "10.0.0.22 hanailb"  >>/etc/hosts
-#    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+    cat > /silent_db/installdb.sh <<EOF
+    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+EOF    
     touch /tmp/dbcomplete.txt
   fi
 }
@@ -559,10 +576,14 @@ echo "logicalvol start" >> /tmp/parameter.txt
   lvcreate -l 100%FREE -n lv_ASCS vg_ASCS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
-mkdir /sapbits
+mkdir /localstore
+#this is for local sapbits
 mkfs -t xfs  /dev/vg_ASCS/lv_ASCS 
- mount -t xfs /dev/vg_ASCS/lv_ASCS /sapbits
-echo "/dev/vg_ASCS/lv_ASCS /sapbits xfs defaults 0 0" >> /etc/fstab
+mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
+echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
+
+mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
+echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 
 mkdir /sapmnt
 #we should be mounting /usr/sap instead
@@ -575,9 +596,9 @@ mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS
 echo "nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS nfs4 defaults 0 0" >> /etc/fstab
 
 cd /sapbits
-download_sapbits $URI
-create_temp_swapfile "/sapbits/tempswap" 2000000
-
+download_sapbits $URI /sapbits
+touch /tmp/sapbitsdownloaded.txt
+create_temp_swapfile "/localstore/tempswap" 2000000
 
 groupadd -g 1000 sapinst
 groupadd -g 1001 sapsys
@@ -588,13 +609,13 @@ chown root:sapinst /silent_install
 chmod g+rwx /silent_install
 chmod o+rx /silent_install
 
-#initialize sbd on node1
 if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
-  download_dbbits $URI
+  download_dbbits $URI /sapbits
   install_database
 else
+  waitfor  root $P_OTHERVMNAME /tmp/sapbitsdownloaded.txt
   write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
 fi
