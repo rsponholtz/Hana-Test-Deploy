@@ -161,6 +161,7 @@
                     {
                         "name": "ipconfig1",
                         "properties": {
+                            "enableAcceleratedNetworking": true,
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('StaticIP1')]",
                             "subnet": {
