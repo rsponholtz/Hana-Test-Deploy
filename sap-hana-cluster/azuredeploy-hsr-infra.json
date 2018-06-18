@@ -275,8 +275,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
                             },
-                            "frontendPort": 30313,
-                            "backendPort": 30313,
+                            "frontendPort": 30013,
+                            "backendPort": 30013,
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -296,8 +296,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
                             },
-                            "frontendPort": 30315,
-                            "backendPort": 30315,
+                            "frontendPort": 30015,
+                            "backendPort": 30015,
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -317,8 +317,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
                             },
-                            "frontendPort": 30317,
-                            "backendPort": 30317,
+                            "frontendPort": 30017,
+                            "backendPort": 30017,
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",

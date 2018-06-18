@@ -254,6 +254,7 @@ download_sapbits() {
   retry 5 "wget  --quiet $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
   retry 5 "wget  --quiet $URI/SapBits/SAPEXE_200-80002573.SAR"
   retry 5 "wget  --quiet $URI/SapBits/SAPEXEDB_200-80002572.SAR"
+  retry 5 "wget  --quiet $URI/SapBits/51052325."
   #unpack some of this
   retry 5 "zypper install -y unrar"
 
@@ -265,6 +266,29 @@ cd SWPM10SP23_1
 ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
 cd ..
 
+}
+
+download_dbbits() {
+    URI=$1
+
+  cd  /srv/nfs/NWS/SapBits
+
+  retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
+  retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
+  retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
+  retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
+  retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
+  retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
+  retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
+  retry 5 "wget  --quiet $URI/SapBits/51052325_part1.exe"
+  retry 5 "wget  --quiet $URI/SapBits/51052325_part2.rar"  
+  retry 5 "wget  --quiet $URI/SapBits/51052325_part3.rar"  
+  retry 5 "wget  --quiet $URI/SapBits/51052325_part4.rar"  
+  #unpack some of this
+  retry 5 "zypper install -y unrar"
+
+  unrar x 51052325_part1.exe
+  unrar x 51052190_part1.exe
 }
 
 write_ascs_ini_file() {
@@ -320,6 +344,31 @@ nw_instance_ers.ersVirtualHostname = ascs2
 EOF
 }
 
+write_db_ini_file() {
+  cat > /silent_db/db.params <<EOF
+HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
+HDB_Schema_Check_Dialogs.schemaPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_ABAP_Import_Dialog.dbCodepage = 4103
+NW_ABAP_Import_Dialog.migmonJobNum = 6
+NW_ABAP_Import_Dialog.migmonLoadArgs = -c 100000 -rowstorelist /silent_db/rowstorelist.txt
+NW_GetMasterPassword.masterPwd = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_HDB_getDBInfo.dbhost = hanailb
+NW_HDB_getDBInfo.dbsid = H10
+NW_HDB_getDBInfo.instanceNumber = 00
+NW_HDB_getDBInfo.systemDbPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_HDB_getDBInfo.systemPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_Unpack.sapExeDbSar = /sapbits/SAPEXEDB_200-80002572.SAR
+NW_getFQDN.setFQDN = false
+NW_getLoadType.loadType = SAP
+NW_readProfileDir.profileDir = /usr/sap/S40/SYS/profile
+hanadb.landscape.reorg.useParameterFile = DONOTUSEFILE
+nwUsers.sapsysGID = 1001
+nwUsers.sidAdmUID = 1040
+storageBasedCopy.hdb.instanceNumber = 00
+storageBasedCopy.hdb.systemPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+EOF
+}
+
 
 install_ascs() {
   P_ISPRIMARY=$1
@@ -334,8 +383,9 @@ install_ascs() {
 
   if [ "$P_ISPRIMARY" = "yes" ]; then
     echo "setup ascs"
-    cd /tmp
-    rm -r -f sapinst_instdir
+    rm -r -f /tmp/sapinst_instdir
+    rm -r -f /sapmnt/*
+    rm -r -f /usr/sap/S40/SYS/*
     cd /silent_install
     /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
     touch /tmp/ascscomplete.txt
@@ -381,15 +431,21 @@ install_database() {
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
   echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
 
+  waitfor root $P_OTHERVMNAME /tmp/erscomplete.txt
 
   if [ "$P_ISPRIMARY" = "yes" ]; then
-    echo "setup ascs"
-    cd /tmp
-    rm -r -f sapinst_instdir
-    cd /silent_install
-    waitfor root $P_OTHERVMNAME /tmp/erscomplete.txt
+    echo "setup db"
+    cd /sapbits
+    mkdir 51052190
+    unrar x 51052190_part1.exe
+    mkdir /silent_db
+    chown root:sapinst /silent_db
+    chmod 775 /silent_db    
+    cd /silent_db
+    write_db_ini_file    
+    echo  "10.0.0.22 hanailb"  >>/etc/hosts
 #    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-    touch /tmp/ascscomplete.txt
+    touch /tmp/dbcomplete.txt
   fi
 }
 
@@ -524,6 +580,8 @@ create_temp_swapfile "/sapbits/tempswap" 2000000
 
 
 groupadd -g 1000 sapinst
+groupadd -g 1001 sapsys
+usermod -a -G sapsys root
 mkdir /silent_install
 cd /silent_install
 chown root:sapinst /silent_install
@@ -534,6 +592,7 @@ chmod o+rx /silent_install
 if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  download_dbbits $URI
   install_database
 else
   write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
