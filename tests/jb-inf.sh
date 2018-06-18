@@ -17,3 +17,5 @@ az group deployment create \
    subnetName=$mgtsubnetname \
    vmPassword=$vmpassword \
    customUri=$customuri
+
+echo "jumpbox created"

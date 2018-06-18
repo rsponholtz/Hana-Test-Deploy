@@ -22,3 +22,6 @@ az group deployment create \
    StaticIP2=$NFSIP2 \
    iSCSIIP=$ISCSIIP \
    ILBIP=$NFSILBIP
+
+
+echo "nfs cluster created"

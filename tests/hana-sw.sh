@@ -24,3 +24,5 @@ az group deployment create \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
    SMTUri="$slessmt"
+
+echo "hana software installed"

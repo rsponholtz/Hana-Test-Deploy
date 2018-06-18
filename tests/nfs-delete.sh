@@ -11,3 +11,5 @@ az network nic delete --resource-group $rgname --name $NFSVMNAME1-static
 az disk delete --yes --resource-group $rgname --name $NFSVMNAME2-data
 az network nic delete --resource-group $rgname --name $NFSVMNAME2-static
 az network lb delete --resource-group $rgname  --name nfsnfslb
+
+echo "nfs servers deleted"

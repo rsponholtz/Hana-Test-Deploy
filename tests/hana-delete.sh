@@ -18,3 +18,5 @@ az disk delete --yes --resource-group $rgname --name $HANAVMNAME2-data2
 az disk delete --yes --resource-group $rgname --name $HANAVMNAME2-sap
 az disk delete --yes --resource-group $rgname --name $HANAVMNAME2-shared
 az network nic delete --resource-group $rgname --name $HANAVMNAME2-static
+
+echo "hana servers deleted"

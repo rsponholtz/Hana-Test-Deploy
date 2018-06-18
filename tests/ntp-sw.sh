@@ -18,3 +18,4 @@ vmPassword="$vmpassword" \
 customUri="$customuri" \
 StaticIP="$NTPIP"
 
+echo "ntp server software installed"

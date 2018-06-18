@@ -20,3 +20,5 @@ IQN2client2="$HANAIQNCLIENT2" \
 IQN3="$ASCSIQN" \
 IQN3client1="$ASCSIQNCLIENT1" \
 IQN3client2="$ASCSIQNCLIENT2" 
+
+echo "iscsi server software installed"

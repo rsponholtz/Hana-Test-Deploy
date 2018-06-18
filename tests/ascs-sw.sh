@@ -23,3 +23,5 @@ az group deployment create \
    iSCSIIP=$ISCSIIP \
    ILBIP=$ASCSILBIP \
    NFSILBIP=$NFSILBIP
+
+echo "ascs cluster installed"

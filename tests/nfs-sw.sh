@@ -3,7 +3,7 @@
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
-echo "creating nfs cluster"
+echo "installing nfs cluster"
 az group deployment create \
 --name NFSDeployment \
 --resource-group $rgname \
@@ -21,3 +21,5 @@ az group deployment create \
    IQNClient2="$NFSIQNCLIENT2" \
    iSCSIIP=$ISCSIIP \
    ILBIP=$NFSILBIP
+
+echo "nfs cluster installed"

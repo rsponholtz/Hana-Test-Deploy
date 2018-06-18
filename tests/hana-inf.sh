@@ -22,3 +22,5 @@ az group deployment create \
    StaticIP2=$HANAIP2 \
    iSCSIIP=$ISCSIIP \
    ILBIP=$HANAILBIP
+
+echo "hana cluster created"

@@ -22,3 +22,5 @@ az group deployment create \
    StaticIP2="$ASCSIP2" \
    iSCSIIP="$ISCSIIP" \
    ILBIP="$ASCSILBIP"
+
+echo "ascs cluster created"

@@ -10,3 +10,4 @@ az disk delete --yes --resource-group $rgname --name $ASCSVMNAME1-data
 az network nic delete --resource-group $rgname --name $ASCSVMNAME1-static
 az disk delete --yes --resource-group $rgname --name $ASCSVMNAME2-data
 az network nic delete --resource-group $rgname --name $ASCSVMNAME2-static
+echo "ascs servers deleted"

@@ -207,7 +207,7 @@
             "name": "[concat(parameters('vmName1'),'-static')]",
             "location": "[resourceGroup().location]",
             "properties": {
-                "enableAcceleratedNetworking": false,
+                "enableAcceleratedNetworking": true,
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",

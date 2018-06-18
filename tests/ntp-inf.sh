@@ -16,3 +16,5 @@ az group deployment create \
              vmPassword=$vmpassword \
              customUri=$customuri \
                    StaticIP=$NTPIP
+
+echo "ntp server created"
