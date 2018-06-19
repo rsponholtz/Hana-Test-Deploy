@@ -584,6 +584,7 @@ mkfs -t xfs  /dev/vg_ASCS/lv_ASCS
 mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
 echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
+mkdir /sapbits
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
 echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 
