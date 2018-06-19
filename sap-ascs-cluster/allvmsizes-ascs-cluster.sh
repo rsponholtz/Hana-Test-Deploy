@@ -274,6 +274,8 @@ download_sapbits() {
   fi
 }
 
+declare -fxr download_sapbits
+
 download_dbbits() {
   URI=$1
   SBDIR=$2
@@ -460,8 +462,8 @@ install_database() {
     write_db_ini_file    
     echo  "10.0.0.22 hanailb"  >>/etc/hosts
     cat > /silent_db/installdb.sh <<EOF
-    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-EOF    
+/sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+EOF
     touch /tmp/dbcomplete.txt
   fi
 }
