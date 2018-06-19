@@ -157,11 +157,11 @@
             "name": "[concat(parameters('vmName1'),'-static')]",
             "location": "[resourceGroup().location]",
             "properties": {
+                "enableAcceleratedNetworking": true,                
                 "ipConfigurations": [
                     {
                         "name": "ipconfig1",
-                        "properties": {
-                            "enableAcceleratedNetworking": true,                            
+                        "properties": {                            
                             "privateIPAllocationMethod": "Static",
                             "privateIPAddress": "[parameters('StaticIP1')]",
                             "subnet": {
