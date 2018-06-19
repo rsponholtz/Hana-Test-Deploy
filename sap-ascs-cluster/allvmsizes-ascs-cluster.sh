@@ -616,7 +616,8 @@ if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   download_dbbits $URI /sapbits
-  install_database
+  sleep 10m
+  install_database "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
 else
   waitfor  root $P_OTHERVMNAME /tmp/sapbitsdownloaded.txt
   write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
