@@ -11,7 +11,7 @@ az group deployment create \
    --parameters prefix=ascs \
    VMName1=$ASCSVMNAME1 \
    VMName2=$ASCSVMNAME2 \
-   VMSize="Standard_D2s_v3" \
+   VMSize="Standard_DS3_v2" \
    vnetName="$vnetname" \
    SubnetName="$appsubnetname" \
    VMUserName="$vmusername" \
