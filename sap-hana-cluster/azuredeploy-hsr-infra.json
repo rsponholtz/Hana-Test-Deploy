@@ -21,7 +21,11 @@
             },
             "defaultValue": "Standard_GS5 (448 GB, Certified)",
             "allowedValues": [
+                "Standard_DS14_v2 (128 GB)",
                 "Standard_GS5 (448 GB, Certified)",
+                "Standard_M32ts (192 GB)",
+                "Standard_M32ls (256 GB)",
+                "Standard_M64ls (512 GB)",
                 "Standard_M64s (1 TB, Certified)",
                 "Standard_M64ms (1.7 TB, Certified)",
                 "Standard_M128s (2 TB, Certified)",
@@ -203,6 +207,15 @@
                 "templateuri": "small-hsr.json"
             },
             "Standard_E64s_v3 (448 GB)": {
+                "templateuri": "small-hsr.json"
+            },
+            "Standard_M32ts (192 GB)": {
+                "templateuri": "small-hsr.json"
+            },
+            "Standard_M32ls (256 GB)": {
+                "templateuri": "small-hsr.json"
+            },
+            "Standard_M64ls (512 GB)": {
                 "templateuri": "small-hsr.json"
             }
         },
