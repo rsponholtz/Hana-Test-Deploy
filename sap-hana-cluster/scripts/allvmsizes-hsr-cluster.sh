@@ -244,13 +244,24 @@ mkdir /hana/shared
 mkdir /hana/backup
 mkdir /usr/sap
 
+# this assumes that 5 disks are attached at lun 0 through 4
+echo "Creating partitions and physical volumes"
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun0'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun1'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun2'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun3'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun4'
+sudo pvcreate /dev/disk/azure/scsi1/lun0-part1   
+sudo pvcreate /dev/disk/azure/scsi1/lun1-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun2-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun3-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun4-part1
 
-number="$(lsscsi [*] 0 0 4| cut -c2)"
 if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [ "$VMSIZE" == "Standard_E64s_v3" ] || [ "$VMSIZE" == "Standard_GS5" ] ; then
+
 echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  pvcreate -ff -y $hanavg1lun $hanavg2lun
+  hanavg1lun="/dev/disk/azure/scsi1/lun3-part1"
+  hanavg2lun="/dev/disk/azure/scsi1/lun4-part1"
   vgcreate hanavg $hanavg1lun $hanavg2lun
   lvcreate -W y  -l 80%FREE -n datalv hanavg
   lvcreate -W y  -l 20%VG -n loglv hanavg
@@ -260,10 +271,9 @@ echo "logicalvols end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  pvcreate -y -ff $backupvglun $sharedvglun $usrsapvglun
+  sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
+  usrsapvglun="/dev/disk/azure/scsi1/lun1-part1)"
+  backupvglun="/dev/disk/azure/scsi1/lun2-part1"
   vgcreate backupvg $backupvglun
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
@@ -277,10 +287,14 @@ echo "logicalvols2 end" >> /tmp/parameter.txt
 fi
 
 if [ $VMSIZE == "Standard_M64s" ]; then
+# this assumes that 6 disks are attached at lun 0 through 5
+echo "Creating partitions and physical volumes"
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
+sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
+
 echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  pvcreate -y -ff hanavg $hanavg1lun $hanavg2lun
+  hanavg1lun="/dev/disk/azure/scsi1/lun4-part1"
+  hanavg2lun="/dev/disk/azure/scsi1/lun5-part1"
   vgcreate hanavg $hanavg1lun $hanavg2lun
   lvcreate -W y  -l 80%FREE -n datalv hanavg
   lvcreate -W y  -l 20%VG -n loglv hanavg
@@ -291,11 +305,10 @@ echo "logicalvols end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate -y -ff $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
+  sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
+  usrsapvglun="/dev/disk/azure/scsi1/lun1-part1"
+  backupvglun1="/dev/disk/azure/scsi1/lun2-part1"
+  backupvglun2="/dev/disk/azure/scsi1/lun3-part1"
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun 
@@ -309,11 +322,17 @@ echo "logicalvols2 end" >> /tmp/parameter.txt
 fi
 
 if [ $VMSIZE == "Standard_M64ms" ] || [ $VMSIZE == "Standard_M128s" ]; then
+# this assumes that 7 disks are attached at lun 0 through 6
+echo "Creating partitions and physical volumes"
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun6'
+sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun6-part1
+
 echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  hanavg3lun="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
-  pvcreate $hanavg1lun $hanavg2lun $hanavg3lun
+  hanavg1lun="/dev/disk/azure/scsi1/lun4-part1"
+  hanavg2lun="/dev/disk/azure/scsi1/lun5-part1"
+  hanavg3lun="/dev/disk/azure/scsi1/lun6-part1"
   vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun
   lvcreate -W y  -l 80%FREE -n datalv hanavg
   lvcreate -W y  -l 20%VG -n loglv hanavg
@@ -324,11 +343,10 @@ echo "logicalvols end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  pvcreate -y -ff $backupvglun1 $backupvglun2 $sharedvglun $usrsapvglun
+  sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
+  usrsapvglun="/dev/disk/azure/scsi1/lun1-part1"
+  backupvglun1="/dev/disk/azure/scsi1/lun2-part1"
+  backupvglun2="/dev/disk/azure/scsi1/lun3-part1"
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
@@ -342,13 +360,29 @@ echo "logicalvols2 end" >> /tmp/parameter.txt
 fi
 
 if [ $VMSIZE == "Standard_M128ms" ]; then
+# this assumes that 12 disks are attached at lun 0 through 11
+echo "Creating partitions and physical volumes"
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun6'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun7'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun9'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun10'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun11'
+sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun6-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun7-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun9-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun10-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun11-part1
+
 echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="$(lsscsi $number 0 0 7 | grep -o '.\{9\}$')"
-  hanavg2lun="$(lsscsi $number 0 0 8 | grep -o '.\{9\}$')"
-  hanavg3lun="$(lsscsi $number 0 0 9 | grep -o '.\{9\}$')"
-  hanavg4lun="$(lsscsi $number 0 0 10 | grep -o '.\{9\}$')"
-  hanavg5lun="$(lsscsi $number 0 0 11 | grep -o '.\{9\}$')"
-  pvcreate -y -ff $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
+  hanavg1lun="/dev/disk/azure/scsi1/lun7-part1"
+  hanavg2lun="/dev/disk/azure/scsi1/lun8-part1"
+  hanavg3lun="/dev/disk/azure/scsi1/lun9-part1"
+  hanavg4lun="/dev/disk/azure/scsi1/lun10-part1"
+  hanavg5lun="/dev/disk/azure/scsi1/lun11-part1"
   vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
   lvcreate -W y  -l 80%FREE -n datalv hanavg
   lvcreate -W y  -l 20%VG -n loglv hanavg
@@ -359,14 +393,13 @@ echo "logicalvols end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "logicalvols2 start" >> /tmp/parameter.txt
-  sharedvglun="$(lsscsi $number 0 0 0 | grep -o '.\{9\}$')"
-  usrsapvglun="$(lsscsi $number 0 0 1 | grep -o '.\{9\}$')"
-  backupvglun1="$(lsscsi $number 0 0 2 | grep -o '.\{9\}$')"
-  backupvglun2="$(lsscsi $number 0 0 3 | grep -o '.\{9\}$')"
-  backupvglun3="$(lsscsi $number 0 0 4 | grep -o '.\{9\}$')"
-  backupvglun4="$(lsscsi $number 0 0 5 | grep -o '.\{9\}$')"
-  backupvglun5="$(lsscsi $number 0 0 6 | grep -o '.\{9\}$')"
-  pvcreate -y -ff $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5 $sharedvglun $usrsapvglun
+  sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
+  usrsapvglun="/dev/disk/azure/scsi1/lun1-part1"
+  backupvglun1="/dev/disk/azure/scsi1/lun2-part1"
+  backupvglun2="/dev/disk/azure/scsi1/lun3-part1"
+  backupvglun3="/dev/disk/azure/scsi1/lun4-part1"
+  backupvglun4="/dev/disk/azure/scsi1/lun5-part1"
+  backupvglun5="/dev/disk/azure/scsi1/lun6-part1"
   vgcreate backupvg $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
