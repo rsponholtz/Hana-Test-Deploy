@@ -175,28 +175,64 @@
             "sap": 63,
             "backup": 255,
             "data1": 511,
-            "data2": 511
+            "data2": 511,
+            "data3": 511
         },
         "diskConfig_Standard_E32s_v3": {
             "shared": 511,
             "sap": 63,
             "backup": 511,
             "data1": 511,
-            "data2": 511
+            "data2": 511,
+            "data3": 511
         },
         "diskConfig_Standard_E64s_v3": {
             "shared": 511,
             "sap": 63,
             "backup": 1023,
             "data1": 511,
-            "data2": 511
+            "data2": 511,
+            "data3": 511
         },
         "diskConfig_Standard_GS5": {
             "shared": 511,
             "sap": 63,
             "backup": 1023,
             "data1": 511,
-            "data2": 511
+            "data2": 511,
+            "data3": 511
+        },
+                "diskConfig_Standard_M32ls": {
+            "shared": 511,
+            "sap": 63,
+            "backup": 1023,
+            "data1": 511,
+            "data2": 511,
+            "data3": 511
+        },
+                "diskConfig_Standard_M32ts": {
+            "shared": 511,
+            "sap": 63,
+            "backup": 1023,
+            "data1": 511,
+            "data2": 511,
+            "data3": 511
+        },
+                "diskConfig_Standard_M64ls": {
+            "shared": 511,
+            "sap": 63,
+            "backup": 1023,
+            "data1": 511,
+            "data2": 511,
+            "data3": 511
+        },
+                "diskConfig_Standard_DS14_v2": {
+            "shared": 511,
+            "sap": 63,
+            "backup": 1023,
+            "data1": 511,
+            "data2": 511,
+            "data3": 511
         },
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
@@ -308,6 +344,22 @@
             }
         },
         {
+            "type": "Microsoft.Compute/disks",
+            "name": "[concat(parameters('vmName1'),'-data3')]",
+            "apiVersion": "2018-04-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS",
+                "tier": "Premium"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": "[variables('diskConfig').data3]"
+            }
+        },
+        {
             "apiVersion": "[variables('api-version-vm')]",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('vmName1')]",
@@ -318,7 +370,8 @@
                 "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-sap'))]",
                 "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-backup1'))]",
                 "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data1'))]",
-                "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data2'))]"
+                "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data2'))]",
+                "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data3'))]"
             ],
             "properties": {
                 "availabilitySet": "[variables('internalAVSetObj')]",
@@ -374,6 +427,13 @@
                             "createOption": "Attach",
                             "managedDisk": {
                                 "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data2'))]"
+                            }
+                        },
+                        {
+                            "lun": 5,
+                            "createOption": "Attach",
+                            "managedDisk": {
+                                "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data3'))]"
                             }
                         }
                     ]
