@@ -251,18 +251,21 @@ sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun1'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun2'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun3'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun4'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
 sudo pvcreate /dev/disk/azure/scsi1/lun0-part1   
 sudo pvcreate /dev/disk/azure/scsi1/lun1-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun2-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun3-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun4-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
 
-if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [ "$VMSIZE" == "Standard_E64s_v3" ] || [ "$VMSIZE" == "Standard_GS5" ] ; then
+if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [ "$VMSIZE" == "Standard_E64s_v3" ] || [ "$VMSIZE" == "Standard_GS5" ] || [ "$VMSIZE" == "Standard_M32ts" ] || [ "$VMSIZE" == "Standard_M32ls" ] || [ "$VMSIZE" == "Standard_M64ls" ] || [ $VMSIZE == "Standard_DS14_v2" ] ; then
 
 echo "logicalvols start" >> /tmp/parameter.txt
   hanavg1lun="/dev/disk/azure/scsi1/lun3-part1"
   hanavg2lun="/dev/disk/azure/scsi1/lun4-part1"
-  vgcreate hanavg $hanavg1lun $hanavg2lun
+  hanavg3lun="/dev/disk/azure/scsi1/lun5-part1"
+  vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun
   lvcreate -W y  -l 80%FREE -n datalv hanavg
   lvcreate -W y  -l 20%VG -n loglv hanavg
   mkfs.xfs /dev/hanavg/datalv
