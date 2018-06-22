@@ -217,6 +217,9 @@
             },
             "Standard_M64ls (512 GB)": {
                 "templateuri": "small-hsr.json"
+            },
+            "Standard_DS14_v2 (128 GB)": {
+                "templateuri": "small-hsr.json"
             }
         },
         "mytemplatevar": "[variables('vmSizes')[parameters('VMSize')].templateuri]",
