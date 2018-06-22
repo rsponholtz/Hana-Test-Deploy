@@ -623,3 +623,31 @@ else
   write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
 fi
+
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
+crm configure property maintenance-mode="true"   
+
+ crm configure primitive rsc_sap_NW1_ASCS00 SAPInstance \
+ operations \$id=rsc_sap_NW1_ASCS00-operations \
+ op monitor interval=11 timeout=60 on_fail=restart \
+ params InstanceName=NW1_ASCS00_nw1-ascs START_PROFILE="/sapmnt/NW1/profile/NW1_ASCS00_nw1-ascs" \
+ AUTOMATIC_RECOVER=false \
+ meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
+
+ crm configure primitive rsc_sap_NW1_ERS02 SAPInstance \
+ operations \$id=rsc_sap_NW1_ERS02-operations \
+ op monitor interval=11 timeout=60 on_fail=restart \
+ params InstanceName=NW1_ERS02_nw1-aers START_PROFILE="/sapmnt/NW1/profile/NW1_ERS02_nw1-aers" AUTOMATIC_RECOVER=false IS_ERS=true \
+ meta priority=1000
+
+ crm configure modgroup g-NW1_ASCS add rsc_sap_NW1_ASCS00
+ crm configure modgroup g-NW1_ERS add rsc_sap_NW1_ERS02
+
+ crm configure colocation col_sap_NW1_no_both -5000: g-NW1_ERS g-NW1_ASCS
+ crm configure location loc_sap_NW1_failover_to_ers rsc_sap_NW1_ASCS00 rule 2000: runs_ers_NW1 eq 1
+ crm configure order ord_sap_NW1_first_start_ascs Optional: rsc_sap_NW1_ASCS00:start rsc_sap_NW1_ERS02:stop symmetrical=false
+
+ crm node online nw1-cl-0
+ crm configure property maintenance-mode="false"
+fi
