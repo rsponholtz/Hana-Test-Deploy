@@ -22,6 +22,9 @@ az group deployment create \
    IQNClient2="$ASCSIQNCLIENT2" \
    iSCSIIP=$ISCSIIP \
    ILBIP=$ASCSILBIP \
-   NFSILBIP=$NFSILBIP
+   NFSILBIP=$NFSILBIP \
+   SAPPASSWD="$vmpassword" \
+   DBHOST="hanailb" \
+   DBIP="$HANAILBIP"
 
 echo "ascs cluster installed"

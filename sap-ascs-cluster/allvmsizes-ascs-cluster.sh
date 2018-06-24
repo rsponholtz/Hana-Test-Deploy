@@ -29,7 +29,17 @@ SUBEMAIL=${15}
 SUBID=${16}
 SUBURL=${17}
 NFSILBIP=${18}
-
+ASCSSID=${19}
+ASCSINSTANCE=${20}
+SAPINSTGID=${21}
+SAPSYSGID=${22}
+SAPADMUID=${23}
+SIDADMUID=${24}
+SAPPASSWD=${25}
+ERSINSTANCE=${26}
+DBHOST=${27}
+DBIP=${28}
+DBINSTANCE=${29}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -89,6 +99,23 @@ return 0
 }
 
 declare -fxr waitfor
+
+download_if_needed() {
+  P_DESTDIR=${1}
+  P_SOURCEDIR=${2}
+  P_FILENAME=${3}
+
+  DESTFILE="$P_DESTDIR/$P_FILENAME"
+  SOURCEFILE="$P_SOURCEDIR/$P_FILENAME"
+  test -e $DESTFILE
+  RESULT=$?
+  if [ "$RESULT" = "1" ]; then
+    #need to download the file
+    retry 5 "wget --quiet -O $DESTFILE $SOURCEFILE"
+  fi
+}
+
+
 
 register_subscription() {
   SUBEMAIL=$1
@@ -245,21 +272,21 @@ download_sapbits() {
     #need to download the sap bits
     cd  $SBDIR
 
-    retry 5 "wget  --quiet $URI/SapBits/51050423_3.ZIP"
-    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part1.exe"   
-    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part2.rar" 
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
-    retry 5 "wget  --quiet $URI/SapBits/SAPCAR_1014-80000935.EXE"
-    retry 5 "wget  --quiet $URI/SapBits/SWPM10SP23_1-20009701.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPEXE_200-80002573.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPEXEDB_200-80002572.SAR"
+    download_if_needed $SBDIR "$URI/SapBits" "51050423_3.ZIP"
+    download_if_needed $SBDIR "$URI/SapBits" "51050829_JAVA_part1.exe"   
+    download_if_needed $SBDIR "$URI/SapBits" "51050829_JAVA_part2.rar" 
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part1.exe"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part2.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part3.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part4.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part5.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052318_part1.exe"
+    download_if_needed $SBDIR "$URI/SapBits" "51052318_part2.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "SAPCAR_1014-80000935.EXE"
+    download_if_needed $SBDIR "$URI/SapBits" "SWPM10SP23_1-20009701.SAR"
+    download_if_needed $SBDIR "$URI/SapBits" "SAPHOSTAGENT36_36-20009394.SAR"
+    download_if_needed $SBDIR "$URI/SapBits" "SAPEXE_200-80002573.SAR"
+    download_if_needed $SBDIR "$URI/SapBits" "SAPEXEDB_200-80002572.SAR"
     #unpack some of this
     retry 5 "zypper install -y unrar"
 
@@ -285,20 +312,19 @@ download_dbbits() {
   echo $RESULT
   if [ "$RESULT" = "1" ]; then
       #need to download the sap bits
-
     cd  $SBDIR
 
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052325_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052325_part2.rar"  
-    retry 5 "wget  --quiet $URI/SapBits/51052325_part3.rar"  
-    retry 5 "wget  --quiet $URI/SapBits/51052325_part4.rar"  
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part1.exe"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part2.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part3.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part4.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052190_part5.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052318_part1.exe"
+    download_if_needed $SBDIR "$URI/SapBits" "51052318_part2.rar"
+    download_if_needed $SBDIR "$URI/SapBits" "51052325_part1.exe"
+    download_if_needed $SBDIR "$URI/SapBits" "51052325_part2.rar"  
+    download_if_needed $SBDIR "$URI/SapBits" "51052325_part3.rar"  
+    download_if_needed $SBDIR "$URI/SapBits" "51052325_part4.rar"  
     #unpack some of this
     retry 5 "zypper install -y unrar"
 
@@ -309,165 +335,125 @@ download_dbbits() {
 }
 
 write_ascs_ini_file() {
-  P_ISPRIMARY=$1
-  P_VMNAME=$3
-  P_OTHERVMNAME=$4 
+  P_INIFILE=${1}
+  P_ISPRIMARY=${2}
+  P_VMNAME=${3}
+  P_OTHERVMNAME=${4} 
+  P_ASCSSID=${5}
+  P_ASCSINSTANCE=${6}
+  P_MASTERPASSWD=${7}
+  P_SAPADMUID=${8}
+  P_SAPSYSGID=${9}
+  P_SIDADMUID=${10}
 
   echo "setup cluster"
   echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
   echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
 
-  cd /silent_install
-  cat > /silent_install/ascs.params <<EOF
-NW_GetMasterPassword.masterPwd = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-NW_GetSidNoProfiles.sid = S40
+  cat > $P_INIFILE <<EOF
+NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
+NW_GetSidNoProfiles.sid = $P_ASCSSID
 NW_SAPCrypto.SAPCryptoFile = /sapbits/SAPEXE_200-80002573.SAR
-NW_SCS_Instance.instanceNumber = 00
-NW_SCS_Instance.scsVirtualHostname = ascs1
+NW_SCS_Instance.instanceNumber = $P_ASCSINSTANCE
+NW_SCS_Instance.scsVirtualHostname = $P_VMNAME
 NW_Unpack.sapExeSar = /sapbits/SAPEXE_200-80002573.SAR
 NW_getFQDN.setFQDN = false
 archives.downloadBasket = /sapbits
-hostAgent.sapAdmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-nwUsers.sapadmUID = 1050
-nwUsers.sapsysGID = 1001
-nwUsers.sidAdmUID = 1040
-nwUsers.sidadmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+hostAgent.sapAdmPassword = $P_MASTERPASSWD
+nwUsers.sapadmUID = $P_SAPADMUID
+nwUsers.sapsysGID = $P_SAPSYSGID
+nwUsers.sidAdmUID = $P_SIDADMUID
+nwUsers.sidadmPassword = $P_MASTERPASSWD
 EOF
 }
 
 write_ers_ini_file() {
-  P_ISPRIMARY=$1
-  P_VMNAME=$3
-  P_OTHERVMNAME=$4 
+  P_INIFILE=${1}
+  P_ISPRIMARY=${2}
+  P_VMNAME=${3}
+  P_OTHERVMNAME=${4} 
+  P_ASCSSID=${5}
+  P_ERSINSTANCE=${6}
+  P_MASTERPASSWD=${7}
+  P_SAPADMUID=${8}
+  P_SAPSYSGID=${9}
+  P_SIDADMUID=${10}
+
+
 
   echo "setup cluster"
   echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
   echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
 
-  cd /silent_install
-  cat > /silent_install/ers.params <<EOF
+  cat > $P_INIFILE <<EOF
 NW_getFQDN.setFQDN = false
-NW_readProfileDir.profileDir = /sapmnt/S40/profile
+NW_readProfileDir.profileDir = /sapmnt/$P_ASCSSID/profile
 archives.downloadBasket = /sapbits
-hostAgent.sapAdmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-nwUsers.sapadmUID = 1050
-nwUsers.sapsysGID = 1001
-nwUsers.sidAdmUID = 1040
-nwUsers.sidadmPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-nw_instance_ers.ersInstanceNumber = 10
-nw_instance_ers.ersVirtualHostname = ascs2
+hostAgent.sapAdmPassword = $P_MASTERPASSWD
+nwUsers.sapadmUID = $P_SAPADMUID
+nwUsers.sapsysGID = $P_SAPSYSGID
+nwUsers.sidAdmUID = $P_SIDADMUID
+nwUsers.sidadmPassword = $P_MASTERPASSWD
+nw_instance_ers.ersInstanceNumber = $P_ERSINSTANCE
+nw_instance_ers.ersVirtualHostname = $P_VMNAME
 EOF
 }
 
 write_db_ini_file() {
-  cat > /silent_db/db.params <<EOF
+  P_INIFILE=${1}
+  P_ASCSSID=${2}
+  P_MASTERPASSWD=${3}
+  P_SAPSYSGID=${4}
+  P_SIDADMUID=${5}
+  P_DBHOST=${6}
+  P_DBSID=${7}
+  P_DBINSTANCE=${8}
+
+  cat > $P_INIFILE <<EOF
 HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
-HDB_Schema_Check_Dialogs.schemaPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_ABAP_Import_Dialog.dbCodepage = 4103
 NW_ABAP_Import_Dialog.migmonJobNum = 6
 NW_ABAP_Import_Dialog.migmonLoadArgs = -c 100000 -rowstorelist /silent_db/rowstorelist.txt
-NW_GetMasterPassword.masterPwd = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-NW_HDB_getDBInfo.dbhost = hanailb
-NW_HDB_getDBInfo.dbsid = H10
-NW_HDB_getDBInfo.instanceNumber = 00
-NW_HDB_getDBInfo.systemDbPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
-NW_HDB_getDBInfo.systemPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
+NW_HDB_getDBInfo.dbhost = $P_DBHOST
+NW_HDB_getDBInfo.dbsid = $P_DBSID
+NW_HDB_getDBInfo.instanceNumber = $P_DBINSTANCE
+NW_HDB_getDBInfo.systemDbPassword = $P_MASTERPASSWD
+NW_HDB_getDBInfo.systemPassword = $P_MASTERPASSWD
 NW_Unpack.sapExeDbSar = /sapbits/SAPEXEDB_200-80002572.SAR
 NW_getFQDN.setFQDN = false
 NW_getLoadType.loadType = SAP
-NW_readProfileDir.profileDir = /usr/sap/S40/SYS/profile
+NW_readProfileDir.profileDir = /usr/sap/$P_ASCSSID/SYS/profile
 hanadb.landscape.reorg.useParameterFile = DONOTUSEFILE
-nwUsers.sapsysGID = 1001
-nwUsers.sidAdmUID = 1040
-storageBasedCopy.hdb.instanceNumber = 00
-storageBasedCopy.hdb.systemPassword = des24(151|174|40|210|8|12|209|157|98|106|194|247|230|117|97|90|154|104|186|)
+nwUsers.sapsysGID = $P_SAPSYSGUID
+nwUsers.sidAdmUID = $P_SIDADMUID
+storageBasedCopy.hdb.instanceNumber = $P_DBINSTANCE
+storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
 EOF
 }
 
+exec_sapinst() {
+  P_SAPINSTFUNC=${1}
+  P_INIFILE=${2}
+  P_PRODUCTID
 
-install_ascs() {
-  P_ISPRIMARY=$1
-  P_VMNAME=$3
-  P_OTHERVMNAME=$4 
+  echo "run sapinst"
+  echo "P_SAPINSTFUNC:" $P_SAPINSTFUNC >> /tmp/variables.txt
+  echo "P_INIFILE:" $P_INIFILE>> /tmp/variables.txt
+  echo "P_PRODUCTID:" $P_PRODUCTID>> /tmp/variables.txt
 
-  echo "setup cluster"
-  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
-  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
-  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
+  echo "running sapinst for $P_SAPINSTFUNC"
+  SILENTDIR="/silent_$SAPINSTFUNC"
+  mkdir $SILENTDIR
+  chown root:sapinst $SILENTDIR
+  chmod 775 $SILENTDIR    
 
-
-  if [ "$P_ISPRIMARY" = "yes" ]; then
-    echo "setup ascs"
-    rm -r -f /tmp/sapinst_instdir
-    rm -r -f /sapmnt/*
-    rm -r -f /usr/sap/S40/SYS/*
-    cd /silent_install
-    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-    touch /tmp/ascscomplete.txt
-  fi
+  cd $SILENTDIR
+  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
 }
-
-
-install_ers() {
-  P_ISPRIMARY=$1
-  P_VMNAME=$3
-  P_OTHERVMNAME=$4 
-
-  echo "setup cluster"
-  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
-  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
-  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
-
-  if [ "$P_ISPRIMARY" = "yes" ]; then
-  echo "setup ascs"
-  else
-
-  #!/bin/bash
-  echo "setup ers"
-    cd /tmp
-    rm -r -f sapinst_instdir
-    cd /silent_install
-    waitfor root $P_OTHERVMNAME /tmp/ascscomplete.txt
-    /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ers.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-    touch /tmp/erscomplete.txt
-  #/sapbits/SWPM10SP23_1/sapinst
-  #profile directory /sapmnt/SID/profile
-  fi
-##as s40adm, do stopsap
-}
-
-install_database() {
-  P_ISPRIMARY=$1
-  P_VMNAME=$3
-  P_OTHERVMNAME=$4 
-
-  echo "setup database"
-  echo "P_ISPRIMARY:" $P_ISPRIMARY >> /tmp/variables.txt
-  echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
-  echo "P_OTHERVMNAME:" $P_OTHERVMNAME>> /tmp/variables.txt
-
-  waitfor root $P_OTHERVMNAME /tmp/erscomplete.txt
-
-  if [ "$P_ISPRIMARY" = "yes" ]; then
-    echo "setup db"
-    cd /sapbits
-    mkdir 51052190
-    unrar x 51052190_part1.exe
-    mkdir /silent_db
-    chown root:sapinst /silent_db
-    chmod 775 /silent_db    
-    cd /silent_db
-    write_db_ini_file    
-    echo  "10.0.0.22 hanailb"  >>/etc/hosts
-    cat > /silent_db/installdb.sh <<EOF
-/sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./ascs.params" SAPINST_EXECUTE_PRODUCT_ID="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-EOF
-    touch /tmp/dbcomplete.txt
-  fi
-}
-
 
 ##end of bash function definitions
 
@@ -516,8 +502,6 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $ASCSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
 
     cd /root 
-    #wget $REPOURI/waitfor.sh
-    #chmod u+x waitfor.sh
 
 #Clustering setup
 #start services [A]
@@ -603,25 +587,26 @@ download_sapbits $URI /sapbits
 touch /tmp/sapbitsdownloaded.txt
 create_temp_swapfile "/localstore/tempswap" 2000000
 
-groupadd -g 1000 sapinst
-groupadd -g 1001 sapsys
+groupadd -g $SAPINSTGID sapinst
+groupadd -g $SAPSYSGID sapsys
+usermod -a -G sapinst root
 usermod -a -G sapsys root
-mkdir /silent_install
-cd /silent_install
-chown root:sapinst /silent_install
-chmod g+rwx /silent_install
-chmod o+rx /silent_install
+echo  "10.0.0.22 hanailb"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
-  write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
-  install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
+  exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA"
+  touch /tmp/ascscomplete.txt
   download_dbbits $URI /sapbits
+  waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
-  install_database "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
+  exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA"
 else
-  waitfor  root $P_OTHERVMNAME /tmp/sapbitsdownloaded.txt
-  write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
-  install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
+  write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
+  exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA"
+  touch /tmp/erscomplete.txt
 fi
 
 #node1
