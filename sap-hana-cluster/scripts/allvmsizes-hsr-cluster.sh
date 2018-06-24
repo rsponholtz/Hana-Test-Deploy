@@ -11,43 +11,26 @@ for (( i=0;i<$ELEMENTS;i++)); do
     echo ${args[${i}]}
 done
 
-URI=$1
-shift
-HANAUSR=$1
-shift
-HANAPWD=$1
-shift
-HANASID=$1
-shift
-HANANUMBER=$1
-shift
-VMNAME=$1
-shift
-OTHERVMNAME=$1
-shift
-VMIPADDR=$1
-shift
-OTHERIPADDR=$1
-shift
-CONFIGHSR=$1
-shift
-ISPRIMARY=$1
-shift
-REPOURI=$1
-shift
-ISCSIIP=$1
-shift
-IQN=$1
-shift
-IQNCLIENT=$1
-shift
-LBIP=$1
-shift
-SUBEMAIL=$1
-shift
-SUBID=$1
-shift
-SUBURL=$1
+URI=${1}
+HANAUSR=${2}
+HANAPWD=${3}
+HANASID=${4}
+HANANUMBER=${5}
+VMNAME=${6}
+OTHERVMNAME=${7}
+VMIPADDR=${8}
+OTHERIPADDR=${9}
+CONFIGHSR=${10}
+ISPRIMARY=${11}
+REPOURI=${12}
+ISCSIIP=${13}
+IQN=${14}
+IQNCLIENT=${15}
+LBIP=${16}
+SUBEMAIL=${17}
+SUBID=${18}
+SUBURL=${19}
+NFSIP=${20}
 
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
@@ -496,6 +479,7 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
+$NFSIP nfsnfslb
 EOF
 
 #!/bin/bash
