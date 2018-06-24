@@ -122,7 +122,7 @@
         "vmName1": "[toLower(parameters('vmName1'))]",
         "vmName2": "[toLower(parameters('vmName2'))]",
         "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-hana-cluster",
-        "swUri": "[concat(variables('baseUri'), '/scripts/allvmsizes-hsr-cluster.sh')]",
+        "swUri": "[concat(variables('baseUri'), '/scripts/allvmsizes-hsr-cluster-test.sh')]",
         "repoUri": "[variables('baseUri')]",
         "smallUri": "[concat(variables('baseUri'), '/Vms/small-hsr.json')]",
         "mediumUri": "[concat(variables('baseUri'), '/Vms/medium-hsr.json')]",
@@ -149,7 +149,7 @@
                     "fileUris": [
                         "[variables('swUri')]"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-hsr-cluster.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\"  \"', parameters('vmPassword'),'\"  \"', parameters('HANASID'), '\"  \"', parameters('HANANUMBER'),'\"  \"',parameters('vmName1'),'\"  \"',parameters('vmName2'),'\"  \"',parameters('StaticIP1'),'\"  \"',parameters('StaticIP2'),'\" \"yes\" \"yes\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-hsr-cluster-test.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\"  \"', parameters('vmPassword'),'\"  \"', parameters('HANASID'), '\"  \"', parameters('HANANUMBER'),'\"  \"',parameters('vmName1'),'\"  \"',parameters('vmName2'),'\"  \"',parameters('StaticIP1'),'\"  \"',parameters('StaticIP2'),'\" \"yes\" \"yes\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         },
@@ -167,7 +167,7 @@
                     "fileUris": [
                         "[variables('swUri')]"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-hsr-cluster.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\"  \"', parameters('vmPassword'),'\"  \"', parameters('HANASID'), '\"  \"', parameters('HANANUMBER'),'\"  \"',parameters('vmName2'),'\"  \"',parameters('vmName1'),'\"  \"',parameters('StaticIP2'),'\"  \"',parameters('StaticIP1'),'\" \"yes\" \"no\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-hsr-cluster-test.sh \"', parameters('customUri'), '\"  \"' , parameters('vmUserName'), '\"  \"', parameters('vmPassword'),'\"  \"', parameters('HANASID'), '\"  \"', parameters('HANANUMBER'),'\"  \"',parameters('vmName2'),'\"  \"',parameters('vmName1'),'\"  \"',parameters('StaticIP2'),'\"  \"',parameters('StaticIP1'),'\" \"yes\" \"no\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\"')]"
                 }
             }
         }

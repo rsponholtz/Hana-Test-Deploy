@@ -67,6 +67,26 @@ retry() {
 
 declare -fxr retry
 
+waitfor() {
+P_USER=$1
+P_HOST=$2
+P_FILESPEC=$3
+
+RESULT=1
+while [ $RESULT = 1 ]
+do
+    sleep 1
+    ssh -q -n -o BatchMode=yes -o StrictHostKeyChecking=no "$P_USER@$P_HOST" "test -e $P_FILESPEC"
+    RESULT=$?
+    if [ "$RESULT" = "255" ]; then
+        (>&2 echo "waitfor failed in ssh")
+        return 255
+    fi
+done
+return 0
+}
+
+declare -fxr waitfor
 
 register_subscription() {
   SUBEMAIL=$1
@@ -165,7 +185,7 @@ setup_cluster() {
     ha-cluster-init -y -q -s $SBDID sbd 
     ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig2.txt	
     systemctl stop corosync
     systemctl stop pacemaker
     write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
@@ -175,14 +195,14 @@ setup_cluster() {
 
     sleep 10
   else
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig1.txt	
     ha-cluster-join -y -q -c $OTHERVMNAME csync2 
     ha-cluster-join -y -q ssh_merge
     ha-cluster-join -y -q cluster
     systemctl stop corosync
     systemctl stop pacemaker
     touch /tmp/corosyncconfig2.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig3.txt	
     write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
     systemctl restart corosync
     systemctl start pacemaker
@@ -293,9 +313,7 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $NFSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
 
     cd /root 
-    wget $REPOURI/waitfor.sh
-    chmod u+x waitfor.sh
-
+ 
 #Clustering setup
 #start services [A]
 systemctl enable iscsid

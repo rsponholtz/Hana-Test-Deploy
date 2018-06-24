@@ -104,6 +104,43 @@ retry() {
 
 declare -fxr retry
 
+waitfor() {
+P_USER=$1
+P_HOST=$2
+P_FILESPEC=$3
+
+RESULT=1
+while [ $RESULT = 1 ]
+do
+    sleep 1
+    ssh -q -n -o BatchMode=yes -o StrictHostKeyChecking=no "$P_USER@$P_HOST" "test -e $P_FILESPEC"
+    RESULT=$?
+    if [ "$RESULT" = "255" ]; then
+        (>&2 echo "waitfor failed in ssh")
+        return 255
+    fi
+done
+return 0
+}
+
+declare -fxr waitfor
+
+download_if_needed() {
+  P_DESTDIR=${1}
+  P_SOURCEDIR=${2}
+  P_FILENAME=${3}
+
+  DESTFILE="$P_DESTDIR/$P_FILENAME"
+  SOURCEFILE="$P_SOURCEDIR/$P_FILENAME"
+  test -e $DESTFILE
+  RESULT=$?
+  if [ "$RESULT" = "1" ]; then
+    #need to download the file
+    retry 5 "wget --quiet -O $DESTFILE $SOURCEFILE"
+  fi
+}
+
+declare -fxr download_if_needed
 
 ##bash function definitions
 
@@ -203,7 +240,7 @@ setup_cluster() {
     ha-cluster-init -y -q -s $SBDID sbd 
     ha-cluster-init -y -q cluster name=$CLUSTERNAME interface=eth0
     touch /tmp/corosyncconfig1.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig2.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig2.txt	
     systemctl stop corosync
     systemctl stop pacemaker
     write_corosync_config 10.0.5.0 $VMNAME $OTHERVMNAME
@@ -213,14 +250,14 @@ setup_cluster() {
 
     sleep 10
   else
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig1.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig1.txt	
     ha-cluster-join -y -q -c $OTHERVMNAME csync2 
     ha-cluster-join -y -q ssh_merge
     ha-cluster-join -y -q cluster
     systemctl stop corosync
     systemctl stop pacemaker
     touch /tmp/corosyncconfig2.txt	
-    /root/waitfor.sh root $OTHERVMNAME /tmp/corosyncconfig3.txt	
+    waitfor root $OTHERVMNAME /tmp/corosyncconfig3.txt	
     write_corosync_config 10.0.5.0 $OTHERVMNAME $VMNAME 
     systemctl restart corosync
     systemctl start pacemaker
@@ -231,10 +268,6 @@ setup_cluster() {
 
 
 register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
-
-
-cp waitfor.sh /root
-chmod u+x /root/waitfor.sh
 
 mkdir /etc/systemd/login.conf.d
 mkdir /hana
@@ -421,7 +454,6 @@ mount -t xfs /dev/backupvg/backuplv /hana/backup
 mount -t xfs /dev/usrsapvg/usrsaplv /usr/sap
 mount -t xfs /dev/hanavg/datalv /hana/data
 mount -t xfs /dev/hanavg/loglv /hana/log 
-mkdir /hana/data/sapbits
 echo "mounthanashared end" >> /tmp/parameter.txt
 
 echo "write to fstab start" >> /tmp/parameter.txt
@@ -432,10 +464,10 @@ echo "/dev/mapper/backupvg-backuplv /hana/backup xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap xfs defaults 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
 
-if [ ! -d "/hana/data/sapbits" ]
- then
- mkdir "/hana/data/sapbits"
-fi
+mkdir /sapbits
+mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
+echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
+SAPBITSDIR="/sapbits"
 
 
 #install hana prereqs
@@ -467,13 +499,12 @@ $OTHERIPADDR $OTHERVMNAME
 EOF
 
 #!/bin/bash
-cd /hana/data/sapbits
+cd $SAPBITSDIR
 echo "hana download start" >> /tmp/parameter.txt
-retry 5 "/usr/bin/wget --quiet $URI/SapBits/md5sums"
-retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part1.exe"
-retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part2.rar"
-retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part3.rar"
-retry 5 "/usr/bin/wget --quiet $URI/SapBits/51052325_part4.rar"
+download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part1.exe"
+download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part2.rar"  
+download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part3.rar"  
+download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part4.rar"  
 
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
@@ -486,22 +517,22 @@ fi
 echo "hana download end" >> /tmp/parameter.txt
 
 date >> /tmp/testdate
-cd /hana/data/sapbits
+cd $SAPBITSDIR
 
 echo "hana unrar start" >> /tmp/parameter.txt
 #!/bin/bash
-cd /hana/data/sapbits
+cd $SAPBITSDIR
 unrar x 51052325_part1.exe
 echo "hana unrar end" >> /tmp/parameter.txt
 
 echo "hana prepare start" >> /tmp/parameter.txt
-cd /hana/data/sapbits
+cd $SAPBITSDIR
 
 #!/bin/bash
-cd /hana/data/sapbits
+cd $SAPBITSDIR
 myhost=`hostname`
 sedcmd="s/REPLACE-WITH-HOSTNAME/$myhost/g"
-sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/hana\/data\/sapbits\/51052325/g"
+sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/sapbits\/51052325/g"
 sedcmd3="s/root_user=root/root_user=$HANAUSR/g"
 sedcmd4="s/root_password=AweS0me@PW/root_password=$HANAPWD/g"
 sedcmd5="s/master_password=AweS0me@PW/master_password=$HANAPWD/g"
@@ -514,8 +545,8 @@ echo "hana preapre end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "install hana start" >> /tmp/parameter.txt
-cd /hana/data/sapbits/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
-/hana/data/sapbits/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile /hana/data/sapbits/hdbinst-local.cfg
+cd $SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
+$SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile $SAPBITSDIR/hdbinst-local.cfg
 echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
@@ -540,8 +571,6 @@ if [ "$CONFIGHSR" == "yes" ]; then
     HANASIDU="${HANASID^^}"
 
     cd /root
-#    wget $REPOURI/scripts/waitfor.sh
-#    chmod u+x waitfor.sh
     SYNCUSER="hsrsync"
     SYNCPASSWORD="Repl1cate"
 
@@ -560,7 +589,7 @@ EOF
 chmod a+r /tmp/hdbsetupsql
 su - -c "hdbsql -u system -p $HANAPWD -d SYSTEMDB -I /tmp/hdbsetupsql" $HANAADMIN 
 touch /tmp/hanabackupdone.txt
-/root/waitfor.sh root $OTHERVMNAME /tmp/hanabackupdone.txt
+waitfor root $OTHERVMNAME /tmp/hanabackupdone.txt
 
     
 if [ "$ISPRIMARY" = "yes" ]; then
@@ -574,7 +603,7 @@ EOF
 	su - $HANAADMIN -c "bash /tmp/srenable"
 
 	touch /tmp/readyforsecondary.txt
-	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforcerts.txt	
+	waitfor root $OTHERVMNAME /tmp/readyforcerts.txt	
 	scp /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT root@$OTHERVMNAME:/root/SSFS_$HANASIDU.DAT
 	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "cp /root/SSFS_$HANASIDU.DAT /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
 	ssh -o BatchMode=yes -o StrictHostKeyChecking=no root@$OTHERVMNAME "chown $HANAADMIN:sapsys /usr/sap/$HANASIDU/SYS/global/security/rsecssfs/data/SSFS_$HANASIDU.DAT"
@@ -586,10 +615,10 @@ EOF
 	touch /tmp/dohsrjoin.txt
     else
 	#do stuff on the secondary
-	/root/waitfor.sh root $OTHERVMNAME /tmp/readyforsecondary.txt	
+	waitfor root $OTHERVMNAME /tmp/readyforsecondary.txt	
 
 	touch /tmp/readyforcerts.txt
-	/root/waitfor.sh root $OTHERVMNAME /tmp/dohsrjoin.txt	
+	waitfor root $OTHERVMNAME /tmp/dohsrjoin.txt	
 	cat >/tmp/hsrjoin <<EOF
 sapcontrol -nr $HANANUMBER -function StopSystem HDB
 sapcontrol -nr $HANANUMBER -function WaitforStopped 600 2
