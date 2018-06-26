@@ -388,13 +388,11 @@ sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun9'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun10'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun4'
-sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun6-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun7-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun9-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun10-part1
-sudo pvcreate /dev/disk/azure/scsi1/lun4-part1
 
 echo "logicalvols start" >> /tmp/parameter.txt
   datavg1lun="/dev/disk/azure/scsi1/lun4-part1"
@@ -419,9 +417,6 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   usrsapvglun="/dev/disk/azure/scsi1/lun1-part1"
   backupvglun1="/dev/disk/azure/scsi1/lun2-part1"
   backupvglun2="/dev/disk/azure/scsi1/lun3-part1"
-  backupvglun3="/dev/disk/azure/scsi1/lun4-part1"
-  backupvglun4="/dev/disk/azure/scsi1/lun5-part1"
-  backupvglun5="/dev/disk/azure/scsi1/lun6-part1"
   vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
@@ -449,6 +444,12 @@ echo "/dev/mapper/sharedvg-sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/backupvg-backuplv /hana/backup xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap xfs defaults 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
+
+cat >>/etc/hosts <<EOF
+$VMIPADDR $VMNAME
+$OTHERIPADDR $OTHERVMNAME
+$NFSIP nfsnfslb
+EOF
 
 mkdir /sapbits
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
@@ -479,11 +480,6 @@ cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
 
-cat >>/etc/hosts <<EOF
-$VMIPADDR $VMNAME
-$OTHERIPADDR $OTHERVMNAME
-$NFSIP nfsnfslb
-EOF
 
 #!/bin/bash
 cd $SAPBITSDIR
