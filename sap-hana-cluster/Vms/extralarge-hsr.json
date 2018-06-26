@@ -174,19 +174,15 @@
         "diskConfig_Standard_M128ms": {
             "shared": 1023,
             "sap": 63,
-            "backup": 1023,
-            "backup2": 1023,
-            "backup3": 1023,
-            "backup4": 1023,
-            "backup5": 1023,
+            "backup1": 4094,
+            "backup2": 4094,
             "data1": 1023,
             "data2": 1023,
             "data3": 1023,
             "data4": 1023,
             "data5": 1023,
             "log1": 511,
-            "log2": 511,
-            "sharedlun": 0
+            "log2": 511
         },
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
@@ -262,7 +258,7 @@
                 "creationData": {
                     "createOption": "Empty"
                 },
-                "diskSizeGB": "[variables('diskConfig').backup]"
+                "diskSizeGB": "[variables('diskConfig').backup1]"
             }
         },
         {
@@ -279,54 +275,6 @@
                     "createOption": "Empty"
                 },
                 "diskSizeGB": "[variables('diskConfig').backup2]"
-            }
-        },
-        {
-            "type": "Microsoft.Compute/disks",
-            "name": "[concat(parameters('vmName1'),'-backup3')]",
-            "apiVersion": "[variables('api-version-vm')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "properties": {
-                "creationData": {
-                    "createOption": "Empty"
-                },
-                "diskSizeGB": "[variables('diskConfig').backup3]"
-            }
-        },
-        {
-            "type": "Microsoft.Compute/disks",
-            "name": "[concat(parameters('vmName1'),'-backup4')]",
-            "apiVersion": "[variables('api-version-vm')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "properties": {
-                "creationData": {
-                    "createOption": "Empty"
-                },
-                "diskSizeGB": "[variables('diskConfig').backup4]"
-            }
-        },
-        {
-            "type": "Microsoft.Compute/disks",
-            "name": "[concat(parameters('vmName1'),'-backup5')]",
-            "apiVersion": "[variables('api-version-vm')]",
-            "location": "[resourceGroup().location]",
-            "sku": {
-                "name": "Standard_LRS",
-                "tier": "Standard"
-            },
-            "properties": {
-                "creationData": {
-                    "createOption": "Empty"
-                },
-                "diskSizeGB": "[variables('diskConfig').backup5]"
             }
         },
         {
