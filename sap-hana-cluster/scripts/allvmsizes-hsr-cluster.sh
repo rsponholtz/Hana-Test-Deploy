@@ -379,7 +379,7 @@ echo "logicalvols2 end" >> /tmp/parameter.txt
 fi
 
 if [ $VMSIZE == "Standard_M128ms" ]; then
-# this assumes that 12 disks are attached at lun 0 through 11
+# this assumes that 11 disks are attached at lun 0 through 10
 echo "Creating partitions and physical volumes"
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun6'
@@ -387,26 +387,29 @@ sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun7'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun9'
 sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun10'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun11'
+sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun4'
 sudo pvcreate /dev/disk/azure/scsi1/lun5-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun6-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun7-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun9-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun10-part1
-sudo pvcreate /dev/disk/azure/scsi1/lun11-part1
+sudo pvcreate /dev/disk/azure/scsi1/lun4-part1
 
 echo "logicalvols start" >> /tmp/parameter.txt
-  hanavg1lun="/dev/disk/azure/scsi1/lun7-part1"
-  hanavg2lun="/dev/disk/azure/scsi1/lun8-part1"
-  hanavg3lun="/dev/disk/azure/scsi1/lun9-part1"
-  hanavg4lun="/dev/disk/azure/scsi1/lun10-part1"
-  hanavg5lun="/dev/disk/azure/scsi1/lun11-part1"
-  vgcreate hanavg $hanavg1lun $hanavg2lun $hanavg3lun $hanavg4lun $hanavg5lun
-  lvcreate -W y  -l 80%FREE -n datalv hanavg
-  lvcreate -W y  -l 20%VG -n loglv hanavg
-  mkfs.xfs /dev/hanavg/datalv
-  mkfs.xfs /dev/hanavg/loglv
+  datavg1lun="/dev/disk/azure/scsi1/lun4-part1"
+  datavg2lun="/dev/disk/azure/scsi1/lun5-part1"
+  datavg3lun="/dev/disk/azure/scsi1/lun6-part1"
+  datavg4lun="/dev/disk/azure/scsi1/lun7-part1"
+  datavg5lun="/dev/disk/azure/scsi1/lun8-part1"
+  vgcreate datavg $datavg1lun $datavg2lun $datavg3lun $datavg4lun $datavg5lun
+  logvg1lun="/dev/disk/azure/scsi1/lun9-part1"
+  logvg2lun="/dev/disk/azure/scsi1/lun10-part1"
+  vgcreate logvg $logvg1lun $logvg2lun 
+  lvcreate -W y  -l 100%FREE -n datalv datavg
+  lvcreate -W y  -l 100%FREE -n loglv logvg 
+  mkfs.xfs /dev/datavg/datalv
+  mkfs.xfs /dev/logvg/loglv
 echo "logicalvols end" >> /tmp/parameter.txt
 
 
@@ -419,7 +422,7 @@ echo "logicalvols2 start" >> /tmp/parameter.txt
   backupvglun3="/dev/disk/azure/scsi1/lun4-part1"
   backupvglun4="/dev/disk/azure/scsi1/lun5-part1"
   backupvglun5="/dev/disk/azure/scsi1/lun6-part1"
-  vgcreate backupvg $backupvglun1 $backupvglun2 $backupvglun3 $backupvglun4 $backupvglun5
+  vgcreate backupvg $backupvglun1 $backupvglun2
   vgcreate sharedvg $sharedvglun
   vgcreate usrsapvg $usrsapvglun
   lvcreate -W y  -l 100%FREE -n sharedlv sharedvg 
@@ -435,13 +438,13 @@ echo "mounthanashared start" >> /tmp/parameter.txt
 mount -t xfs /dev/sharedvg/sharedlv /hana/shared
 mount -t xfs /dev/backupvg/backuplv /hana/backup 
 mount -t xfs /dev/usrsapvg/usrsaplv /usr/sap
-mount -t xfs /dev/hanavg/datalv /hana/data
-mount -t xfs /dev/hanavg/loglv /hana/log 
+mount -t xfs /dev/datavg/datalv /hana/data
+mount -t xfs /dev/logvg/loglv /hana/log 
 echo "mounthanashared end" >> /tmp/parameter.txt
 
 echo "write to fstab start" >> /tmp/parameter.txt
-echo "/dev/mapper/hanavg-datalv /hana/data xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/hanavg-loglv /hana/log xfs defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/datavg-datalv /hana/data xfs defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/logvg-loglv /hana/log xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/sharedvg-sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/backupvg-backuplv /hana/backup xfs defaults 0 0" >> /etc/fstab
 echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap xfs defaults 0 0" >> /etc/fstab
