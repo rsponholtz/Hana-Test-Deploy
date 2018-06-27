@@ -262,14 +262,6 @@ mkdir /usr/sap
 
 # this assumes that 5 disks are attached at lun 0 through 4
 echo "Creating partitions and physical volumes"
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun0'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun1'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun2'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun3'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun4'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun5'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun6'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun7'
 sudo pvcreate /dev/disk/azure/scsi1/lun0-part1   
 sudo pvcreate /dev/disk/azure/scsi1/lun1-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun2-part1
@@ -284,17 +276,17 @@ echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
   sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
   vgcreate sharedvg $sharedvglun
-  lvcreate –W y -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -l 100%FREE -n sharedlv sharedvg 
  
 #usr volume creation
   usrsapvglun="/dev/disk/azure/scsi1/lun1-part1)"
   vgcreate usrsapvg $usrsapvglun
-  lvcreate –W y -l 100%FREE -n usrsaplv usrsapvg
+  lvcreate -l 100%FREE -n usrsaplv usrsapvg
 
 #backup volume creation
   backupvglun="/dev/disk/azure/scsi1/lun2-part1"
   vgcreate backupvg $backupvglun
-  lvcreate –W y -l 100%FREE -n backuplv backupvg 
+  lvcreate -l 100%FREE -n backuplv backupvg 
 
 #data volume creation
   datavg1lun="/dev/disk/azure/scsi1/lun3-part1"
@@ -326,8 +318,6 @@ if [ $VMSIZE == "Standard_M64s" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 5
 echo "Creating partitions and physical volumes"
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun9'
 sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun9-part1
 
@@ -335,18 +325,18 @@ echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
   sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
   vgcreate sharedvg $sharedvglun
-  lvcreate –W y -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -l 100%FREE -n sharedlv sharedvg 
  
 #usr volume creation
   usrsapvglun="/dev/disk/azure/scsi1/lun1-part1)"
   vgcreate usrsapvg $usrsapvglun
-  lvcreate –W y -l 100%FREE -n usrsaplv usrsapvg
+  lvcreate -l 100%FREE -n usrsaplv usrsapvg
 
 #backup volume creation
   backupvg1lun="/dev/disk/azure/scsi1/lun2-part1"
   backupvg2lun="/dev/disk/azure/scsi1/lun3-part1"
   vgcreate backupvg $backupvg1lun $backupvg2lun
-  lvcreate –W y -l 100%FREE -n backuplv backupvg 
+  lvcreate -l 100%FREE -n backuplv backupvg 
 
 #data volume creation
   datavg1lun="/dev/disk/azure/scsi1/lun4-part1"
@@ -379,25 +369,24 @@ if [ $VMSIZE == "Standard_M64ms" ] || [ $VMSIZE == "Standard_M128s" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 9
 echo "Creating partitions and physical volumes"
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
 sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
 
 echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
   sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
   vgcreate sharedvg $sharedvglun
-  lvcreate –W y -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -l 100%FREE -n sharedlv sharedvg 
  
 #usr volume creation
   usrsapvglun="/dev/disk/azure/scsi1/lun1-part1)"
   vgcreate usrsapvg $usrsapvglun
-  lvcreate –W y -l 100%FREE -n usrsaplv usrsapvg
+  lvcreate -l 100%FREE -n usrsaplv usrsapvg
 
 #backup volume creation
   backupvg1lun="/dev/disk/azure/scsi1/lun2-part1"
   backupvg2lun="/dev/disk/azure/scsi1/lun3-part1"
   vgcreate backupvg $backupvg1lun $backupvg2lun
-  lvcreate –W y -l 100%FREE -n backuplv backupvg 
+  lvcreate -l 100%FREE -n backuplv backupvg 
 
 #data volume creation
   datavg1lun="/dev/disk/azure/scsi1/lun4-part1"
@@ -429,9 +418,6 @@ if [ $VMSIZE == "Standard_M128ms" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 5
 echo "Creating partitions and physical volumes"
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun8'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun9'
-sudo sh -c 'echo -e "n\n\n\n\n\nw\n" | fdisk /dev/disk/azure/scsi1/lun10'
 sudo pvcreate /dev/disk/azure/scsi1/lun8-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun9-part1
 sudo pvcreate /dev/disk/azure/scsi1/lun10-part1
@@ -440,18 +426,18 @@ echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
   sharedvglun="/dev/disk/azure/scsi1/lun0-part1"
   vgcreate sharedvg $sharedvglun
-  lvcreate –W y -l 100%FREE -n sharedlv sharedvg 
+  lvcreate -l 100%FREE -n sharedlv sharedvg 
  
 #usr volume creation
   usrsapvglun="/dev/disk/azure/scsi1/lun1-part1)"
   vgcreate usrsapvg $usrsapvglun
-  lvcreate –W y -l 100%FREE -n usrsaplv usrsapvg
+  lvcreate -l 100%FREE -n usrsaplv usrsapvg
 
 #backup volume creation
   backupvg1lun="/dev/disk/azure/scsi1/lun2-part1"
   backupvg2lun="/dev/disk/azure/scsi1/lun3-part1"
   vgcreate backupvg $backupvg1lun $backupvg2lun
-  lvcreate –W y -l 100%FREE -n backuplv backupvg 
+  lvcreate -l 100%FREE -n backuplv backupvg 
 
 #data volume creation
   datavg1lun="/dev/disk/azure/scsi1/lun4-part1"
