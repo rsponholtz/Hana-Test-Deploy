@@ -444,7 +444,7 @@ EOF
 exec_sapinst() {
   P_SAPINSTFUNC=${1}
   P_INIFILE=${2}
-  P_PRODUCTID
+  P_PRODUCTID=${3}
 
   echo "run sapinst"
   echo "P_SAPINSTFUNC:" $P_SAPINSTFUNC >> /tmp/variables.txt
@@ -452,7 +452,7 @@ exec_sapinst() {
   echo "P_PRODUCTID:" $P_PRODUCTID>> /tmp/variables.txt
 
   echo "running sapinst for $P_SAPINSTFUNC"
-  SILENTDIR="/silent_$SAPINSTFUNC"
+  SILENTDIR="/silent_$P_SAPINSTFUNC"
   mkdir $SILENTDIR
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
