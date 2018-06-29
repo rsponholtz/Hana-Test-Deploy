@@ -11,9 +11,6 @@ Step | description | Documentation Link | infrastructure deploy template link | 
 7 | create highly available NFS | [documentation link](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse-nfs)  | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-file-server-md/azuredeploy.json) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-file-server-md/azuredeploy.json)
 8 | create ascs virtual machine cluster | [ Documentation Link ](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/high-availability-guide-suse) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sap-3-tier-marketplace-image-multi-sid-xscs-md/azuredeploy.json) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
 9 | create netweaver virtual machines | tbd | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-netweaver-server%2Fazuredeploy-nw-infra.json)  | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-netweaver-server%2Fazuredeploy-nw-sw.json)
-10 | create Fiori virtual machines | tbd | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/Azure/azure-quickstart-templates/master/sap-3-tier-marketplace-image-multi-sid-apps/azuredeploy.json )  | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
-11 | create web dispatcher pool | tbd | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
-12 | add new NSG to subnet | tbd  | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Fazure-quickstart-templates%2Fmaster%2F201-nsg-add-to-existing-subnet%2Fazuredeploy.json) | n/a
 
 If you'd like to deploy a complete environment with minimal configuration, follow these steps:
 
@@ -22,7 +19,6 @@ Step | description | Documentation Link | infrastructure deploy template link | 
 1 | plan deployment | [SAP on Azure Planning Guide](https://docs.microsoft.com/en-us/azure/virtual-machines/workloads/sap/get-started) | n/a |  n/a 
 2 | Deploy S/4 HANA environment | documentation link | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fazuredeploy-full.json) | [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/underconst.md)
 
-testing for Sid
 
 
 

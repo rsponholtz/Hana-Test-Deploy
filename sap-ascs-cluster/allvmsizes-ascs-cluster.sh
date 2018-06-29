@@ -212,6 +212,12 @@ create_temp_swapfile() {
   swapon $P_SWAPNAME
 }
 
+remove_temp_swapfile() {
+  P_SWAPNAME=$1
+
+  swapoff $P_SWAPNAME
+  rm -f $P_SWAPNAME
+}
 
 setup_cluster() {
   P_ISPRIMARY=$1
@@ -636,3 +642,5 @@ crm configure property maintenance-mode="true"
  crm node online nw1-cl-0
  crm configure property maintenance-mode="false"
 fi
+
+remove_temp_swapfile "/localstore/tempswap" 

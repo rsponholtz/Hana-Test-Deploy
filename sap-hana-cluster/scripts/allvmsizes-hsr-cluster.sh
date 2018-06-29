@@ -293,16 +293,16 @@ echo "logicalvols start" >> /tmp/parameter.txt
   datavg2lun="/dev/disk/azure/scsi1/lun4"
   datavg3lun="/dev/disk/azure/scsi1/lun5"
   vgcreate datavg $datavg1lun $datavg2lun $datavg3lun
-  $PHYSVOLUMES=3
-  $STRIPESIZE=64
+  PHYSVOLUMES=3
+  STRIPESIZE=64
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n datalv datavg
 
 #log volume creation
   logvg1lun="/dev/disk/azure/scsi1/lun6"
   logvg2lun="/dev/disk/azure/scsi1/lun7"
   vgcreate logvg $logvg1lun $logvg2lun
-  $PHYSVOLUMES=2
-  $STRIPESIZE=32
+  PHYSVOLUMES=2
+  STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
 
@@ -344,16 +344,16 @@ echo "logicalvols start" >> /tmp/parameter.txt
   datavg3lun="/dev/disk/azure/scsi1/lun6"
   datavg4lun="/dev/disk/azure/scsi1/lun7"
   vgcreate datavg $datavg1lun $datavg2lun $datavg3lun $datavg4lun
-  $PHYSVOLUMES=4
-  $STRIPESIZE=64
+  PHYSVOLUMES=4
+  STRIPESIZE=64
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n datalv datavg
 
 #log volume creation
   logvg1lun="/dev/disk/azure/scsi1/lun8"
   logvg2lun="/dev/disk/azure/scsi1/lun9"
   vgcreate logvg $logvg1lun $logvg2lun
-  $PHYSVOLUMES=2
-  $STRIPESIZE=32
+  PHYSVOLUMES=2
+  STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
 
@@ -393,16 +393,16 @@ echo "logicalvols start" >> /tmp/parameter.txt
   datavg2lun="/dev/disk/azure/scsi1/lun5"
   datavg3lun="/dev/disk/azure/scsi1/lun6"
   vgcreate datavg $datavg1lun $datavg2lun $datavg3lun 
-  $PHYSVOLUMES=3
-  $STRIPESIZE=64
+  PHYSVOLUMES=3
+  STRIPESIZE=64
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n datalv datavg
 
 #log volume creation
   logvg1lun="/dev/disk/azure/scsi1/lun7"
   logvg2lun="/dev/disk/azure/scsi1/lun8"
   vgcreate logvg $logvg1lun $logvg2lun
-  $PHYSVOLUMES=2
-  $STRIPESIZE=32
+  PHYSVOLUMES=2
+  STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
 
@@ -446,16 +446,16 @@ echo "logicalvols start" >> /tmp/parameter.txt
   datavg4lun="/dev/disk/azure/scsi1/lun7"
   datavg5lun="/dev/disk/azure/scsi1/lun8"
   vgcreate datavg $datavg1lun $datavg2lun $datavg3lun $datavg4lun $datavg5lun
-  $PHYSVOLUMES=4
-  $STRIPESIZE=64
+  PHYSVOLUMES=4
+  STRIPESIZE=64
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n datalv datavg
 
 #log volume creation
   logvg1lun="/dev/disk/azure/scsi1/lun9"
   logvg2lun="/dev/disk/azure/scsi1/lun10"
   vgcreate logvg $logvg1lun $logvg2lun
-  $PHYSVOLUMES=2
-  $STRIPESIZE=32
+  PHYSVOLUMES=2
+  STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
   mkfs.xfs /dev/datavg/datalv
