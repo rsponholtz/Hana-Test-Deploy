@@ -372,6 +372,8 @@ nwUsers.sapsysGID = $P_SAPSYSGID
 nwUsers.sidAdmUID = $P_SIDADMUID
 nwUsers.sidadmPassword = $P_MASTERPASSWD
 EOF
+chown root:sapinst $P_INIFILE
+chmod g+r $P_INIFILE
 }
 
 write_ers_ini_file() {
@@ -405,6 +407,8 @@ nwUsers.sidadmPassword = $P_MASTERPASSWD
 nw_instance_ers.ersInstanceNumber = $P_ERSINSTANCE
 nw_instance_ers.ersVirtualHostname = $P_VMNAME
 EOF
+chown root:sapinst $P_INIFILE
+chmod g+r $P_INIFILE
 }
 
 write_db_ini_file() {
@@ -418,7 +422,10 @@ write_db_ini_file() {
   P_DBINSTANCE=${8}
 
   cat > $P_INIFILE <<EOF
-HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
+NW_HDB_DB.abapSchemaName = SAPABAPDB
+NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
+NW_HDB_DB.javaSchemaName = SAPABAPDB
+NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
 HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_ABAP_Import_Dialog.dbCodepage = 4103
 NW_ABAP_Import_Dialog.migmonJobNum = 12
@@ -443,12 +450,15 @@ SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
 SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
 HDB_Schema_Check_Dialogs.dropSchema = true 
 EOF
+chown root:sapinst $P_INIFILE
+chmod g+r $P_INIFILE
 }
 
 exec_sapinst() {
   P_SAPINSTFUNC=${1}
   P_INIFILE=${2}
   P_PRODUCTID=${3}
+  P_INSTUSER=${4}
 
   echo "run sapinst"
   echo "P_SAPINSTFUNC:" $P_SAPINSTFUNC >> /tmp/variables.txt
@@ -461,8 +471,10 @@ exec_sapinst() {
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
 
+  sudo -u $P_INSTUSER bash << EOF
   cd $SILENTDIR
   /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+EOF
 }
 
 ##end of bash function definitions
@@ -601,49 +613,51 @@ groupadd -g $SAPINSTGID sapinst
 groupadd -g $SAPSYSGID sapsys
 usermod -a -G sapinst root
 usermod -a -G sapsys root
+
 echo  "10.0.0.22 hanailb"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA"
+  exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/ascscomplete.txt
   download_dbbits $URI /sapbits
   waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
   write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
-  exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA"
+  exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
 else
   waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
   write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA"
+  exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/erscomplete.txt
 fi
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
+
 crm configure property maintenance-mode="true"   
 
- crm configure primitive rsc_sap_NW1_ASCS00 SAPInstance \
- operations \$id=rsc_sap_NW1_ASCS00-operations \
+ crm configure primitive rsc_sap_$ASCSSID_ASCS00 SAPInstance \
+ operations \$id=rsc_sap_$ASCSSID_ASCS00-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=NW1_ASCS00_nw1-ascs START_PROFILE="/sapmnt/NW1/profile/NW1_ASCS00_nw1-ascs" \
+ params InstanceName=$ASCSSID_ASCS00_nw1-ascs START_PROFILE="/sapmnt/$ASCSSID/profile/$ASCSSID_ASCS00_ascs1" \
  AUTOMATIC_RECOVER=false \
  meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
 
- crm configure primitive rsc_sap_NW1_ERS02 SAPInstance \
- operations \$id=rsc_sap_NW1_ERS02-operations \
+ crm configure primitive rsc_sap_$ASCSSID_ERS02 SAPInstance \
+ operations \$id=rsc_sap_$ASCSSID_ERS02-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=NW1_ERS02_nw1-aers START_PROFILE="/sapmnt/NW1/profile/NW1_ERS02_nw1-aers" AUTOMATIC_RECOVER=false IS_ERS=true \
+ params InstanceName=$ASCSSID_ERS02_nw1-aers START_PROFILE="/sapmnt/$ASCSSID/profile/$ASCSSID_ERS00_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
  meta priority=1000
 
- crm configure modgroup g-NW1_ASCS add rsc_sap_NW1_ASCS00
- crm configure modgroup g-NW1_ERS add rsc_sap_NW1_ERS02
+ crm configure modgroup g-$ASCSSID_ASCS add rsc_sap_$ASCSSID_ASCS00
+ crm configure modgroup g-$ASCSSID_ERS add rsc_sap_$ASCSSID_ERS00
 
- crm configure colocation col_sap_NW1_no_both -5000: g-NW1_ERS g-NW1_ASCS
- crm configure location loc_sap_NW1_failover_to_ers rsc_sap_NW1_ASCS00 rule 2000: runs_ers_NW1 eq 1
- crm configure order ord_sap_NW1_first_start_ascs Optional: rsc_sap_NW1_ASCS00:start rsc_sap_NW1_ERS02:stop symmetrical=false
+ crm configure colocation col_sap_$ASCSSID_no_both -5000: g-$ASCSSID_ERS g-$ASCSSID_ASCS
+ crm configure location loc_sap_$ASCSSID_failover_to_ers rsc_sap_$ASCSSID_ASCS00 rule 2000: runs_ers_$ASCSSID eq 1
+ crm configure order ord_sap_$ASCSSID_first_start_ascs Optional: rsc_sap_$ASCSSID_ASCS00:start rsc_sap_$ASCSSID_ERS00:stop symmetrical=false
 
- crm node online nw1-cl-0
+ crm node online $ASCSSID-cl-0
  crm configure property maintenance-mode="false"
 fi
 

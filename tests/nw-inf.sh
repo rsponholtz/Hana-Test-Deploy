@@ -19,6 +19,6 @@ az group deployment create \
    vmSize="Standard_DS2_v2" \
    osType="SLES 12 SP3" \
    appAvailSetName="nwavailset" \
-   StaticIPStartRange="$FIRSTNWIPADDR"
+   StaticIPStartAddress="$FIRSTNWIPADDR"
 
 echo "netweaver cluster created"
