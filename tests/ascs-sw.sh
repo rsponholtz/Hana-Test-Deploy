@@ -16,7 +16,8 @@ az group deployment create \
    customURI="$customuri" \
    StaticIP1=$ASCSIP1 \
    StaticIP2=$ASCSIP2 \
-   HANASID=$ASCSSID \
+   HANASID=$HANASID \
+   ASCSSID=$ASCSSID \
    IQN="$ASCSIQN" \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
