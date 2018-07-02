@@ -4,12 +4,14 @@
     "parameters": {
         "VMName1": {
             "type": "string",
+            "defaultValue": "hana1",
             "metadata": {
                 "description": "First VM Name"
             }
         },
         "VMName2": {
             "type": "string",
+            "defaultValue": "hana2",
             "metadata": {
                 "description": "Second VM Name"
             }
@@ -19,7 +21,7 @@
             "metadata": {
                 "description": "VM Size"
             },
-            "defaultValue": "Standard_GS5 (448 GB, Certified)",
+            "defaultValue": "Standard_DS14_v2 (128 GB)",
             "allowedValues": [
                 "Standard_DS14_v2 (128 GB)",
                 "Standard_GS5 (448 GB, Certified)",
@@ -51,7 +53,7 @@
         },
         "HANASubnetName": {
             "type": "string",
-            "defaultValue": "SAPDataSubnet",
+            "defaultValue": "dbsubnet",
             "metadata": {
                 "description": "The data subnet name"
             }
@@ -107,35 +109,35 @@
             "metadata": {
                 "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
             },
-            "defaultValue": "no"
+            "defaultValue": "yes"
         },
         "StaticIP1": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.4"
+            "defaultValue": "10.0.0.20"
         },
         "StaticIP2": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.5"
+            "defaultValue": "10.0.0.21"
         },
         "iSCSIIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the iscsi server"
             },
-            "defaultValue": "10.0.6.4"
+            "defaultValue": "10.0.2.6"
         },
         "ILBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer"
             },
-            "defaultValue": "10.0.5.10"
+            "defaultValue": "10.0.0.22"
         },
         "SubscriptionEmail": {
             "type": "string",

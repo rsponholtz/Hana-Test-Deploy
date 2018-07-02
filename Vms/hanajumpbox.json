@@ -30,14 +30,14 @@
             }
         },
         "subnetName": {
-            "defaultValue": "subnet",
+            "defaultValue": "mgtsubnet",
             "type": "string",
             "metadata": {
                 "description": "subnet name"
             }
         },
         "StaticIP": {
-            "defaultValue": "10.0.0.4",
+            "defaultValue": "10.0.2.4",
             "type": "string",
             "metadata": {
                 "description": "StaticIP"

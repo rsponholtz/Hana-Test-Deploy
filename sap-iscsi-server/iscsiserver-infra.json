@@ -20,7 +20,7 @@
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "vnet",
+            "defaultValue": "mgtsubnet",
             "type": "string"
         },
         "osType": {
@@ -58,6 +58,7 @@
         },
         "StaticIP": {
             "type": "string",
+            "defaultValue": "10.0.2.6",
             "metadata": {
                 "description": "static ip address for the virtual machine"
             }
