@@ -1,4 +1,4 @@
-#SAP HANA ARM Single Instance
+# SAP HANA ARM Single Instance
 ## Machine Info
 The template current deploys HANA on a one of the machines listed in the table below with the noted disk configuration.  The deployment takes advantage of Managed Disks, for more information on Managed Disks or the sizes of the noted disks can be found on [this](https://docs.microsoft.com/en-us/azure/storage/storage-managed-disks-overview#pricing-and-billing) page.
 #### Cost conscious Azure Storage configuration
@@ -113,8 +113,8 @@ Subscription Email | No | OS subscription email for BYOS. Leave blank for pay-as
 Subscription ID | No | OS ID or password for BYOS. Leave blank for pay-as-you-go OS image. |  | No restrictions
 SMT Uri | No | The URI to a subscription management server if used, blank otherwise |  | No restrictions
 
-##Known issues
-###When clicking on Deploy to Azure you get redirected to an empty directory
+## Known issues
+### When clicking on Deploy to Azure you get redirected to an empty directory
 ![Directories](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/directories.png)
 
 The only way to get around this is to save the template to your own template library. Click on "Create a Resource" and choose "Template Deployment". Click "Create".
