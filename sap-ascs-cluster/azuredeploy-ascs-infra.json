@@ -143,7 +143,7 @@
             },
             "defaultValue": "10.0.6.4"
         },
-        "ILBIP": {
+        "ASCSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer"

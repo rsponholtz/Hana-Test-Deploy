@@ -1,4 +1,6 @@
 #!/bin/bash
+#   VMSize="Standard_E16s_v3 (128 GB)" \
+#Standard_M128ms (3.8 TB, Certified)
 
 echo "Reading config...." >&2
 source ./azuredeploy.cfg

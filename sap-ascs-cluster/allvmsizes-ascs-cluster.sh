@@ -40,6 +40,7 @@ ERSINSTANCE=${26}
 DBHOST=${27}
 DBIP=${28}
 DBINSTANCE=${29}
+ASCSLBIP=${30}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -574,7 +575,28 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "ascscluster"
+setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl-1"
+
+zypper install sap_suse_cluster_connector
+
+#node1
+if [ "$ISPRIMARY" = "yes" ]; then
+
+sudo crm node standby $ASCSSID-cl-1
+
+sudo crm configure primitive vip_$ASCSSID_ASCS IPaddr2 \
+  params ip=$ASCSLBIP cidr_netmask=24 \
+  op monitor interval=10 timeout=20
+
+sudo crm configure primitive nc_$ASCSSID_ASCS anything \
+  params binfile="/usr/bin/nc" cmdline_options="-l -k 62000" \
+  op monitor timeout=20s interval=10 depth=0
+
+sudo crm configure group g-$ASCSSID_ASCS nc_$ASCSSID_ASCS vip_$ASCSSID_ASCS \
+   meta resource-stickiness=3000
+fi
+
+
 
 #!/bin/bash
 echo "logicalvol start" >> /tmp/parameter.txt
@@ -620,6 +642,27 @@ if [ "$ISPRIMARY" = "yes" ]; then
   write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
   exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/ascscomplete.txt
+
+sudo crm node online nw1-cl-1
+sudo crm node standby nw1-cl-0
+
+sudo crm configure primitive vip_NW1_ERS IPaddr2 \
+  params ip=10.0.0.8 cidr_netmask=24 \
+  op monitor interval=10 timeout=20
+
+sudo crm configure primitive nc_NW1_ERS anything \
+ params binfile="/usr/bin/nc" cmdline_options="-l -k 62102" \
+ op monitor timeout=20s interval=10 depth=0
+
+# WARNING: Resources nc_NW1_ASCS,nc_NW1_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"
+# Do you still want to commit (y/n)? y
+
+sudo crm configure group g-NW1_ERS nc_NW1_ERS vip_NW1_ERS
+
+fi
+
+
+
   download_dbbits $URI /sapbits
   waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
@@ -632,10 +675,12 @@ else
   touch /tmp/erscomplete.txt
 fi
 
+
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
 
-crm configure property maintenance-mode="true"   
+
+ crm configure property maintenance-mode="true"   
 
  crm configure primitive rsc_sap_$ASCSSID_ASCS00 SAPInstance \
  operations \$id=rsc_sap_$ASCSSID_ASCS00-operations \

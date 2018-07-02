@@ -26,6 +26,7 @@ az group deployment create \
    NFSILBIP=$NFSILBIP \
    SAPPASSWD="$vmpassword" \
    DBHOST="hanailb" \
-   DBIP="$HANAILBIP"
+   DBIP="$HANAILBIP" \
+   ASCSLBIP="$ASCSILBIP"
 
 echo "ascs cluster installed"
