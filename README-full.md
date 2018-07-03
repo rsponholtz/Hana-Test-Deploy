@@ -1,4 +1,4 @@
-The following templates and configuration scripts will deploy a highly available SAP environment.  To create your own deployment of this, follow each step in order. 
+The following templates and configuration scripts will deploy a highly available SAP environment.  It's modular, so you can choose to deploy only the infrastructure, only the software installation and configuration (Custom Script Extension) or both for each of the components. To create your own deployment of this, follow each step in order. 
 
 Step | description | Documentation Link | infrastructure deploy template link | software installation template link
 ---- | ----------- | ------------------ | ------------- | -----------------------------------
