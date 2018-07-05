@@ -555,7 +555,6 @@ echo "hana unrar start" >> /tmp/parameter.txt
 cd $SAPBITSDIR
 unrar x 51052325_part1.exe
 echo "hana unrar end" >> /tmp/parameter.txt
-
 echo "hana prepare start" >> /tmp/parameter.txt
 cd $SAPBITSDIR
 
@@ -563,7 +562,12 @@ cd $SAPBITSDIR
 cd $SAPBITSDIR
 myhost=`hostname`
 sedcmd="s/REPLACE-WITH-HOSTNAME/$myhost/g"
-sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/sapbits\/51052325/g"
+if [ "$NFSIP" != "" ]; then
+ sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/sapbits\/51052325/g"
+else
+ sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/hana\/data\/sapbits\/51052325/g"
+fi
+
 sedcmd3="s/root_user=root/root_user=$HANAUSR/g"
 sedcmd4="s/root_password=AweS0me@PW/root_password=$HANAPWD/g"
 sedcmd5="s/master_password=AweS0me@PW/master_password=$HANAPWD/g"
