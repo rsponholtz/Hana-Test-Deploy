@@ -122,7 +122,7 @@
             "metadata": {
                 "description": "IP address of NFS server for sapbits.  leave blank for locally attached disk for sapbits"
             },
-            "defaultValue": "10.0.1.10"
+            "defaultValue": ""
         }
     },
     "variables": {
