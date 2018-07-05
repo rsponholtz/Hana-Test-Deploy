@@ -484,14 +484,26 @@ echo "write to fstab end" >> /tmp/parameter.txt
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
+EOF
+
+if [ "$NFSIP" != "" ]; then
+cat >>/etc/hosts <<EOF
 $NFSIP nfsnfslb
 EOF
 
+fi
+
+
+if [ "$NFSIP" != "" ]; then
 mkdir /sapbits
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
 echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 SAPBITSDIR="/sapbits"
-
+else
+  mkdir /hana/data/sapbits
+  SAPBITSDIR="/hana/data"
+  ln -s /sapbits /hana/data/sapbits
+fi
 
 #install hana prereqs
 retry 5 "zypper install -y glibc-2.22-51.6"
