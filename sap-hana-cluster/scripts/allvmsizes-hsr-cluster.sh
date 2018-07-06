@@ -501,7 +501,7 @@ echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 SAPBITSDIR="/sapbits"
 else
   mkdir /hana/data/sapbits
-  SAPBITSDIR="/hana/data"
+  SAPBITSDIR="/hana/data/sapbits"
   ln -s /sapbits /hana/data/sapbits
 fi
 
