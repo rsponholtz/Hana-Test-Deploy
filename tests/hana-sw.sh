@@ -24,6 +24,7 @@ az group deployment create \
    ILBIP="$HANAILBIP" \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
-   SMTUri="$slessmt"
+   SMTUri="$slessmt" \
+   NFSIP="$NFSILBIP"
 
 echo "hana software installed"

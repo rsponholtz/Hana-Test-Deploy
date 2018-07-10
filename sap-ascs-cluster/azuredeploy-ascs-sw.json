@@ -197,7 +197,7 @@
             "metadata": {
                 "description": "IP Address for the ASCS load balancer"
             }
-        },       
+        }       
     },
     "variables": {
         "vmName1": "[toLower(parameters('vmName1'))]",

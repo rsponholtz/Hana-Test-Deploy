@@ -1,5 +1,4 @@
 #!/bin/bash
-
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
@@ -21,6 +20,6 @@ az group deployment create \
    StaticIP1="$ASCSIP1" \
    StaticIP2="$ASCSIP2" \
    iSCSIIP="$ISCSIIP" \
-   ILBIP="$ASCSILBIP"
+   ASCSLBIP="$ASCSILBIP"
 
 echo "ascs cluster created"
