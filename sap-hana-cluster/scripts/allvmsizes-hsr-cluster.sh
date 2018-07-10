@@ -552,7 +552,7 @@ cd $SAPBITSDIR
 echo "hana unrar start" >> /tmp/parameter.txt
 #!/bin/bash
 cd $SAPBITSDIR
-unrar x 51052325_part1.exe
+unrar  -o- x 51052325_part1.exe
 echo "hana unrar end" >> /tmp/parameter.txt
 echo "hana prepare start" >> /tmp/parameter.txt
 cd $SAPBITSDIR
