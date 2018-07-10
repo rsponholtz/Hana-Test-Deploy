@@ -484,7 +484,7 @@ exec_sapinst() {
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
   cd $SILENTDIR
-  
+
 ##  sudo -u $P_INSTUSER bash << EOF
 ##  cd $SILENTDIR
 ##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
@@ -663,6 +663,8 @@ usermod -a -G sapsys root
 echo  "10.0.0.22 hanailb"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
+  #clean out the 
+  rm -r -f /usr/sap/S40/SYS/exe/uc/linuxx86_64/*
   write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
   exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/ascscomplete.txt
