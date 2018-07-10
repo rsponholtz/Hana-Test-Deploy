@@ -347,8 +347,8 @@ download_dbbits() {
     #unpack some of this
     retry 5 "zypper install -y unrar"
 
-    unrar x 51052325_part1.exe
-    unrar x 51052190_part1.exe
+    unrar -o- x 51052325_part1.exe
+    unrar -o- x 51052190_part1.exe
     touch $SBDIR/dbdownload_complete.txt
   fi
 }
@@ -484,10 +484,12 @@ exec_sapinst() {
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
 
-  sudo -u $P_INSTUSER bash << EOF
-  cd $SILENTDIR
+##  sudo -u $P_INSTUSER bash << EOF
+##  cd $SILENTDIR
+##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
+## EOF
   /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-EOF
+
 }
 
 ##end of bash function definitions
