@@ -621,7 +621,6 @@ mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
 echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
 mkdir /sapbits
-if [ "$SUBEMAIL" != "" ]; then
 
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
 echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
@@ -653,24 +652,21 @@ if [ "$ISPRIMARY" = "yes" ]; then
   exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/ascscomplete.txt
 
-sudo crm node online nw1-cl-1
-sudo crm node standby nw1-cl-0
+sudo crm node online $VMNAME
+sudo crm node standby $OTHERVMNAME
 
-sudo crm configure primitive vip_NW1_ERS IPaddr2 \
-  params ip=10.0.0.8 cidr_netmask=24 \
-  op monitor interval=10 timeout=20
+crm configure primitive vip_${ASCSSID} IPaddr2 \
+        params ip="$LBIP" cidr_netmask=24 \
+        op monitor interval="10s" timeout="20s" 
 
-sudo crm configure primitive nc_NW1_ERS anything \
- params binfile="/usr/bin/nc" cmdline_options="-l -k 62102" \
- op monitor timeout=20s interval=10 depth=0
+crm configure primitive rsc_nc_${ASCSSID} anything \
+     params binfile="/usr/bin/nc" cmdline_options="-l -k 61000" \
+     op monitor timeout=20s interval=10 depth=0
 
 # WARNING: Resources nc_NW1_ASCS,nc_NW1_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"
 # Do you still want to commit (y/n)? y
 
-sudo crm configure group g-NW1_ERS nc_NW1_ERS vip_NW1_ERS
-
-fi
-
+sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
 
 
   download_dbbits $URI /sapbits
@@ -692,27 +688,27 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
  crm configure property maintenance-mode="true"   
 
- crm configure primitive rsc_sap_$ASCSSID_ASCS00 SAPInstance \
- operations \$id=rsc_sap_$ASCSSID_ASCS00-operations \
+ crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
+ operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=$ASCSSID_ASCS00_nw1-ascs START_PROFILE="/sapmnt/$ASCSSID/profile/$ASCSSID_ASCS00_ascs1" \
+ params InstanceName=${ASCSSID}_ASCS00_nw1-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
  AUTOMATIC_RECOVER=false \
  meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
 
- crm configure primitive rsc_sap_$ASCSSID_ERS02 SAPInstance \
- operations \$id=rsc_sap_$ASCSSID_ERS02-operations \
+ crm configure primitive rsc_sap_${ASCSSID}_ERS02 SAPInstance \
+ operations \$id=rsc_sap_${ASCSSID}_ERS02-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=$ASCSSID_ERS02_nw1-aers START_PROFILE="/sapmnt/$ASCSSID/profile/$ASCSSID_ERS00_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
+ params InstanceName=${ASCSSID}_ERS02_nw1-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS00_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
  meta priority=1000
 
- crm configure modgroup g-$ASCSSID_ASCS add rsc_sap_$ASCSSID_ASCS00
- crm configure modgroup g-$ASCSSID_ERS add rsc_sap_$ASCSSID_ERS00
+ crm configure modgroup g-${ASCSSID}_ASCS add rsc_sap_${ASCSSID}_ASCS00
+ crm configure modgroup g-${ASCSSID}_ERS add rsc_sap_${ASCSSID}_ERS00
 
- crm configure colocation col_sap_$ASCSSID_no_both -5000: g-$ASCSSID_ERS g-$ASCSSID_ASCS
- crm configure location loc_sap_$ASCSSID_failover_to_ers rsc_sap_$ASCSSID_ASCS00 rule 2000: runs_ers_$ASCSSID eq 1
- crm configure order ord_sap_$ASCSSID_first_start_ascs Optional: rsc_sap_$ASCSSID_ASCS00:start rsc_sap_$ASCSSID_ERS00:stop symmetrical=false
+ crm configure colocation col_sap_${ASCSSID}_no_both -5000: g-${ASCSSID}_ERS g-${ASCSSID}_ASCS
+ crm configure location loc_sap_${ASCSSID}_failover_to_ers rsc_sap_${ASCSSID}_ASCS00 rule 2000: runs_ers_${ASCSSID} eq 1
+ crm configure order ord_sap_${ASCSSID}_first_start_ascs Optional: rsc_sap_${ASCSSID}_ASCS00:start rsc_sap_${ASCSSID}_ERS00:stop symmetrical=false
 
- crm node online $ASCSSID-cl-0
+ crm node online ${ASCSSID}-cl-0
  crm configure property maintenance-mode="false"
 fi
 
