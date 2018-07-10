@@ -8,7 +8,7 @@ ELEMENTS=${#args[@]}
 # echo each element in array
 # for loop
 for (( i=0;i<$ELEMENTS;i++)); do
-    echo ${args[${i}]}
+    echo "ARG[${i}]: ${args[${i}]}"
 done
 
 USRNAME=${1}
@@ -59,6 +59,18 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 echo "NFSILBIP:" $NFSILBIP >> /tmp/variables.txt
+echo "ASCSSID" $ASCSSID >> /tmp/variables.txt
+echo "ASCSINSTANCE:" $ASCSINSTANCE >>/tmp/variables.txt
+echo "SAPINSTGID:" $SAPINSTGID >>/tmp/variables.txt
+echo "SAPSYSGID:" $SAPSYSGID >>/tmp/variables.txt
+echo "SAPADMUID:" $SAPADMUID >>/tmp/variables.txt
+echo "SIDADMUID:" $SIDADMUID >>/tmp/variables.txt
+echo "SAPPASSWD:" $SAPPASSWD >>/tmp/variables.txt
+echo "ERSINSTANCE:" $ERSINSTANCE >>/tmp/variables.txt
+echo "DBHOST:" $DBHOST >>/tmp/variables.txt
+echo "DBIP:" $DBIP >>/tmp/variables.txt
+echo "DBINSTANCE:" $DBINSTANCE >>/tmp/variables.txt
+echo "ASCSLBIP:" $ASCSLBIP >>/tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
