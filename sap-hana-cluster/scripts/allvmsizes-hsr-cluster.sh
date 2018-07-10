@@ -262,14 +262,14 @@ mkdir /usr/sap
 
 # this assumes that 5 disks are attached at lun 0 through 4
 echo "Creating partitions and physical volumes"
-sudo pvcreate /dev/disk/azure/scsi1/lun0   
-sudo pvcreate /dev/disk/azure/scsi1/lun1
-sudo pvcreate /dev/disk/azure/scsi1/lun2
-sudo pvcreate /dev/disk/azure/scsi1/lun3
-sudo pvcreate /dev/disk/azure/scsi1/lun4
-sudo pvcreate /dev/disk/azure/scsi1/lun5
-sudo pvcreate /dev/disk/azure/scsi1/lun6
-sudo pvcreate /dev/disk/azure/scsi1/lun7
+pvcreate -ff -y /dev/disk/azure/scsi1/lun0   
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun1
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun2
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun3
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun4
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun5
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun6
+pvcreate -ff -y  /dev/disk/azure/scsi1/lun7
 
 if [ $VMSIZE == "Standard_E16s_v3" ] || [ "$VMSIZE" == "Standard_E32s_v3" ] || [ "$VMSIZE" == "Standard_E64s_v3" ] || [ "$VMSIZE" == "Standard_GS5" ] || [ "$VMSIZE" == "Standard_M32ts" ] || [ "$VMSIZE" == "Standard_M32ls" ] || [ "$VMSIZE" == "Standard_M64ls" ] || [ $VMSIZE == "Standard_DS14_v2" ] ; then
 echo "logicalvols start" >> /tmp/parameter.txt
@@ -305,7 +305,6 @@ echo "logicalvols start" >> /tmp/parameter.txt
   STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
-
   mkfs.xfs /dev/datavg/datalv
   mkfs.xfs /dev/logvg/loglv
   mkfs -t xfs /dev/sharedvg/sharedlv 
@@ -318,8 +317,8 @@ if [ $VMSIZE == "Standard_M64s" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 5
 echo "Creating partitions and physical volumes"
-sudo pvcreate /dev/disk/azure/scsi1/lun8
-sudo pvcreate /dev/disk/azure/scsi1/lun9
+pvcreate -ff -y /dev/disk/azure/scsi1/lun8
+pvcreate -ff -y /dev/disk/azure/scsi1/lun9
 
 echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
@@ -369,7 +368,7 @@ if [ $VMSIZE == "Standard_M64ms" ] || [ $VMSIZE == "Standard_M128s" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 9
 echo "Creating partitions and physical volumes"
-sudo pvcreate /dev/disk/azure/scsi1/lun8
+pvcreate  -ff -y /dev/disk/azure/scsi1/lun8
 
 echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
@@ -418,9 +417,9 @@ if [ $VMSIZE == "Standard_M128ms" ]; then
 
 # this assumes that 6 disks are attached at lun 0 through 5
 echo "Creating partitions and physical volumes"
-sudo pvcreate /dev/disk/azure/scsi1/lun8
-sudo pvcreate /dev/disk/azure/scsi1/lun9
-sudo pvcreate /dev/disk/azure/scsi1/lun10
+pvcreate  -ff -y /dev/disk/azure/scsi1/lun8
+pvcreate  -ff -y /dev/disk/azure/scsi1/lun9
+pvcreate  -ff -y /dev/disk/azure/scsi1/lun10
 
 echo "logicalvols start" >> /tmp/parameter.txt
 #shared volume creation
@@ -727,7 +726,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
 #configure SAP HANA topology
 HANAID="$HANASID"_HDB"$HANANUMBER"
 
-sudo crm configure property maintenance-mode=true
+crm configure property maintenance-mode=true
 
 crm configure property \$id="cib-bootstrap-options" stonith-enabled=true
 
@@ -774,8 +773,8 @@ crm configure order ord_SAPHana_$HANAID 2000: cln_SAPHanaTopology_$HANAID  msl_S
 
 sleep 20
 
-sudo crm resource cleanup rsc_SAPHana_$HANAID
+crm resource cleanup rsc_SAPHana_$HANAID
 
-sudo crm configure property maintenance-mode=false
+crm configure property maintenance-mode=false
 
 fi
