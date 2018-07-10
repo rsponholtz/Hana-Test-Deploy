@@ -162,8 +162,8 @@ quorum {
         # Enable and configure quorum subsystem (default: off)
         # see also corosync.conf.5 and votequorum.5
         provider: corosync_votequorum
-        expected_votes: 1
-        two_node: 0
+        expected_votes: 2
+        two_node: 1
 }
 EOF
 
@@ -351,9 +351,10 @@ cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 
 sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
-sbdcmd2='s/SBD_PACEMAKER=/SBD_PACEMAKER="yes"/g'
-sbdcmd3='s/SBD_STARTMODE=/SBD_STARTMODE="always"/g'
-cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > sbd.modified
+sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
+sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
+cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
+echo "SBD_WATCHDOG=yes" >>/etc/sysconfigsbd.modified
 cp -f /etc/sysconfig/sbd.modified /etc/sysconfig/sbd
 echo "hana sbd end" >> /tmp/parameter.txt
 
@@ -513,9 +514,22 @@ if [ "$ISPRIMARY" = "yes" ]; then
   echo "Creating NFS resources"
 
   crm configure property maintenance-mode=true
-  crm configure property stonith-timeout=600
-  crm configure property \$id="cib-bootstrap-options" stonith-enabled=true
+  crm configure property stonith-timeout=120
   
+crm configure primitive stonith-sbd stonith:external/sbd \
+     params pcmk_delay_max="15" \
+     op monitor interval="15" timeout="15"
+
+
+crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
+               no-quorum-policy="ignore" \
+               stonith-action="reboot" \
+               stonith-timeout="150s"
+
+crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+
+crm configure  op_defaults $id="op-options"  timeout="600"
+
 #  crm node standby $OTHERVMNAME
 #  crm node standby $VMNAME
 

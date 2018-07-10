@@ -205,8 +205,8 @@ quorum {
         # Enable and configure quorum subsystem (default: off)
         # see also corosync.conf.5 and votequorum.5
         provider: corosync_votequorum
-        expected_votes: 1
-        two_node: 0
+        expected_votes: 2
+        two_node: 1
 }
 EOF
 
@@ -586,9 +586,10 @@ cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 
 sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
-sbdcmd2='s/SBD_PACEMAKER=/SBD_PACEMAKER="yes"/g'
-sbdcmd3='s/SBD_STARTMODE=/SBD_STARTMODE="always"/g'
-cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > sbd.modified
+sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
+sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
+cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
+echo "SBD_WATCHDOG=yes" >>/etc/sysconfigsbd.modified
 cp -f /etc/sysconfig/sbd.modified /etc/sysconfig/sbd
 echo "hana sbd end" >> /tmp/parameter.txt
 
@@ -704,6 +705,12 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
 
  crm configure property maintenance-mode="true"   
+
+  crm configure property stonith-timeout=120
+  
+  crm configure primitive stonith-sbd stonith:external/sbd \
+     params pcmk_delay_max="15" \
+     op monitor interval="15" timeout="15"
 
  crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
