@@ -509,6 +509,14 @@ $NFSILBIP nfsnfslb
 EOF
 
 
+cat >>/etc/hosts <<EOF
+$VMIPADDR $VMNAME
+$OTHERIPADDR $OTHERVMNAME
+$NFSILBIP nfsnfslb
+EOF
+
+
+
 ##external dependency on sshpt
     retry 5 "zypper install -y python-pip"
     retry 5 "pip install sshpt"
@@ -575,7 +583,7 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl-1"
+setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl"
 
 zypper install sap_suse_cluster_connector
 
@@ -613,6 +621,8 @@ mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
 echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
 mkdir /sapbits
+if [ "$SUBEMAIL" != "" ]; then
+
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
 echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 
