@@ -195,7 +195,7 @@
         "ASCSLBIP": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the ASCS load balancer"
+                "description": "IP Address for the ASCS load balancer."
             }
         }       
     },
