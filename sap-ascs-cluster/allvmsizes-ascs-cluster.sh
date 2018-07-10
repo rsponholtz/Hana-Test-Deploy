@@ -483,7 +483,8 @@ exec_sapinst() {
   mkdir $SILENTDIR
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
-
+  cd $SILENTDIR
+  
 ##  sudo -u $P_INSTUSER bash << EOF
 ##  cd $SILENTDIR
 ##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
