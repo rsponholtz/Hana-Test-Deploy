@@ -8,7 +8,7 @@ ELEMENTS=${#args[@]}
 # echo each element in array
 # for loop
 for (( i=0;i<$ELEMENTS;i++)); do
-    echo ${args[${i}]}
+    echo "ARG[${i}]: ${args[${i}]}"
 done
 
 URI=${1}
@@ -32,6 +32,12 @@ SUBID=${18}
 SUBURL=${19}
 NFSIP=${20}
 
+###
+# cluster tuning values
+WATCHDOGTIMEOUT="30"
+MSGWAITTIMEOUT="60"
+STONITHTIMEOUT="150s"
+###
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
 
@@ -694,7 +700,8 @@ echo "hana iscsi end" >> /tmp/parameter.txt
 device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
-sbd -d $sbdid -1 90 -4 180 create
+
+sbd -d $sbdid -1 ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT} create
 else
 
 echo "hana iscsi end" >> /tmp/parameter.txt
@@ -731,19 +738,22 @@ HANAID="$HANASID"_HDB"$HANANUMBER"
 
 crm configure property maintenance-mode=true
 
+crm configure delete stonith-sbd
+
 crm configure primitive stonith-sbd stonith:external/sbd \
      params pcmk_delay_max="15" \
      op monitor interval="15" timeout="15"
 
+
 crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
                no-quorum-policy="ignore" \
                stonith-action="reboot" \
-               stonith-timeout="150s"
+               stonith-timeout=$STONITHTIMEOUT
 
-crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 
 
-crm configure  op_defaults $id="op-options"  timeout="600"
+crm configure  op_defaults \$id="op-options"  timeout="600"
 
 crm configure primitive rsc_SAPHanaTopology_$HANAID ocf:suse:SAPHanaTopology \
         operations \$id="rsc_sap2_$HANAID-operations" \
@@ -784,7 +794,7 @@ crm configure group g_ip_$HANAID rsc_ip_$HANAID rsc_nc_$HANAID
 #    msl_SAPHana_$HANAID:Master
 crm configure colocation col_saphana_ip_$HANAID 2000: rsc_ip_$HANAID:Started  msl_SAPHana_$HANAID:Master
 
-crm configure order ord_SAPHana_$HANAID 2000: cln_SAPHanaTopology_$HANAID  msl_SAPHana_$HANAID
+crm configure order ord_SAPHana_$HANAID Optional: cln_SAPHanaTopology_$HANAID  msl_SAPHana_$HANAID
 
 sleep 20
 

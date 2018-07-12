@@ -8,7 +8,7 @@ ELEMENTS=${#args[@]}
 # echo each element in array
 # for loop
 for (( i=0;i<$ELEMENTS;i++)); do
-    echo ${args[${i}]}
+    echo "ARG[${i}]: ${args[${i}]}"
 done
 
 USRNAME=${1}
@@ -28,6 +28,13 @@ LBIP=${14}
 SUBEMAIL=${15}
 SUBID=${16}
 SUBURL=${17}
+
+###
+# cluster tuning values
+WATCHDOGTIMEOUT="30"
+MSGWAITTIMEOUT="60"
+STONITHTIMEOUT="150s"
+###
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -343,7 +350,7 @@ sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-  sbd -d $sbdid -1 90 -4 180 create
+  sbd -d $sbdid ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
 fi
 
 #!/bin/bash [A]
@@ -514,17 +521,19 @@ if [ "$ISPRIMARY" = "yes" ]; then
   echo "Creating NFS resources"
 
   crm configure property maintenance-mode=true
-  crm configure property stonith-timeout=120
   
+crm configure delete stonith-sbd
+
 crm configure primitive stonith-sbd stonith:external/sbd \
      params pcmk_delay_max="15" \
      op monitor interval="15" timeout="15"
 
+crm configure property stonith-timeout=$STONITHTIMEOUT
 
 crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
                no-quorum-policy="ignore" \
                stonith-action="reboot" \
-               stonith-timeout="150s"
+               stonith-timeout=$STONITHTIMEOUT
 
 crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 

@@ -578,7 +578,7 @@ sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
 #initialize sbd on node1
 if [ "$ISPRIMARY" = "yes" ]; then
-  sbd -d $sbdid -1 90 -4 180 create
+  sbd -d $sbdid ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
 fi
 
 #!/bin/bash [A]
@@ -706,11 +706,26 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
  crm configure property maintenance-mode="true"   
 
-  crm configure property stonith-timeout=120
+crm configure delete stonith-sbd
+
+crm configure primitive stonith-sbd stonith:external/sbd \
+     params pcmk_delay_max="15" \
+     op monitor interval="15" timeout="15"
+
+  crm configure property stonith-timeout=$STONITHTIMEOUT
   
   crm configure primitive stonith-sbd stonith:external/sbd \
      params pcmk_delay_max="15" \
      op monitor interval="15" timeout="15"
+
+crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
+               no-quorum-policy="ignore" \
+               stonith-action="reboot" \
+               stonith-timeout=$STONITHTIMEOUT
+
+crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+
+crm configure  op_defaults $id="op-options"  timeout="600"
 
  crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
