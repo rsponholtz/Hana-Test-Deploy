@@ -48,18 +48,6 @@ Installation media for SAP HANA should be downloaded and placed in the SapBits f
 51052325_part4.rar
 ```
 
-If you want to use a newer version of HANA Studio rename your filename to IMC_STUDIO2_212_2-80000323.SAR.
-
-The Server Java Runtime Environment bits can be downloaded [here](http://www.oracle.com/technetwork/java/javase/downloads/server-jre9-downloads-3848530.html).
-
-There should be a folder inside your storage account container called SapBits:
-
-![SapBits Image](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/Structure1.png)
-
-The following files should be present inside the SapBits folder:
-
-![HANA Image](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/Structure2.png)
-
 ## Deploy the Solution
 ### Deploy from the Portal
 
