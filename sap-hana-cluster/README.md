@@ -6,7 +6,7 @@ The template currently deploys two virtual machines with HANA installed, configu
 The following table shows a configuration of VM types that customers commonly use to host SAP HANA on Azure VMs. There might be some VM types that might not meet all minimum criteria for SAP HANA. But so far those VMs seemed to perform fine for non-production scenarios. 
 
 
-> For production scenarios, check whether a certain VM type is supported for SAP HANA by SAP in the [SAP documentation for IAAS](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html).
+> Note: For production scenarios, check whether a certain VM type is supported for SAP HANA by SAP in the [SAP documentation for IAAS](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html).
 
 
 | VM SKU | RAM | Max. VM I/O<br /> Throughput | /hana/data and /hana/log<br /> striped with LVM or MDADM | /hana/shared | /root volume | /usr/sap | hana/backup |
@@ -20,11 +20,9 @@ The following table shows a configuration of VM types that customers commonly us
 #### Storage solution with Azure Write Accelerator for Azure M-Series virtual machines
 Azure Write Accelerator is a functionality that is getting rolled out for M-Series VMs exclusively. As the name states, the purpose of the functionality is to improve I/O latency of Writes against the Azure Premium Storage. For SAP HANA, Write Accelerator is supposed to be used against the /hana/log volume only. Therefore the configurations shown so far need to be changed. The main change is the breakup between the /hana/data and /hana/log in order to use Azure Write Accelerator against the /hana/log volume only. 
 
-> [!IMPORTANT]
-> SAP HANA certification for Azure M-Series virtual machines is exclusively with Azure Write Accelerator for the /hana/log volume. As a result, production scenario SAP HANA deployments on Azure M-Series virtual machines are expected to be configured with Azure Write Accelerator for the /hana/log volume.  
+> Importnat: SAP HANA certification for Azure M-Series virtual machines is exclusively with Azure Write Accelerator for the /hana/log volume. As a result, production scenario SAP HANA deployments on Azure M-Series virtual machines are expected to be configured with Azure Write Accelerator for the /hana/log volume.  
 
-> [!NOTE]
-> For production scenarios, check whether a certain VM type is supported for SAP HANA by SAP in the [SAP documentation for IAAS](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html).
+> Note: for production scenarios, check whether a certain VM type is supported for SAP HANA by SAP in the [SAP documentation for IAAS](https://www.sap.com/dmc/exp/2014-09-02-hana-hardware/enEN/iaas.html).
 
 The recommended configurations look like:
 
