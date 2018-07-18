@@ -37,7 +37,7 @@ The recommended configurations look like:
 | M128ms | 3800 GiB | 2000 MB/s | 5 x P30 | 2 x P20 | 1 x P30 | 1 x P6 | 1 x P6 | 2 x P50 |
 
 ## Prerequisites
-To create an sbd device for the cluster configuration, the Custom Script Extension leverages an existing ISCSI server. The deployment assumes that an ISCSI target is already set up. For more information on setting up the ISCSI server please refer to the [ISCSI documentation](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/README.md).
+To create an sbd device for the cluster configuration, the Custom Script Extension leverages an existing ISCSI server. The deployment assumes that an ISCSI target is already set up. For more information on setting up the ISCSI server please refer to the [ISCSI documentation](https://github.com/AzureCAT-GSI/Hana-Test-Deploy/blob/master/sap-iscsi-server/README.md).
 
 ## Installation Media
 Installation media for SAP HANA should be downloaded and placed in the SapBits folder. You will need to provide the URI for the container where they are stored, for example https://yourBlobName.blob.core.windows.net/yourContainerName. For more information on how to upload files to Azure please go [here](UploadToAzure.md)  Specifically you need to download SAP package 51052325, which should consist of four files:
