@@ -121,20 +121,6 @@ Subscription ID | No | OS ID or password for BYOS. Leave blank for pay-as-you-go
 SMT Uri | No | The URI to a subscription management server if used, blank otherwise |  | No restrictions
 NFS IP | No | IP Address of the NFS server | 10.0.1.10 | No restrictions
 
-## Known issues
-### When clicking on Deploy to Azure you get redirected to an empty directory
-![Directories](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/directories.png)
+## Troubleshooting
 
-The only way to get around this is to save the template to your own template library. Click on "Create a Resource" and choose "Template Deployment". Click "Create".
-
-![Directories2](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/directories2.png)
-
-Select the option of "Build your own template in the editor"
-
-![Directories3](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/directories3.png)
-
-Copy the contents from the azuredeploy.json [file](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/azuredeploy.json) and paste them into the template editor, click Save.
-
-![Directories4](https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/media/directories4.png)
-
-The template is now available in your template library. Changes made to the github repo will not be replicated, make sure to update your template when changes to the azuredeploy.json file are made.
+If you run into any issues during deployment please look at the /var/lib/waagent/custom-script/download/0/stderr file inside the HANA VM for more detail.
