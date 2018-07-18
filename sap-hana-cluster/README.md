@@ -123,4 +123,4 @@ NFS IP | No | IP Address of the NFS server | 10.0.1.10 | No restrictions
 
 ## Troubleshooting
 
-If you run into any issues during deployment please look at the /var/lib/waagent/custom-script/download/0/stderr file inside the HANA VM for more detail.
+If you run into any issues during deployment please look at the **/var/lib/waagent/custom-script/download/0/stderr** file inside the HANA VM for more detail.
