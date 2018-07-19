@@ -149,6 +149,28 @@
                 "description": "IP Address for the internal load balancer"
             },
             "defaultValue": "10.0.5.10"
+        },
+        "configureCRM": {
+            "type": "string",
+            "metadata": {
+                "description": "Sets whether to configure ASCS CRM Resources as part of the cluster"
+            },
+            "allowedValues": [
+                "yes",
+                "no"
+            ],
+            "defaultValue": "no"
+        },
+        "configureSchema": {
+            "type": "string",
+            "metadata": {
+                "description": "Sets whether to configure DB schema"
+            },
+            "allowedValues": [
+                "yes",
+                "no"
+            ],
+            "defaultValue": "no"
         }
     },
     "variables": {
@@ -419,6 +441,12 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
+                    },
+                    "configureCRM": {
+                        "value": "[parameters('configureCRM')]"
+                    },
+                    "configureSchema": {
+                        "value": "[parameters('configureSchema)]"
                     }
                 }
             }

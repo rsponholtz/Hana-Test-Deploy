@@ -41,6 +41,8 @@ DBHOST=${27}
 DBIP=${28}
 DBINSTANCE=${29}
 ASCSLBIP=${30}
+CONFIGURECRM=${31}
+CONFIGURESCHEMA=${32}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -691,7 +693,9 @@ sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
   waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
   write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
+  if [ "$CONFIGURESCHEMA" = "yes" ]; then
   exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
+  fi
 else
   waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
   write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
@@ -727,6 +731,7 @@ crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migrat
 
 crm configure  op_defaults $id="op-options"  timeout="600"
 
+ if ["$CONFIGURECRM" = "yes"]; then
  crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
@@ -746,7 +751,7 @@ crm configure  op_defaults $id="op-options"  timeout="600"
  crm configure colocation col_sap_${ASCSSID}_no_both -5000: g-${ASCSSID}_ERS g-${ASCSSID}_ASCS
  crm configure location loc_sap_${ASCSSID}_failover_to_ers rsc_sap_${ASCSSID}_ASCS00 rule 2000: runs_ers_${ASCSSID} eq 1
  crm configure order ord_sap_${ASCSSID}_first_start_ascs Optional: rsc_sap_${ASCSSID}_ASCS00:start rsc_sap_${ASCSSID}_ERS00:stop symmetrical=false
-
+fi
  crm node online ${ASCSSID}-cl-0
  crm configure property maintenance-mode="false"
 fi
