@@ -355,12 +355,6 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
-                    }, 
-                    "configureCRM": {
-                        "value": "[parameters('configureCRM')]"
-                    },
-                    "configureSchema": {
-                        "value": "[parameters('configureSchema')]"
                     }
                 }
             }
