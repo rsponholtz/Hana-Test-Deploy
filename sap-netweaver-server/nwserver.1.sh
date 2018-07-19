@@ -11,52 +11,51 @@ for (( i=0;i<$ELEMENTS;i++)); do
     echo ${args[${i}]}
 done
 
-VMNAME=${1}
-VMIPADDR=${2}
-ISPRIMARY=${3}
-URI=${4}
-SUBEMAIL=${5}
-SUBID=${6}
-SUBURL=${7}
-NFSILBIP=${8}
-ASCS1VM=${9}
-ASCS1IP=${10}
-ASCS2VM=${11}
-ASCS2IP=${12}
-MASTERPASSWORD=${13}
-SAPADMUID=${14}
-SAPSYSGID=${15}
-SIDADMUID=${16}
-DBHOST=${17}
-DBSID=${18}
-DBINSTANCE=${19}
-ASCSSID=${20}
-ASCSHOST=${21}
-NWINSTANCE=${22}
+USRNAME=${1}
+NWPWD=${2}
+VMNAME=${3}
+OTHERVMNAME=${4}
+VMIPADDR=${5}
+OTHERIPADDR=${6}
+ISPRIMARY=${7}
+URI=${8}
+HANASID=${9}
+REPOURI=${10}
+ISCSIIP=${11}
+IQN=${12}
+IQNCLIENT=${13}
+LBIP=${14}
+SUBEMAIL=${15}
+SUBID=${16}
+SUBURL=${17}
+NFSILBIP=${18}
+$ASCS1IP=$[19]
+$ASCS2IP=$[20]
+$ASCS1VM=$[21]
+$ASCS2VM=$[22]
+
 
 echo "nwserver.sh receiving:"
+echo "USRNAME:" $USRNAME >> /tmp/variables.txt
+echo "NWPWD:" $ASCSPWD >> /tmp/variables.txt
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
+echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
 echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
+echo "OTHERIPADDR:" $OTHERIPADDR >> /tmp/variables.txt
 echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
-echo "URI:" $URI >> /tmp/variables.txt
+echo "REPOURI:" $REPOURI >> /tmp/variables.txt
+echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
+echo "IQN:" $IQN >> /tmp/variables.txt
+echo "IQNCLIENT:" $IQNCLIENT >> /tmp/variables.txt
+echo "LBIP:" $LBIP >> /tmp/variables.txt
 echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 echo "NFSILBIP:" $NFSILBIP >> /tmp/variables.txt
-echo "ASCS1VM:" $ASCS1VM >> /tmp/variables.txt
 echo "ASCS1IP:" $ASCS1IP >> /tmp/variables.txt
-echo "ASCS2VM:" $ASCS2VM >> /tmp/variables.txt
 echo "ASCS2IP:" $ASCS2IP >> /tmp/variables.txt
-echo "MASTERPASSWORD:" $MASTERPASSWORD >> /tmp/variables.txt
-echo "SAPADMUID:" $SAPADMUID >> /tmp/variables.txt
-echo "SAPSYSGID:" $SAPSYSGID >> /tmp/variables.txt
-echo "SIDADMUID:" $SIDADMUID >> /tmp/variables.txt
-echo "DBHOST:" $DBHOST >> /tmp/variables.txt
-echo "DBSID:" $DBSID >> /tmp/variables.txt
-echo "DBINSTANCE:" $DBINSTANCE >> /tmp/variables.txt
-echo "ASCSSID:" $ASCSSID >> /tmp/variables.txt
-echo "ASCSHOST:" $ASCSHOST >> /tmp/variables.txt
-echo "NWINSTANCE:" $NWINSTANCE >> /tmp/variables.txt
+echo "ASCS1VM:" $ASCS1VM >> /tmp/variables.txt
+echo "ASCS2VM:" $ASCS2VM >> /tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -119,8 +118,6 @@ if [ "$SUBEMAIL" != "" ]; then
 fi
 }
 
-declare -fxr register_subscription
-
 download_if_needed() {
   P_DESTDIR=${1}
   P_SOURCEDIR=${2}
@@ -136,7 +133,7 @@ download_if_needed() {
   fi
 }
 
-declare -fxr download_if_needed
+declare -fxr register_subscription
 
 create_temp_swapfile() {
   P_SWAPNAME=$1
@@ -155,33 +152,33 @@ download_sapbits() {
   URI=$1
   SBDIR=$2
 
-  test -e $SBDIR/download_complete.txt
+  test -e $SBDIR/download_nwsapbits_complete.txt
   RESULT=$?
   echo $RESULT
   if [ "$RESULT" = "1" ]; then
     #need to download the sap bits
     cd  $SBDIR
 
-    retry 5 "wget  --quiet $URI/SapBits/51050423_3.ZIP"
-    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part1.exe"   
-    retry 5 "wget  --quiet $URI/SapBits/51050829_JAVA_part2.rar" 
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part1.exe"
-    retry 5 "wget  --quiet $URI/SapBits/51052318_part2.rar"
-    retry 5 "wget  --quiet $URI/SapBits/SAPCAR_1014-80000935.EXE"
-    retry 5 "wget  --quiet $URI/SapBits/SWPM10SP23_1-20009701.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPEXE_200-80002573.SAR"
-    retry 5 "wget  --quiet $URI/SapBits/SAPEXEDB_200-80002572.SAR"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51050423_3.ZIP"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51050829_JAVA_part1.exe"   
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51050829_JAVA_part2.rar" 
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052190_part1.exe"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052190_part2.rar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052190_part3.rar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052190_part4.rar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052190_part5.rar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052318_part1.exe"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "51052318_part2.rar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "SAPCAR_1014-80000935.EXE"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "SWPM10SP23_1-20009701.SAR"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "SAPHOSTAGENT36_36-20009394.SAR"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "SAPEXE_200-80002573.SAR"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "SAPEXEDB_200-80002572.SAR"
 
-    retry 5 "wget  --quiet $URI/SapBits/igsexe_5-80003187.sar"
-    retry 5 "wget  --quiet $URI/SapBits/igshelper_17-10010245.sar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "igsexe_5-80003187.sar"
+    download_if_needed  "$SBDIR" "$URI/SapBits" "igshelper_17-10010245.sar"
     #unpack some of this
-    #retry 5 "zypper install -y unrar"
+    retry 5 "zypper install -y unrar"
 
     chmod u+x SAPCAR_1014-80000935.EXE
     ln -s ./SAPCAR_1014-80000935.EXE sapcar
@@ -190,7 +187,7 @@ download_sapbits() {
     cd SWPM10SP23_1
     ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
     cd $SBDIR
-    touch $SBDIR/download_complete.txt
+    touch $SBDIR/download_nwsapbits_complete.txt
   fi
 }
 
@@ -198,28 +195,28 @@ declare -fxr download_sapbits
 
 write_nw_ini_file() {
   P_VMNAME=$1
-  P_MASTERPASSWD=$2
-  P_SAPADMUID=$3
-  P_SAPSYSGID=$4
-  P_SIDADMUID=$5
-  P_DBHOST=$6
-  P_DBSID=$7
-  P_DBINSTANCE=$8
-  P_ASCSSID=$9
-  P_ASCSHOST=$10
-  P_NWINSTANCE=$11
+  P_MASTERPASSWD=${2}
+  P_SAPADMUID=${3}
+  P_SAPSYSGID=${4}
+  P_SIDADMUID=${5}
+  P_DBHOST=${6}
+  P_DBSID=${7}
+  P_DBINSTANCE=${8}
+  P_ASCSSID=${9}
+  P_ASCSHOST=${10}
+  P_NWINSTANCE=${8}
 
   echo "setup netweaver"
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
 
   cd /silent_install
   cat > /silent_install/nw.params <<EOF
-HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
+HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB
 HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_CI_Instance.ascsVirtualHostname = $P_ASCSHOST
 NW_CI_Instance.ciInstanceNumber = $P_NWINSTANCE
 NW_CI_Instance.ciVirtualHostname = $P_VMNAME
-NW_CI_Instance.scsVirtualHostname = $P_VMNAME
+NW_CI_Instance.scsVirtualHostname = nw-0
 NW_CI_Instance_ABAP_Reports.executeReportsForDepooling = true
 NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
 NW_HDB_getDBInfo.systemDbPassword = $P_MASTERPASSWD
@@ -261,13 +258,16 @@ declare -fxr install_nw
 
 write_nw_other_ini_file() {
   P_VMNAME=$1
-  P_MASTERPASSWD=$2
-  P_SAPADMUID=$3
-  P_SAPSYSGID=$4
-  P_SIDADMUID=$5
-  P_DBSID=$6
-  P_ASCSSID=$7
-  P_NWINSTANCE=$8
+  P_MASTERPASSWD=${2}
+  P_SAPADMUID=${3}
+  P_SAPSYSGID=${4}
+  P_SIDADMUID=${5}
+  P_DBHOST=${6}
+  P_DBSID=${7}
+  P_DBINSTANCE=${8}
+  P_ASCSSID=${9}
+  P_ASCSHOST=${10}
+  P_NWINSTANCE=${11}
 
   echo "setup netweaver"
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
@@ -309,14 +309,13 @@ install_nw_other() {
   touch /tmp/nwcomplete.txt
 }
 
-declare -fxr install_nw_other
+declare -fxr install_nw
 ##end of bash function definitions
 
-### register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
+register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #get the VM size via the instance api
 VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/vmSize?api-version=2017-08-01&format=text"`
-echo "VMSIZE:" $VMSIZE >> /tmp/variables.txt
 
 #install hana prereqs
 echo "installing packages"
@@ -330,6 +329,7 @@ echo $URI >> /tmp/url.txt
 # updat the hosts file
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
+$OTHERIPADDR $OTHERVMNAME
 $NFSILBIP nfsnfslb
 $ASCS1IP ASCS1VM
 $ASCS2IP ASCS2VM
@@ -338,6 +338,14 @@ EOF
 # Restart ascd and ers
 systemctl restart ascs
 systemctl restart ers
+
+###################
+mkdir /localstore
+#this is for local sapbits
+mkfs -t xfs  /dev/vg_NW/lv_NW 
+mount -t xfs /dev/vg_NW/lv_NW /localstore
+echo "/dev/vg_NW/lv_NW /localstore xfs defaults 0 0" >> /etc/fstab
+#################
 
 # make the sapbits directory and mount it
 mkdir /sapbits
@@ -348,19 +356,10 @@ mkdir /sapmnt
 #we should be mounting /usr/sap instead
 mount -t nfs4 nfsnfslb:/NWS/sapmntH10 /sapmnt
 
-### we aren't downloading we are mounting to a file share
-### download_sapbits $URI /sapbits
-### touch /tmp/sapbitsdownloaded.txt
-
-echo "mkdir localstore and swapfile" >> /tmp/installog.txt
-mkdir /localstore
-#this is for local sapbits
-mkfs -t xfs  /dev/vg_NW/lv_NW 
-mount -t xfs /dev/vg_NW/lv_NW /localstore
-echo "/dev/vg_NW/lv_NW /localstore xfs defaults 0 0" >> /etc/fstab
-
+cd /sapbits
+download_sapbits $URI /sapbits
+touch /tmp/sapbitsdownloaded.txt
 create_temp_swapfile "/localstore/tempswap" 2000000
-echo "finished swapfile" >> /tmp/installog.txt
 
 groupadd -g 1000 sapinst
 groupadd -g 1001 sapsys
@@ -378,10 +377,23 @@ chmod g+rwx /silent_install
 chmod o+rx /silent_install
 
 if [ "$ISPRIMARY" = "yes" ]; then
-   write_nw_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$DBSID" "$DBINSTANCE" "$ASCSSID" "$ASCSHOST" "$NWINSTANCE"
-   install_nw  "$VMNAME" 
+  write_nw_ini_file "$VMNAME"
+  P_MASTERPASSWD=${2}
+  P_SAPADMUID=${3}
+  P_SAPSYSGID=${4}
+  P_SIDADMUID=${5}
+  P_DBHOST=${6}
+  P_DBSID=${7}
+  P_DBINSTANCE=${8}
+  P_ASCSSID=${9}
+  P_HOSTNAME=${10}
+  P_NWINSTANCE
+
+
+
+  install_nw  "$VMNAME" 
 else
-   write_nw_other_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBSID" "$ASCSSID" "$NWINSTANCE"
-   install_other_nw  "$VMNAME" 
+  write_nw_other_ini_file "$VMNAME"
+  install_other_nw  "$VMNAME" 
 fi
 

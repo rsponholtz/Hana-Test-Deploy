@@ -143,7 +143,7 @@
             },
             "defaultValue": "10.0.6.4"
         },
-        "ILBIP": {
+        "ASCSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer"
@@ -194,7 +194,7 @@
                     {
                         "name": "LoadBalancerFrontEnd",
                         "properties": {
-                            "privateIPAddress": "[parameters('ILBIP')]",
+                            "privateIPAddress": "[parameters('ASCSLBIP')]",
                             "privateIPAllocationMethod": "Static",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
@@ -244,7 +244,29 @@
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
                             }
                         }
+                    },
+                    {
+                        "name": "ascs-lb-7630t",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                            },
+                            "frontendPort": 7630,
+                            "backendPort": 7630,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                            }
+                        }
                     }
+
                 ],
                 "backendAddressPools": [
                     {
@@ -327,7 +349,7 @@
                         "value": "[variables('loadBalancerName')]"
                     },
                     "LBIP": {
-                        "value": "[parameters('ILBIP')]"
+                        "value": "[parameters('ASCSLBIP')]"
                     },
                     "avSetObj": {
                         "value": {
@@ -391,7 +413,7 @@
                         "value": "[variables('loadBalancerName')]"
                     },
                     "LBIP": {
-                        "value": "[parameters('ILBIP')]"
+                        "value": "[parameters('ASCSLBIP')]"
                     },
                     "avSetObj": {
                         "value": {

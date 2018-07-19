@@ -16,7 +16,8 @@ az group deployment create \
    customURI="$customuri" \
    StaticIP1=$ASCSIP1 \
    StaticIP2=$ASCSIP2 \
-   HANASID=$ASCSSID \
+   HANASID=$HANASID \
+   ASCSSID=$ASCSSID \
    IQN="$ASCSIQN" \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
@@ -26,5 +27,9 @@ az group deployment create \
    SAPPASSWD="$vmpassword" \
    DBHOST="hanailb" \
    DBIP="$HANAILBIP" \
+<<<<<<< HEAD
+=======
+   ASCSLBIP="$ASCSILBIP"
+>>>>>>> 6a1406ea4fd5bf82604aeb9c02c02c19fd5063a7
 
 echo "ascs cluster installed"

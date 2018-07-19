@@ -8,7 +8,7 @@ ELEMENTS=${#args[@]}
 # echo each element in array
 # for loop
 for (( i=0;i<$ELEMENTS;i++)); do
-    echo "ARG[${i}]: ${args[${i}]}"
+    echo ${args[${i}]}
 done
 
 USRNAME=${1}
@@ -29,18 +29,7 @@ SUBEMAIL=${15}
 SUBID=${16}
 SUBURL=${17}
 NFSILBIP=${18}
-ASCSSID=${19}
-ASCSINSTANCE=${20}
-SAPINSTGID=${21}
-SAPSYSGID=${22}
-SAPADMUID=${23}
-SIDADMUID=${24}
-SAPPASSWD=${25}
-ERSINSTANCE=${26}
-DBHOST=${27}
-DBIP=${28}
-DBINSTANCE=${29}
-ASCSLBIP=${30}
+
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -59,18 +48,6 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 echo "NFSILBIP:" $NFSILBIP >> /tmp/variables.txt
-echo "ASCSSID" $ASCSSID >> /tmp/variables.txt
-echo "ASCSINSTANCE:" $ASCSINSTANCE >>/tmp/variables.txt
-echo "SAPINSTGID:" $SAPINSTGID >>/tmp/variables.txt
-echo "SAPSYSGID:" $SAPSYSGID >>/tmp/variables.txt
-echo "SAPADMUID:" $SAPADMUID >>/tmp/variables.txt
-echo "SIDADMUID:" $SIDADMUID >>/tmp/variables.txt
-echo "SAPPASSWD:" $SAPPASSWD >>/tmp/variables.txt
-echo "ERSINSTANCE:" $ERSINSTANCE >>/tmp/variables.txt
-echo "DBHOST:" $DBHOST >>/tmp/variables.txt
-echo "DBIP:" $DBIP >>/tmp/variables.txt
-echo "DBINSTANCE:" $DBINSTANCE >>/tmp/variables.txt
-echo "ASCSLBIP:" $ASCSLBIP >>/tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -205,8 +182,8 @@ quorum {
         # Enable and configure quorum subsystem (default: off)
         # see also corosync.conf.5 and votequorum.5
         provider: corosync_votequorum
-        expected_votes: 2
-        two_node: 1
+        expected_votes: 1
+        two_node: 0
 }
 EOF
 
@@ -225,12 +202,6 @@ create_temp_swapfile() {
   swapon $P_SWAPNAME
 }
 
-remove_temp_swapfile() {
-  P_SWAPNAME=$1
-
-  swapoff $P_SWAPNAME
-  rm -f $P_SWAPNAME
-}
 
 setup_cluster() {
   P_ISPRIMARY=$1
@@ -347,8 +318,8 @@ download_dbbits() {
     #unpack some of this
     retry 5 "zypper install -y unrar"
 
-    unrar -o- x 51052325_part1.exe
-    unrar -o- x 51052190_part1.exe
+    unrar x 51052325_part1.exe
+    unrar x 51052190_part1.exe
     touch $SBDIR/dbdownload_complete.txt
   fi
 }
@@ -385,8 +356,6 @@ nwUsers.sapsysGID = $P_SAPSYSGID
 nwUsers.sidAdmUID = $P_SIDADMUID
 nwUsers.sidadmPassword = $P_MASTERPASSWD
 EOF
-chown root:sapinst $P_INIFILE
-chmod g+r $P_INIFILE
 }
 
 write_ers_ini_file() {
@@ -420,8 +389,6 @@ nwUsers.sidadmPassword = $P_MASTERPASSWD
 nw_instance_ers.ersInstanceNumber = $P_ERSINSTANCE
 nw_instance_ers.ersVirtualHostname = $P_VMNAME
 EOF
-chown root:sapinst $P_INIFILE
-chmod g+r $P_INIFILE
 }
 
 write_db_ini_file() {
@@ -435,15 +402,11 @@ write_db_ini_file() {
   P_DBINSTANCE=${8}
 
   cat > $P_INIFILE <<EOF
-NW_HDB_DB.abapSchemaName = SAPABAPDB
-NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
-NW_HDB_DB.javaSchemaName = SAPABAPDB
-NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
+HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
 HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_ABAP_Import_Dialog.dbCodepage = 4103
-NW_ABAP_Import_Dialog.migmonJobNum = 12
+NW_ABAP_Import_Dialog.migmonJobNum = 6
 NW_ABAP_Import_Dialog.migmonLoadArgs = -c 100000 -rowstorelist /silent_db/rowstorelist.txt
-archives.downloadBasket = /sapbits
 NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
 NW_HDB_getDBInfo.dbhost = $P_DBHOST
 NW_HDB_getDBInfo.dbsid = $P_DBSID
@@ -455,23 +418,17 @@ NW_getFQDN.setFQDN = false
 NW_getLoadType.loadType = SAP
 NW_readProfileDir.profileDir = /usr/sap/$P_ASCSSID/SYS/profile
 hanadb.landscape.reorg.useParameterFile = DONOTUSEFILE
-nwUsers.sapsysGID = $P_SAPSYSGID
+nwUsers.sapsysGID = $P_SAPSYSGUID
 nwUsers.sidAdmUID = $P_SIDADMUID
 storageBasedCopy.hdb.instanceNumber = $P_DBINSTANCE
 storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
-SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
-SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
-HDB_Schema_Check_Dialogs.dropSchema = true 
 EOF
-chown root:sapinst $P_INIFILE
-chmod g+r $P_INIFILE
 }
 
 exec_sapinst() {
   P_SAPINSTFUNC=${1}
   P_INIFILE=${2}
-  P_PRODUCTID=${3}
-  P_INSTUSER=${4}
+  P_PRODUCTID
 
   echo "run sapinst"
   echo "P_SAPINSTFUNC:" $P_SAPINSTFUNC >> /tmp/variables.txt
@@ -479,18 +436,13 @@ exec_sapinst() {
   echo "P_PRODUCTID:" $P_PRODUCTID>> /tmp/variables.txt
 
   echo "running sapinst for $P_SAPINSTFUNC"
-  SILENTDIR="/silent_$P_SAPINSTFUNC"
+  SILENTDIR="/silent_$SAPINSTFUNC"
   mkdir $SILENTDIR
   chown root:sapinst $SILENTDIR
   chmod 775 $SILENTDIR    
+
   cd $SILENTDIR
-
-##  sudo -u $P_INSTUSER bash << EOF
-##  cd $SILENTDIR
-##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-## EOF
   /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-
 }
 
 ##end of bash function definitions
@@ -524,14 +476,6 @@ $NFSILBIP nfsnfslb
 EOF
 
 
-cat >>/etc/hosts <<EOF
-$VMIPADDR $VMNAME
-$OTHERIPADDR $OTHERVMNAME
-$NFSILBIP nfsnfslb
-EOF
-
-
-
 ##external dependency on sshpt
     retry 5 "zypper install -y python-pip"
     retry 5 "pip install sshpt"
@@ -548,6 +492,8 @@ EOF
     sshpt --hosts $OTHERVMNAME -u $USRNAME -p $ASCSPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
 
     cd /root 
+    #wget $REPOURI/waitfor.sh
+    #chmod u+x waitfor.sh
 
 #Clustering setup
 #start services [A]
@@ -578,7 +524,7 @@ sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
 #initialize sbd on node1
 if [ "$ISPRIMARY" = "yes" ]; then
-  sbd -d $sbdid ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
+  sbd -d $sbdid -1 90 -4 180 create
 fi
 
 #!/bin/bash [A]
@@ -586,10 +532,9 @@ cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 
 sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
-sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
-sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
-cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
-echo "SBD_WATCHDOG=yes" >>/etc/sysconfigsbd.modified
+sbdcmd2='s/SBD_PACEMAKER=/SBD_PACEMAKER="yes"/g'
+sbdcmd3='s/SBD_STARTMODE=/SBD_STARTMODE="always"/g'
+cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > sbd.modified
 cp -f /etc/sysconfig/sbd.modified /etc/sysconfig/sbd
 echo "hana sbd end" >> /tmp/parameter.txt
 
@@ -599,28 +544,7 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
-setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl"
-
-zypper install sap_suse_cluster_connector
-
-#node1
-if [ "$ISPRIMARY" = "yes" ]; then
-
-sudo crm node standby $ASCSSID-cl-1
-
-sudo crm configure primitive vip_$ASCSSID_ASCS IPaddr2 \
-  params ip=$ASCSLBIP cidr_netmask=24 \
-  op monitor interval=10 timeout=20
-
-sudo crm configure primitive nc_$ASCSSID_ASCS anything \
-  params binfile="/usr/bin/nc" cmdline_options="-l -k 62000" \
-  op monitor timeout=20s interval=10 depth=0
-
-sudo crm configure group g-$ASCSSID_ASCS nc_$ASCSSID_ASCS vip_$ASCSSID_ASCS \
-   meta resource-stickiness=3000
-fi
-
-
+setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "ascscluster"
 
 #!/bin/bash
 echo "logicalvol start" >> /tmp/parameter.txt
@@ -637,7 +561,6 @@ mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
 echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
 mkdir /sapbits
-
 mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
 echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
 
@@ -647,108 +570,60 @@ mount -t nfs4 nfsnfslb:/NWS/sapmntH10 /sapmnt
 
 echo "nfsnfslb:/NWS/sapmntH10 /sapmnt nfs4 defaults 0 0" >> /etc/fstab
 
-mkdir -p /usr/sap/$ASCSSID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
-mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$ASCSSID/SYS
-echo "nfsnfslb:/NWS/ASCS /usr/sap/$ASCSSID/SYS nfs4 defaults 0 0" >> /etc/fstab
+mkdir -p /usr/sap/$HANASID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
+mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS
+echo "nfsnfslb:/NWS/ASCS /usr/sap/$HANASID/SYS nfs4 defaults 0 0" >> /etc/fstab
 
 cd /sapbits
 download_sapbits $URI /sapbits
 touch /tmp/sapbitsdownloaded.txt
 create_temp_swapfile "/localstore/tempswap" 2000000
 
-groupadd -g $SAPINSTGID sapinst
-groupadd -g $SAPSYSGID sapsys
-usermod -a -G sapinst root
+groupadd -g 1000 sapinst
+groupadd -g 1001 sapsys
 usermod -a -G sapsys root
-
-echo  "10.0.0.22 hanailb"  >>/etc/hosts
+mkdir /silent_install
+cd /silent_install
+chown root:sapinst /silent_install
+chmod g+rwx /silent_install
+chmod o+rx /silent_install
 
 if [ "$ISPRIMARY" = "yes" ]; then
-  #clean out the 
-  rm -r -f /usr/sap/S40/SYS/exe/uc/linuxx86_64/*
-  write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
-  touch /tmp/ascscomplete.txt
-
-sudo crm node online $VMNAME
-sudo crm node standby $OTHERVMNAME
-
-crm configure primitive vip_${ASCSSID} IPaddr2 \
-        params ip="$LBIP" cidr_netmask=24 \
-        op monitor interval="10s" timeout="20s" 
-
-crm configure primitive rsc_nc_${ASCSSID} anything \
-     params binfile="/usr/bin/nc" cmdline_options="-l -k 61000" \
-     op monitor timeout=20s interval=10 depth=0
-
-# WARNING: Resources nc_NW1_ASCS,nc_NW1_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"
-# Do you still want to commit (y/n)? y
-
-sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
-
-
+  write_ascs_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  install_ascs "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
   download_dbbits $URI /sapbits
-  waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
-  write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
-  exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
+  install_database "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
 else
-  waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
-  write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root
-  touch /tmp/erscomplete.txt
+  waitfor  root $P_OTHERVMNAME /tmp/sapbitsdownloaded.txt
+  write_ers_ini_file "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
+  install_ers "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME"
 fi
-
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
+crm configure property maintenance-mode="true"   
 
-
- crm configure property maintenance-mode="true"   
-
-crm configure delete stonith-sbd
-
-crm configure primitive stonith-sbd stonith:external/sbd \
-     params pcmk_delay_max="15" \
-     op monitor interval="15" timeout="15"
-
-  crm configure property stonith-timeout=$STONITHTIMEOUT
-  
-  crm configure primitive stonith-sbd stonith:external/sbd \
-     params pcmk_delay_max="15" \
-     op monitor interval="15" timeout="15"
-
-crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
-               no-quorum-policy="ignore" \
-               stonith-action="reboot" \
-               stonith-timeout=$STONITHTIMEOUT
-
-crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
-
-crm configure  op_defaults $id="op-options"  timeout="600"
-
- crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
- operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
+ crm configure primitive rsc_sap_NW1_ASCS00 SAPInstance \
+ operations \$id=rsc_sap_NW1_ASCS00-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ASCS00_nw1-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
+ params InstanceName=NW1_ASCS00_nw1-ascs START_PROFILE="/sapmnt/NW1/profile/NW1_ASCS00_nw1-ascs" \
  AUTOMATIC_RECOVER=false \
  meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
 
- crm configure primitive rsc_sap_${ASCSSID}_ERS02 SAPInstance \
- operations \$id=rsc_sap_${ASCSSID}_ERS02-operations \
+ crm configure primitive rsc_sap_NW1_ERS02 SAPInstance \
+ operations \$id=rsc_sap_NW1_ERS02-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ERS02_nw1-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS00_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
+ params InstanceName=NW1_ERS02_nw1-aers START_PROFILE="/sapmnt/NW1/profile/NW1_ERS02_nw1-aers" AUTOMATIC_RECOVER=false IS_ERS=true \
  meta priority=1000
 
- crm configure modgroup g-${ASCSSID}_ASCS add rsc_sap_${ASCSSID}_ASCS00
- crm configure modgroup g-${ASCSSID}_ERS add rsc_sap_${ASCSSID}_ERS00
+ crm configure modgroup g-NW1_ASCS add rsc_sap_NW1_ASCS00
+ crm configure modgroup g-NW1_ERS add rsc_sap_NW1_ERS02
 
- crm configure colocation col_sap_${ASCSSID}_no_both -5000: g-${ASCSSID}_ERS g-${ASCSSID}_ASCS
- crm configure location loc_sap_${ASCSSID}_failover_to_ers rsc_sap_${ASCSSID}_ASCS00 rule 2000: runs_ers_${ASCSSID} eq 1
- crm configure order ord_sap_${ASCSSID}_first_start_ascs Optional: rsc_sap_${ASCSSID}_ASCS00:start rsc_sap_${ASCSSID}_ERS00:stop symmetrical=false
+ crm configure colocation col_sap_NW1_no_both -5000: g-NW1_ERS g-NW1_ASCS
+ crm configure location loc_sap_NW1_failover_to_ers rsc_sap_NW1_ASCS00 rule 2000: runs_ers_NW1 eq 1
+ crm configure order ord_sap_NW1_first_start_ascs Optional: rsc_sap_NW1_ASCS00:start rsc_sap_NW1_ERS02:stop symmetrical=false
 
- crm node online ${ASCSSID}-cl-0
+ crm node online nw1-cl-0
  crm configure property maintenance-mode="false"
 fi
-
-remove_temp_swapfile "/localstore/tempswap" 

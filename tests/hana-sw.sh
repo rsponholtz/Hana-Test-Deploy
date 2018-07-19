@@ -18,11 +18,13 @@ az group deployment create \
    StaticIP2="$HANAIP2" \
    iSCSIIP="$ISCSIIP" \
    IQN="$HANAIQN" \
+   HANASID="$HANASID" \
    IQNClient1="$HANAIQNCLIENT1" \
    IQNClient2="$HANAIQNCLIENT2" \
    ILBIP="$HANAILBIP" \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
-   SMTUri="$slessmt"
+   SMTUri="$slessmt" \
+   NFSIP="$NFSILBIP"
 
 echo "hana software installed"

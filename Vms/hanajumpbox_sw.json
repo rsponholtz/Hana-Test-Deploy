@@ -1,0 +1,92 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "Name of the Virtual Machine"
+            },
+            "defaultValue": "hanajb"
+        },
+        "vmUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machine"
+            },
+            "defaultValue": "testuser"
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Resource Group for the VNET where the VM will be placed"
+            }
+        },
+        "vnetName": {
+            "defaultValue": "vnet",
+            "type": "string",
+            "metadata": {
+                "description": "Virtual network name"
+            }
+        },
+        "subnetName": {
+            "defaultValue": "subnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name"
+            }
+        },
+        "StaticIP": {
+            "defaultValue": "10.0.0.4",
+            "type": "string",
+            "metadata": {
+                "description": "StaticIP"
+            }
+        },
+        "vmPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "customUri": {
+            "type": "string",
+            "metadata": {
+                "description": "Uri for SAP Bits"
+            }
+        }
+    },
+    "variables": {
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vNicName": "[concat(parameters('vmName'),'nic')]",
+        "PIPName": "[concat(parameters('vmName'),'pip')]",
+        "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+        "scriptFolder": ".",
+        "scriptFileName": "hanastudio.ps1",
+        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
+        "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1"
+    },
+    "resources": [        
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('windowsVmName'), 'CustomScript')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",            
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.9",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "[variables('scriptTypeToDowload')]"
+                    ],
+                    "commandToExecute": "[variables('scriptTypeToDeploy')]"
+                },
+                "protectedSettings": {}
+            }
+        }
+    ],
+    "outputs": {}
+}

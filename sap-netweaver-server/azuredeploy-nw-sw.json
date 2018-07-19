@@ -1,32 +1,20 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-        "NumberOfVmsToMake": {
-            "type": "int",
-            "allowedValues": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9,
-                10
-            ],
-            "metadata": {
-                "description": "The number of Virutal Machines to install the software on."
-            },
-            "defaultValue": 2
-        },
+    "parameters": {        
         "vmName": {
             "type": "string",
             "metadata": {
                 "description": "Netweaver VM name. The true vmName will vmName then a dash then the number. Example: nwVm-1"
             },
             "defaultValue": "nwVm"
+        },
+        "StaticIP": {
+            "type": "string",
+            "metadata": {
+                "description": "The static ip address"
+            },
+            "defaultValue": "10.0.1.49"
         },
         "osType": {
             "type": "string",
@@ -42,12 +30,54 @@
                 "description": "The type of the operating system you want to deploy."
             }
         },
+        "isPrimary": {
+            "type": "string",
+            "metadata": {
+                "description": "Is this the primart app server"
+            },
+            "defaultValue": "yes"
+        },
         "customUri": {
             "type": "string",
             "metadata": {
                 "description": "Uri for SAP Bits"
             },
             "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
+        },
+        "NFSILBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP for NFS Load Balancer"
+            },
+            "defaultValue": "10.0.1.10"
+        },
+        "ASCSVM1": {
+            "type": "string",
+            "metadata": {
+                "description": "ASCS VM1 Name"
+            },
+            "defaultValue": "ascs1"
+        },
+        "ASCSIP1": {
+            "type": "string",
+            "metadata": {
+                "description": "ASCS VM1 Ip address"
+            },
+            "defaultValue": "10.0.1.17"
+        },
+        "ASCSVM2": {
+            "type": "string",
+            "metadata": {
+                "description": "ASCS VM2 Name"
+            },
+            "defaultValue": "ascs2"
+        },
+        "ASCSIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "ASCS VM2 Ip address"
+            },
+            "defaultValue": "10.0.1.18"
         },
         "_artifactsLocation": {
             "type": "string",
@@ -62,6 +92,76 @@
                 "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
             },
             "defaultValue": ""
+        },
+        "MASTERPASSWORD": {
+            "type": "securestring",
+            "metadata": {
+                "description": "SAP Master Password."
+            },
+            "defaultValue": "P@ssw0rdForCat"
+        },
+        "SAPADMUID": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP ADMU ID."
+            },
+            "defaultValue": "1050"
+        },
+        "SAPSYSGID": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP SYSG ID."
+            },
+            "defaultValue": "1001"
+        },
+        "SIDADMUID": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP ADMU ID."
+            },
+            "defaultValue": "1040"
+        },
+        "DBHOST": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP DB Host."
+            },
+            "defaultValue": "00"
+        },
+        "DBSID": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP DB SID."
+            },
+            "defaultValue": "00"
+        },
+        "DBINSTANCE": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP DB Instance."
+            },
+            "defaultValue": "03"
+        },
+        "ASCSSID": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP ASCD ID."
+            },
+            "defaultValue": "04"
+        },
+        "ASCSHOST": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP ASCD Host."
+            },
+            "defaultValue": "ascs1"
+        },
+        "NWINSTANCE": {
+            "type": "string",
+            "metadata": {
+                "description": "SAP NW Instance."
+            },
+            "defaultValue": "05"
         }
     },
     "variables": {
@@ -102,29 +202,14 @@
                 "OSType": "Linux",
                 "version": "latest"
             }
-        },
-        "linuxshFile": "nwserver.sh",
-        "windowspsFile": "nwserver.ps1",
-        "commandRunLinux": "[concat('sh ', variables('linuxshFile'))]",
-        "commandRunWindows": "[concat('powershell.exe -ExecutionPolicy bypass -File ', variables('windowspsFile'))]",
-        "downloadWindows": "[concat(parameters('_artifactsLocation'), '/', variables('windowspsFile'), parameters('_artifactsLocationSasToken'))]",
-        "downloadLinux": "[concat(parameters('_artifactsLocation'), '/', variables('linuxshFile'), parameters('_artifactsLocationSasToken'))]",
-        "extensionToUse": "[if(contains(parameters('osType'), 'Windows Server'), 'Windows', 'Linux')]",
-        "scriptTypeToDeploy": "[if(contains(parameters('osType'), 'Windows'), variables('commandRunWindows'), variables('commandRunLinux'))]",
-        "scriptTypeToDowload": "[if(contains(parameters('osType'), 'Windows'), variables('downloadWindows'), variables('downloadLinux'))]",
-        "linuxVmName": "[if(contains(variables('extensionToUse'), 'Linux'), variables('vmName'), 'linVmName')]",
-        "windowsVmName": "[if(contains(variables('extensionToUse'), 'Windows'), variables('vmName'), 'winVmName')]"    },
+        }
+    },
     "resources": [
         {
-            "condition": "[equals(variables('extensionToUse'), 'Linux')]",
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('linuxVmName'), '-', copyindex(),'/', 'CustomScript')]",
+            "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
             "apiVersion": "2017-12-01",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "nwVMLook",
-                "count": "[parameters('NumberOfVmsToMake')]"
-            },
+            "location": "[resourceGroup().location]",            
             "properties": {
                 "publisher": "Microsoft.Azure.Extensions",
                 "type": "CustomScript",
@@ -132,33 +217,9 @@
                 "autoUpgradeMinorVersion": true,
                 "settings": {
                     "fileUris": [
-                        "[variables('scriptTypeToDowload')]"
+                        "[concat(parameters('_artifactsLocation'), '/', 'nwserver.sh', parameters('_artifactsLocationSasToken'))]"
                     ],
-                    "commandToExecute": "[variables('scriptTypeToDeploy')]"
-                },
-                "protectedSettings": {}
-            }
-        },
-        {
-            "condition": "[equals(variables('extensionToUse'), 'Windows')]",
-            "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('windowsVmName'), '-', copyindex(),'/', 'CustomScript')]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "nwVMLook",
-                "count": "[parameters('NumberOfVmsToMake')]"
-            },
-            "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.9",
-                "autoUpgradeMinorVersion": true,
-                "settings": {
-                    "fileUris": [
-                        "[variables('scriptTypeToDowload')]"
-                    ],
-                    "commandToExecute": "[variables('scriptTypeToDeploy')]"
+                    "commandToExecute": "[concat('sh nwserver.sh',' \"',parameters('vmName'),'\" \"',parameters('StaticIP'),'\" \"',parameters('isPrimary'),'\" \"',parameters('customUri'),'\" \"',parameters('vmName'),'\" \"',parameters('vmName'),'\" \"',parameters('vmName'),'\" \"',parameters('NFSILBIP'),'\" \"',parameters('ASCSVM1'),'\" \"',parameters('ASCSIP1'),'\" \"',parameters('ASCSVM2'),'\" \"',parameters('ASCSIP2'),'\" \"',parameters('MASTERPASSWORD'),'\" \"',parameters('SAPADMUID'),'\" \"',parameters('SAPSYSGID'),'\" \"',parameters('SIDADMUID'),'\" \"',parameters('DBHOST'),'\" \"',parameters('DBSID'),'\" \"',parameters('DBINSTANCE'),'\" \"',parameters('ASCSSID'),'\" \"',parameters('ASCSHOST'),'\" \"',parameters('NWINSTANCE'),'\"')]"
                 },
                 "protectedSettings": {}
             }

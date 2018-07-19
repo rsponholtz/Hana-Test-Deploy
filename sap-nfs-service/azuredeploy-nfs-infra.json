@@ -6,19 +6,22 @@
             "type": "string",
             "metadata": {
                 "description": "prefix for resource naming"
-            }
+            },
+            "defaultValue": "nfs"
         },
         "VMName1": {
             "type": "string",
             "metadata": {
                 "description": "First VM Name"
-            }
+            },
+            "defaultValue": "nfs1"
         },
         "VMName2": {
             "type": "string",
             "metadata": {
                 "description": "Second VM Name"
-            }
+            },
+            "defaultValue": "nfs2"
         },
         "VMSize": {
             "type": "string",
@@ -41,14 +44,14 @@
         },
         "vnetName": {
             "type": "string",
-            "defaultValue": "ra-sap-hana-vnet",
+            "defaultValue": "vnet",
             "metadata": {
                 "description": "The HANA VNET"
             }
         },
         "SubnetName": {
             "type": "string",
-            "defaultValue": "SAPDataSubnet",
+            "defaultValue": "appsubnet",
             "metadata": {
                 "description": "The data subnet name"
             }
@@ -90,28 +93,28 @@
             "metadata": {
                 "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.4"
+            "defaultValue": "10.0.1.7"
         },
         "StaticIP2": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.5"
+            "defaultValue": "10.0.1.8"
         },
         "iSCSIIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the iscsi server"
             },
-            "defaultValue": "10.0.6.4"
+            "defaultValue": "10.0.2.6"
         },
         "ILBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer"
             },
-            "defaultValue": "10.0.5.10"
+            "defaultValue": "10.0.1.10"
         }
     },
     "variables": {
@@ -198,6 +201,27 @@
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Udp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "nfs-lb-7630",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                            },
+                            "frontendPort": 7630,
+                            "backendPort": 7630,
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
                             "loadDistribution": "Default",
                             "disableOutboundSnat": false,
                             "backendAddressPool": {
