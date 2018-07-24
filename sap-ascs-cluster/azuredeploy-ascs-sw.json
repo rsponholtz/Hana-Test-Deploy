@@ -197,28 +197,6 @@
             "metadata": {
                 "description": "IP Address for the ASCS load balancer"
             }
-        },
-        "configureCRM": {
-            "type": "string",
-            "metadata": {
-                "description": "Sets whether to configure ASCS CRM Resources as part of the cluster"
-            },
-            "allowedValues": [
-                "yes",
-                "no"
-            ],
-            "defaultValue": "no"
-        },
-        "configureSchema": {
-            "type": "string",
-            "metadata": {
-                "description": "Sets whether to configure DB schema"
-            },
-            "allowedValues": [
-                "yes",
-                "no"
-            ],
-            "defaultValue": "no"
         }       
     },
     "variables": {
@@ -242,7 +220,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster/allvmsizes-ascs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\" \"yes\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\"', parameters('configureCRM'),'\"', parameters('configureSchema'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\" \"yes\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\"')]"
                 }
             }
         },
@@ -260,7 +238,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster/allvmsizes-ascs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\"', parameters('configureCRM'),'\"', parameters('configureSchema'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\"')]"
                 }
             }
         }

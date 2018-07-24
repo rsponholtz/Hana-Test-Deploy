@@ -22,7 +22,7 @@ az group deployment create \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
    iSCSIIP=$ISCSIIP \
-   ASCSLBIP=$ASCSILBIP \
+   ILBIP=$ASCSILBIP \
    NFSILBIP=$NFSILBIP \
    SAPPASSWD="$vmpassword" \
    DBHOST="hanailb" \

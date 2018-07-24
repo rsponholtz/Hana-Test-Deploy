@@ -3,14 +3,14 @@ source ./azuredeploy.cfg
 
 az account set --subscription $subscriptionid
 
-#sh ./vnet-inf.sh
-#sh ./ntp-inf.sh
-#sh ./ntp-sw.sh
-#sh ./iscsi-inf.sh
-#sh ./iscsi-sw.sh
-#sh ./hana-inf.sh
-#sh ./hana-sw.sh
-#sh ./nfs-inf.sh
-#sh ./nfs-sw.sh
-sh ./ascs-inf.sh
-sh ./ascs-sw.sh
+./vnet-inf.sh
+./ntp-inf.sh
+./ntp-sw.sh
+./iscsi-inf.sh
+./iscsi-sw.sh
+./hana-inf.sh
+./hana-sw.sh
+./nfs-inf.sh
+./nfs-sw.sh
+./ascs-inf.sh
+./ascs-sw.sh

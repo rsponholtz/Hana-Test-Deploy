@@ -1,7 +1,7 @@
 #subscription id in azure
-subscriptionid="a66a6dd3-ca95-4d68-bdd2-97fa8afa4511"
+subscriptionid=
 #resource group name
-rgname=SAP-Lego
+rgname=
 #name of the virtual network
 vnetname=vnet
 #name of the database subnet
@@ -13,9 +13,9 @@ mgtsubnetname=mgtsubnet
 #admin username for virtual machines
 vmusername="testuser"
 #password for the admin user
-vmpassword=P@ssw0rd.1@@
+vmpassword=
 #the uri for SAP bits
-customuri="https://stagea66a6dd3ca954d68bdd.blob.core.windows.net/tazuresaphana22rg-stageartifacts"
+customuri="https://stagea3d54928db62458aad6.blob.core.windows.net/hanarg5-stageartifacts"
 #ip address for the ntp server
 NTPIP="10.0.2.5"
 #name of the first nfs server

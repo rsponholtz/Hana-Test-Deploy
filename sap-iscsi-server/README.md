@@ -1,6 +1,7 @@
 # ISCSI Server
 ## Machine Info
-This template will deploy a Linux ISCSI server into your environment. The purpose of this is server is to enable the creation of ICSI targets to use as SBD devices for the cluster configuration of the different cluster. For this purpose, the Custom Script Extension will create three different ISCSI targets and two client IQNs per ISCSI target.
+T
+his template will deploy a Linux ISCSI server into your environment. The purpose of this is server is to enable the creation of ICSI targets to use as SBD devices for the cluster configuration of the different cluster. For this purpose, the Custom Script Extension will create three different ISCSI targets and two client IQNs per ISCSI target.
 
 #### Storage Configuration
 

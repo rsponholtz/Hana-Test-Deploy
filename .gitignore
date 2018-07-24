@@ -1,5 +1,5 @@
 # Project Specific
-tests/azuredeploy.cfg
+
 DSC/ExampleConfiguration.zip
 *.zip
 *.rar
