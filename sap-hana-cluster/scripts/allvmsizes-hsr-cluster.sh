@@ -578,7 +578,8 @@ sedcmd4="s/root_password=AweS0me@PW/root_password=$HANAPWD/g"
 sedcmd5="s/master_password=AweS0me@PW/master_password=$HANAPWD/g"
 sedcmd6="s/sid=H10/sid=$HANASID/g"
 sedcmd7="s/number=00/number=$HANANUMBER/g"
-cat hdbinst.cfg | sed $sedcmd | sed $sedcmd2 | sed $sedcmd3 | sed $sedcmd4 | sed $sedcmd5 | sed $sedcmd6 > hdbinst-local.cfg
+hdbinst-filename="${SAPBITSDIR}/hdbinst-${myhost}.cfg"
+cat hdbinst.cfg | sed $sedcmd | sed $sedcmd2 | sed $sedcmd3 | sed $sedcmd4 | sed $sedcmd5 | sed $sedcmd6 > ${hdbinst-filename}
 echo "hana preapre end" >> /tmp/parameter.txt
 
 ##change this to pass passwords on command line
@@ -586,7 +587,7 @@ echo "hana preapre end" >> /tmp/parameter.txt
 #!/bin/bash
 echo "install hana start" >> /tmp/parameter.txt
 cd $SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
-$SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile $SAPBITSDIR/hdbinst-local.cfg
+$SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile ${hdbinst-filename}
 echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
