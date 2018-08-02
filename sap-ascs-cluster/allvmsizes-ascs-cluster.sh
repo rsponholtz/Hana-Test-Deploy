@@ -43,6 +43,9 @@ DBINSTANCE=${29}
 ASCSLBIP=${30}
 CONFIGURECRM=${31}
 CONFIGURESCHEMA=${32}
+SAPBITSMOUNT=${33}
+SAPMNTMOUNT=${34}
+USRSAPSIDMOUNT=${35}
 
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
@@ -632,6 +635,19 @@ echo "logicalvol start" >> /tmp/parameter.txt
   lvcreate -l 100%FREE -n lv_ASCS vg_ASCS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
+
+if [ "${SAPBITSMOUNT}" != "" ]; then
+  mkdir /sapbits
+  mount -t nfs4 ${SAPBITSMOUNT} /sapbits
+  echo "${SAPBITSMOUNT} /sapbits nfs4 defaults 0 0" >> /etc/fstab
+  SAPBITSDIR="/sapbits"
+else
+  mkdir /hana/data/sapbits
+  SAPBITSDIR="/hana/data/sapbits"
+  ln -s /sapbits /hana/data/sapbits
+fi
+
+
 mkdir /localstore
 #this is for local sapbits
 mkfs -t xfs  /dev/vg_ASCS/lv_ASCS 
@@ -640,18 +656,14 @@ echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
 mkdir /sapbits
 
-mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
-echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
-
 mkdir /sapmnt
-#we should be mounting /usr/sap instead
-mount -t nfs4 nfsnfslb:/NWS/sapmntH10 /sapmnt
+mount -t nfs4 ${SAPMNTMOUNT} /sapmnt
 
-echo "nfsnfslb:/NWS/sapmntH10 /sapmnt nfs4 defaults 0 0" >> /etc/fstab
+echo "${SAPMNTMOUNT} /sapmnt nfs4 defaults 0 0" >> /etc/fstab
 
 mkdir -p /usr/sap/$ASCSSID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
-mount -t nfs nfsnfslb:/NWS/ASCS /usr/sap/$ASCSSID/SYS
-echo "nfsnfslb:/NWS/ASCS /usr/sap/$ASCSSID/SYS nfs4 defaults 0 0" >> /etc/fstab
+mount -t nfs ${USRSAPSIDMOUNT} /usr/sap/$ASCSSID/SYS
+echo "${USRSAPSIDMOUNT} /usr/sap/$ASCSSID/SYS nfs4 defaults 0 0" >> /etc/fstab
 
 cd /sapbits
 download_sapbits $URI /sapbits
