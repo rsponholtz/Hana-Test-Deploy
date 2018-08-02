@@ -449,7 +449,6 @@
                         {
                             "lun": 6,
                             "createOption": "Attach",
-                            "writeAcceleratorEnabled": "true",
                             "managedDisk": {
                                 "id": "[resourceId('Microsoft.Compute/disks/', concat(parameters('vmName1'),'-data3'))]"
                             }
