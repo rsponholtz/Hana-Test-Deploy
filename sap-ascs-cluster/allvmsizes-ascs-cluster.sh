@@ -47,6 +47,13 @@ SAPBITSMOUNT=${33}
 SAPMNTMOUNT=${34}
 USRSAPSIDMOUNT=${35}
 
+###
+# cluster tuning values
+WATCHDOGTIMEOUT="30"
+MSGWAITTIMEOUT="60"
+STONITHTIMEOUT="150s"
+#
+
 echo "small.sh receiving:"
 echo "USRNAME:" $USRNAME >> /tmp/variables.txt
 echo "ASCSPWD:" $ASCSPWD >> /tmp/variables.txt
@@ -583,7 +590,7 @@ sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
 #initialize sbd on node1
 if [ "$ISPRIMARY" = "yes" ]; then
-  sbd -d $sbdid ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
+  sbd -d $sbdid  -1 ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
 fi
 
 #!/bin/bash [A]

@@ -350,7 +350,7 @@ sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
 #node1
 if [ "$ISPRIMARY" = "yes" ]; then
-  sbd -d $sbdid ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
+  sbd -d $sbdid -1 ${WATCHDOGTIMEOUT} -4 ${MSGWAITTIMEOUT}  create
 fi
 
 #!/bin/bash [A]
