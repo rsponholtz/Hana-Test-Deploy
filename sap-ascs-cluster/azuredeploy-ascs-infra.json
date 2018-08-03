@@ -146,9 +146,23 @@
         "ASCSLBIP": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the internal load balancer"
+                "description": "IP Address for the internal load balancer ASCS frontend"
             },
             "defaultValue": "10.0.5.10"
+        },
+        "ERSLBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the internal load balancer ERS frontend"
+            },
+            "defaultValue": "10.0.5.11"
+        },
+        "ASCSINSTANCE": {
+            "type": "string",
+            "metadata": {
+                "description": "Instance number for the ASCS install"
+            },
+            "defaultValue": "00"
         }
     },
     "variables": {
@@ -192,7 +206,7 @@
             "properties": {
                 "frontendIPConfigurations": [
                     {
-                        "name": "LoadBalancerFrontEnd",
+                        "name": "ASCSFrontEnd",
                         "properties": {
                             "privateIPAddress": "[parameters('ASCSLBIP')]",
                             "privateIPAllocationMethod": "Static",
@@ -200,17 +214,27 @@
                                 "id": "[variables('subnetRef')]"
                             }
                         }
-                    }
+                    },
+                    {
+                        "name": "ERSFrontEnd",
+                        "properties": {
+                            "privateIPAddress": "[parameters('ERSLBIP')]",
+                            "privateIPAllocationMethod": "Static",
+                            "subnet": {
+                                "id": "[variables('subnetRef')]"
+                            }
+                        }
+                    }                    
                 ],
                 "loadBalancingRules": [
                     {
-                        "name": "ascs-lb-2049t",
+                        "name": "ascs-lb-32inst",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
                             },
-                            "frontendPort": 2049,
-                            "backendPort": 2049,
+                            "frontendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
+                            "backendPort": "[concat('32', parameters('ASCSINSTANCE'))]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -220,39 +244,18 @@
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
                             },
                             "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
                             }
                         }
                     },
                     {
-                        "name": "ascs-lb-2049u",
+                        "name": "ascs-lb-36inst",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
                             },
-                            "frontendPort": 2049,
-                            "backendPort": 2049,
-                            "enableFloatingIP": true,
-                            "idleTimeoutInMinutes": 30,
-                            "protocol": "Udp",
-                            "loadDistribution": "Default",
-                            "disableOutboundSnat": false,
-                            "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
-                            },
-                            "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "ascs-lb-7630t",
-                        "properties": {
-                            "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/LoadBalancerFrontend')]"
-                            },
-                            "frontendPort": 7630,
-                            "backendPort": 7630,
+                            "frontendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
+                            "backendPort": "[concat('36', parameters('ASCSINSTANCE'))]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -262,10 +265,203 @@
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
                             },
                             "probe": {
-                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/lbprobe')]"
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
                             }
                         }
-                    }
+                    },
+                    {
+                        "name": "ascs-lb-39inst",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
+                            "backendPort": "[concat('39', parameters('ASCSINSTANCE'))]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ascs-lb-81inst",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
+                            "backendPort": "[concat('81', parameters('ASCSINSTANCE'))]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ascs-lb-5inst13",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ascs-lb-5inst14",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ascs-lb-5inst16",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ASCSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ascsprobe')]"
+                            }
+                        }
+                    },
+
+
+                    {
+                        "name": "ers-lb-33inst",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('33', parameters('ASCSINSTANCE'))]",
+                            "backendPort": "[concat('33', parameters('ASCSINSTANCE'))]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ers-lb-5inst13",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ers-lb-5inst14",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+                            }
+                        }
+                    },
+                    {
+                        "name": "ers-lb-5inst16",
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
+                            },
+                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+                            "enableFloatingIP": true,
+                            "idleTimeoutInMinutes": 30,
+                            "protocol": "Tcp",
+                            "loadDistribution": "Default",
+                            "disableOutboundSnat": false,
+                            "backendAddressPool": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers',variables('loadBalancerName')), '/backendAddressPools/BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/probes/ersprobe')]"
+                            }
+                        }
+                    },
+
+
 
                 ],
                 "backendAddressPools": [
@@ -277,12 +473,21 @@
                     {
                         "properties": {
                             "protocol": "Tcp",
-                            "port": 61000,
+                            "port": "[concat('620', parameters('ASCSINSTANCE'))]",
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
                         },
-                        "name": "lbprobe"
-                    }
+                        "name": "ascsprobe"
+                    },
+                    {
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port":  "[concat('621', parameters('ASCSINSTANCE'))]",
+                            "intervalInSeconds": 5,
+                            "numberOfProbes": 2
+                        },
+                        "name": "ersprobe"
+                    }                    
                 ],
                 "inboundNatRules": [],
                 "outboundNatRules": [],
