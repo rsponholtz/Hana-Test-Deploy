@@ -69,12 +69,19 @@
             },
             "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
         },
-        "ILBIP": {
+        "ASCSLBIP": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the internal load balancer"
+                "description": "IP Address for the ASCS internal load balancer"
             },
             "defaultValue": "10.0.5.10"
+        },
+        "ERSLBIP": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the ERS internal load balancer"
+            },
+            "defaultValue": "10.0.5.11"
         },
         "customURI": {
             "type": "string",
@@ -237,7 +244,20 @@
             "metadata": {
                 "description": "nfs mount point for /usr/sap/SID/SYS"
             }
+        },
+        "USRSAPASCSMOUNT": {
+            "type": "string",
+            "metadata": {
+                "description": "nfs mount point for /usr/sap/SID/ASCSinstance"
+            }
+        },
+        "USRSAPERSMOUNT": {
+            "type": "string",
+            "metadata": {
+                "description": "nfs mount point for /usr/sap/SID/ERSinstance"
+            }
         }
+
     },
     "variables": {
         "vmName1": "[toLower(parameters('vmName1'))]",
@@ -260,7 +280,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster/allvmsizes-ascs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\" \"yes\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\" \"', parameters('CONFIGURECRM'),'\" \"', parameters('CONFIGURESCHEMA'),'\" \"', parameters('SAPBITSMOUNT'),'\" \"', parameters('SAPMNTMOUNT'),'\" \"', parameters('USRSAPSIDMOUNT'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName1'), '\"  \"',variables('vmName2'), '\"  \"',parameters('StaticIP1'), '\"  \"',parameters('StaticIP2'), '\" \"yes\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient1'),'\" \"',parameters('ASCSLBIP'),'\" \"',parameters('ERSLBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\" \"', parameters('CONFIGURECRM'),'\" \"', parameters('CONFIGURESCHEMA'),'\" \"', parameters('SAPBITSMOUNT'),'\" \"', parameters('SAPMNTMOUNT'),'\" \"', parameters('USRSAPSIDMOUNT'),'\" \"', parameters('USRSAPASCSMOUNT'),'\" \"', parameters('USRSAPERSMOUNT'),'\"')]"
                 }
             }
         },
@@ -278,7 +298,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ascs-cluster/allvmsizes-ascs-cluster.sh"
                     ],
-                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ILBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\" \"', parameters('CONFIGURECRM'),'\" \"', parameters('CONFIGURESCHEMA'),'\" \"', parameters('SAPBITSMOUNT'),'\" \"', parameters('SAPMNTMOUNT'),'\" \"', parameters('USRSAPSIDMOUNT'),'\"')]"
+                    "commandToExecute": "[concat('bash allvmsizes-ascs-cluster.sh \"', parameters('vmUserName'), '\"  \"', parameters('vmPassword'), '\"  \"', variables('vmName2'), '\"  \"',variables('vmName1'), '\"  \"',parameters('StaticIP2'), '\"  \"',parameters('StaticIP1'), '\" \"no\" \"',parameters('customURI'),'\" \"', parameters('HANASID'),'\" \"',variables('repoUri'),'\" \"',parameters('ISCSIIP'),'\" \"',parameters('IQN'),'\" \"',parameters('IQNClient2'),'\" \"',parameters('ASCSLBIP'),'\" \"',parameters('ERSLBIP'), '\" \"',parameters('SubscriptionEmail'), '\" \"', parameters('SubscriptionID'),'\" \"', parameters('SMTUri'),'\" \"', parameters('NFSILBIP'),'\" \"', parameters('ASCSSID'),'\" \"', parameters('ASCSINSTANCE'),'\" \"', parameters('SAPINSTGID'),'\" \"', parameters('SAPSYSGID'),'\" \"', parameters('SAPADMUID'),'\" \"', parameters('SIDADMUID'),'\" \"', parameters('SAPPASSWD'),'\" \"', parameters('ERSINSTANCE'),'\" \"', parameters('DBHOST'),'\" \"', parameters('DBIP'),'\" \"', parameters('DBINSTANCE'),'\" \"', parameters('ASCSLBIP'),'\" \"', parameters('CONFIGURECRM'),'\" \"', parameters('CONFIGURESCHEMA'),'\" \"', parameters('SAPBITSMOUNT'),'\" \"', parameters('SAPMNTMOUNT'),'\" \"', parameters('USRSAPSIDMOUNT'),'\" \"', parameters('USRSAPASCSMOUNT'),'\" \"', parameters('USRSAPERSMOUNT'),'\"')]"
                 }
             }
         }

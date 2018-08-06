@@ -557,6 +557,27 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
+                    },
+                    "SubscriptionEmail": {
+                        "type": "string",
+                        "metadata": {
+                            "description": "OS Subscription Email for BYOS, blank for PAYG"
+                        },
+                        "defaultValue": ""
+                    },
+                    "SubscriptionID": {
+                        "type": "string",
+                        "metadata": {
+                            "description": "OS Subscription ID for BYOS, blank for PAYG"
+                        },
+                        "defaultValue": ""
+                    },
+                    "SMTUri": {
+                        "type": "string",
+                        "metadata": {
+                            "description": "SMT URI, blank for none"
+                        },
+                        "defaultValue": ""
                     }
                 }
             }
@@ -621,7 +642,16 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
-                    }
+                    },
+                    "SubscriptionEmail": {
+                        "value": "[variables('SubscriptionEmail')]"
+                    },
+                    "SubscriptionID": {
+                        "value": "[variables('SubscriptionID')]"
+                    },
+                    "SMTUri": {
+                        "value": "[variables('SMTUri')]"
+                    },
                 }
             }
         }

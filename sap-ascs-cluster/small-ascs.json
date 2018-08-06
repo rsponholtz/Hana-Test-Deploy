@@ -135,6 +135,27 @@
             "metadata": {
                 "description": "Availability set."
             }
+        },
+        "SubscriptionEmail": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription Email for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SubscriptionID": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription ID for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SMTUri": {
+            "type": "string",
+            "metadata": {
+                "description": "SMT URI, blank for none"
+            },
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -144,7 +165,7 @@
         "subnetRef": "[parameters('SubnetRef')]",
         "OperatingSystemSpec": {
             "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
-            "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),'SLES-SAP','RHEL-SAP-HANA')]",
+            "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
             "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
         },
         "DataDiskSize": "1023",

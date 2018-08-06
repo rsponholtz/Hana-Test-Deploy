@@ -24,28 +24,32 @@ REPOURI=${10}
 ISCSIIP=${11}
 IQN=${12}
 IQNCLIENT=${13}
-LBIP=${14}
-SUBEMAIL=${15}
-SUBID=${16}
-SUBURL=${17}
-NFSILBIP=${18}
-ASCSSID=${19}
-ASCSINSTANCE=${20}
-SAPINSTGID=${21}
-SAPSYSGID=${22}
-SAPADMUID=${23}
-SIDADMUID=${24}
-SAPPASSWD=${25}
-ERSINSTANCE=${26}
-DBHOST=${27}
-DBIP=${28}
-DBINSTANCE=${29}
-ASCSLBIP=${30}
-CONFIGURECRM=${31}
-CONFIGURESCHEMA=${32}
-SAPBITSMOUNT=${33}
-SAPMNTMOUNT=${34}
-USRSAPSIDMOUNT=${35}
+ASCSLBIP=${14}
+ERSLBIP=${15}
+SUBEMAIL=${16}
+SUBID=${17}
+SUBURL=${18}
+NFSILBIP=${19}
+ASCSSID=${20}
+ASCSINSTANCE=${21}
+SAPINSTGID=${22}
+SAPSYSGID=${23}
+SAPADMUID=${24}
+SIDADMUID=${25}
+SAPPASSWD=${26}
+ERSINSTANCE=${27}
+DBHOST=${28}
+DBIP=${29}
+DBINSTANCE=${30}
+ASCSLBIP=${31}
+CONFIGURECRM=${32}
+CONFIGURESCHEMA=${33}
+SAPBITSMOUNT=${34}
+SAPMNTMOUNT=${35}
+USRSAPSIDMOUNT=${36}
+SAPTRANSMOUNT=${37}
+USRSAPASCSMOUNT=${38}
+USRSAPERSMOUNT=${39}
 
 ###
 # cluster tuning values
@@ -613,26 +617,7 @@ cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl"
 
-zypper install sap_suse_cluster_connector
-
-#node1
-if [ "$ISPRIMARY" = "yes" ]; then
-
-sudo crm node standby $ASCSSID-cl-1
-
-sudo crm configure primitive vip_$ASCSSID_ASCS IPaddr2 \
-  params ip=$ASCSLBIP cidr_netmask=24 \
-  op monitor interval=10 timeout=20
-
-sudo crm configure primitive nc_$ASCSSID_ASCS anything \
-  params binfile="/usr/bin/nc" cmdline_options="-l -k 62000" \
-  op monitor timeout=20s interval=10 depth=0
-
-sudo crm configure group g-$ASCSSID_ASCS nc_$ASCSSID_ASCS vip_$ASCSSID_ASCS \
-   meta resource-stickiness=3000
-fi
-
-
+retry 5 "zypper install -y sap_suse_cluster_connector"
 
 #!/bin/bash
 echo "logicalvol start" >> /tmp/parameter.txt
@@ -661,16 +646,32 @@ mkfs -t xfs  /dev/vg_ASCS/lv_ASCS
 mount -t xfs /dev/vg_ASCS/lv_ASCS /localstore
 echo "/dev/vg_ASCS/lv_ASCS /localstore xfs defaults 0 0" >> /etc/fstab
 
+
+#configure autofs
+echo "/- /etc/auto.direct" >> /etc/auto.master
+
 mkdir /sapbits
-
 mkdir /sapmnt
-mount -t nfs4 ${SAPMNTMOUNT} /sapmnt
 
-echo "${SAPMNTMOUNT} /sapmnt nfs4 defaults 0 0" >> /etc/fstab
+sudo mkdir -p /sapmnt/${ASCSSID}
+sudo mkdir -p /usr/sap/trans
+sudo mkdir -p /usr/sap/${ASCSSID}/SYS
+sudo mkdir -p /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
+sudo mkdir -p /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 
-mkdir -p /usr/sap/$ASCSSID/{ASCS00,D02,DVEBMGS01,ERS10,SYS} 
-mount -t nfs ${USRSAPSIDMOUNT} /usr/sap/$ASCSSID/SYS
-echo "${USRSAPSIDMOUNT} /usr/sap/$ASCSSID/SYS nfs4 defaults 0 0" >> /etc/fstab
+sudo chattr +i /sapmnt/${ASCSSID}
+sudo chattr +i /usr/sap/trans
+sudo chattr +i /usr/sap/${ASCSSID}/SYS
+sudo chattr +i /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
+sudo chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
+
+# Add the following lines to the file, save and exit
+
+echo "/sapmnt/${ASCSSID} -nfsvers=4,nosymlink,sync ${SAPMNTMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/trans -nfsvers=4,nosymlink,sync ${SAPTRANSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/SYS -nfsvers=4,nosymlink,sync ${USRSAPSIDMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ASCS00 -nfsvers=4,nosymlink,sync ${USRSAPASCSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ERS00 -nfsvers=4,nosymlink,sync ${USRSAPERSMOUNT}" >> /etc/auto.direct
 
 cd /sapbits
 download_sapbits $URI /sapbits
@@ -685,17 +686,17 @@ usermod -a -G sapsys root
 echo  "10.0.0.22 hanailb"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
-  #clean out the 
+  #clean out the usr/sap/SID/SYS
   rm -r -f /usr/sap/S40/SYS/exe/uc/linuxx86_64/*
   write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
   exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   touch /tmp/ascscomplete.txt
 
-sudo crm node online $VMNAME
-sudo crm node standby $OTHERVMNAME
+crm node online $VMNAME
+crm node standby $OTHERVMNAME
 
 crm configure primitive vip_${ASCSSID} IPaddr2 \
-        params ip="$LBIP" cidr_netmask=24 \
+        params ip="$ASCSLBIP" cidr_netmask=24 \
         op monitor interval="10s" timeout="20s" 
 
 crm configure primitive rsc_nc_${ASCSSID} anything \
