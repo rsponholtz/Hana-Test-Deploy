@@ -163,7 +163,28 @@
                 "description": "Instance number for the ASCS install"
             },
             "defaultValue": "00"
-        }
+        },        
+        "SubscriptionEmail": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription Email for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SubscriptionID": {
+            "type": "string",
+            "metadata": {
+                "description": "OS Subscription ID for BYOS, blank for PAYG"
+            },
+            "defaultValue": ""
+        },
+        "SMTUri": {
+            "type": "string",
+            "metadata": {
+                "description": "SMT URI, blank for none"
+            },
+            "defaultValue": ""
+        },
     },
     "variables": {
         "prefix": "[toLower(parameters('prefix'))]",
