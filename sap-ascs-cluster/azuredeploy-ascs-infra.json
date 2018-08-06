@@ -651,7 +651,7 @@
                     },
                     "SMTUri": {
                         "value": "[parameters('SMTUri')]"
-                    },
+                    }
                 }
             }
         }
