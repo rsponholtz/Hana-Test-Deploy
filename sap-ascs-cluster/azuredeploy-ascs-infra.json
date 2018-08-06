@@ -184,7 +184,7 @@
                 "description": "SMT URI, blank for none"
             },
             "defaultValue": ""
-        },
+        }
     },
     "variables": {
         "prefix": "[toLower(parameters('prefix'))]",
