@@ -644,13 +644,13 @@
                         }
                     },
                     "SubscriptionEmail": {
-                        "value": "[variables('SubscriptionEmail')]"
+                        "value": "parameters('SubscriptionEmail')]"
                     },
                     "SubscriptionID": {
-                        "value": "[variables('SubscriptionID')]"
+                        "value": "[parameters('SubscriptionID')]"
                     },
                     "SMTUri": {
-                        "value": "[variables('SMTUri')]"
+                        "value": "[parameters('SMTUri')]"
                     },
                 }
             }
