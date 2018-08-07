@@ -580,25 +580,13 @@
                         }
                     },
                     "SubscriptionEmail": {
-                        "type": "string",
-                        "metadata": {
-                            "description": "OS Subscription Email for BYOS, blank for PAYG"
-                        },
-                        "defaultValue": ""
+                        "value": "[parameters('SubscriptionEmail')]"
                     },
                     "SubscriptionID": {
-                        "type": "string",
-                        "metadata": {
-                            "description": "OS Subscription ID for BYOS, blank for PAYG"
-                        },
-                        "defaultValue": ""
+                        "value": "[parameters('SubscriptionID')]"
                     },
                     "SMTUri": {
-                        "type": "string",
-                        "metadata": {
-                            "description": "SMT URI, blank for none"
-                        },
-                        "defaultValue": ""
+                        "value": "[parameters('SMTUri')]"
                     }
                 }
             }
