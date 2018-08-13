@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 echo "Reading config...." >&2
 source ./azuredeploy.cfg
 
@@ -13,20 +13,30 @@ az group deployment create \
    VMName2=$ASCSVMNAME2 \
    VMUserName=$vmusername \
    VMPassword=$vmpassword \
-   customURI="$customuri" \
    StaticIP1=$ASCSIP1 \
    StaticIP2=$ASCSIP2 \
-   HANASID=$HANASID \
-   ASCSSID=$ASCSSID \
+   iSCSIIP=$ISCSIIP \
    IQN="$ASCSIQN" \
    IQNClient1="$ASCSIQNCLIENT1" \
    IQNClient2="$ASCSIQNCLIENT2" \
-   iSCSIIP=$ISCSIIP \
-   ILBIP=$ASCSILBIP \
+   customURI="$customuri" \
+   HANASID=$HANASID \
    NFSILBIP=$NFSILBIP \
+   ASCSSID=$ASCSSID \
    SAPPASSWD="$vmpassword" \
    DBHOST="hanailb" \
    DBIP="$HANAILBIP" \
-   ASCSLBIP="$ASCSILBIP"
+   ASCSLBIP="$ASCSLBIP" \
+   CONFIGURECRM="no" \
+   CONFIGURESCHEMA="no" \
+   SubscriptionEmail="$slesemail" \
+   SubscriptionID="$slesreg" \
+   SMTUri="$slessmt" \
+   SAPBITSMOUNT="$SAPBITSMOUNT" \
+   SAPMNTMOUNT="$SAPMNTMOUNT" \
+   USRSAPSIDMOUNT="$USRSAPSIDMOUNT" \
+   SAPTRANSMOUNT="$SAPTRANSMOUNT" \
+   USRSAPASCSMOUNT="$USRSAPASCSMOUNT" \
+   USRSAPERSMOUNT="$USRSAPERSMOUNT"
 
 echo "ascs cluster installed"
