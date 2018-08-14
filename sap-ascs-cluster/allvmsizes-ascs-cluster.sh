@@ -653,17 +653,18 @@ echo "/- /etc/auto.direct" >> /etc/auto.master
 mkdir /sapbits
 mkdir /sapmnt
 
-sudo mkdir -p /sapmnt/${ASCSSID}
-sudo mkdir -p /usr/sap/trans
-sudo mkdir -p /usr/sap/${ASCSSID}/SYS
-sudo mkdir -p /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
-sudo mkdir -p /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
+mkdir -p /sapmnt/${ASCSSID}
+mkdir -p /usr/sap/trans
+mkdir -p /usr/sap/${ASCSSID}/SYS
+mkdir -p /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
+mkdir -p /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 
-sudo chattr +i /sapmnt/${ASCSSID}
-sudo chattr +i /usr/sap/trans
-sudo chattr +i /usr/sap/${ASCSSID}/SYS
-sudo chattr +i /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
-sudo chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
+chattr +i /sapbits
+chattr +i /sapmnt/${ASCSSID}
+chattr +i /usr/sap/trans
+chattr +i /usr/sap/${ASCSSID}/SYS
+chattr +i /usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE}
+chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 
 # Add the following lines to the file, save and exit
 
@@ -672,6 +673,9 @@ echo "/usr/sap/trans -nfsvers=4,nosymlink,sync ${SAPTRANSMOUNT}" >> /etc/auto.di
 echo "/usr/sap/${ASCSSID}/SYS -nfsvers=4,nosymlink,sync ${USRSAPSIDMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/${ASCSSID}/ASCS00 -nfsvers=4,nosymlink,sync ${USRSAPASCSMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/${ASCSSID}/ERS00 -nfsvers=4,nosymlink,sync ${USRSAPERSMOUNT}" >> /etc/auto.direct
+
+systemctl enable autofs
+service autofs restart
 
 cd /sapbits
 download_sapbits $URI /sapbits
