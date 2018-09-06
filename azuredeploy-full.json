@@ -2,186 +2,161 @@
     "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "VNETNAME": {
+            "defaultValue": "vnet",
+            "type": "string"
+        },
+        "DBSUBNETNAME": {
+            "defaultValue": "dbsubnet",
+            "type": "string"
+        },
+        "APPSUBNETNAME": {
+            "defaultValue": "appsubnet",
+            "type": "string"
+        },
+        "MGTSUBNETNAME": {
+            "defaultValue": "mgtsubnet",
+            "type": "string"
+        },
+        "VMUSERNAME": {
+            "metadata": {
+                "description": "Username for the Virtual Machines"
+            },
+            "defaultValue": "testuser",
+            "type": "string"
+        },
+        "VMPASSWORD": {
+            "metadata": {
+                "description": "Password for the Virtual Machines, HANA, etc"
+            },
+            "type": "string"
+        },
+        "CUSTOMURI": {
+            "type": "string"
+        },
         "vnetResourceGroup": {
             "defaultValue": "",
             "type": "string"
         },
-        "addressPrefix": {
-            "defaultValue": "10.0.0.0/16",
+        "NFSVMNAME1": {
+            "defaultValue": "nfs1",
             "type": "string"
         },
-        "DBSubnetName": {
-            "defaultValue": "dbsubnet",
+        "NFSVMNAME2": {
+            "defaultValue": "nfs2",
             "type": "string"
         },
-        "DBSubnetPrefix": {
-            "defaultValue": "10.0.0.0/24",
+        "NFSIP1": {
+            "defaultValue": "10.0.1.7",
             "type": "string"
         },
-        "AppSubnetName": {
-            "defaultValue": "appsubnet",
+        "NFSIP2": {
+            "defaultValue": "10.0.1.8",
             "type": "string"
         },
-        "AppSubnetPrefix": {
-            "defaultValue": "10.0.1.0/24",
+        "NFSILBIP": {
+            "defaultValue": "10.0.1.10",
             "type": "string"
         },
-        "MgtSubnetName": {
-            "defaultValue": "mgtsubnet",
+        "HANAVMNAME1": {
+            "defaultValue": "hana1",
             "type": "string"
         },
-        "MgtSubnetPrefix": {
-            "defaultValue": "10.0.2.0/24",
-            "type": "string"
-        },        
-        "vnetName": {
-            "defaultValue": "vnet",
+        "HANAVMNAME2": {
+            "defaultValue": "hana2",
             "type": "string"
         },
-        "vmJbUserName": {
-            "type": "string",
-            "metadata": {
-                "description": "Username for the Virtual Machine"
-            },
-            "defaultValue": "testuser"
-        },
-        "prefix": {
-            "type": "string",
-            "metadata": {
-                "description": "The nfs prefix"
-            },
-            "defaultValue": "nfs"
-        },
-        "vmJbPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "Password for the Virtual Machine"
-            },
-            "defaultValue": "Hana07061992!"
-        },
-        "vmSize": {
-            "type": "string",
-            "metadata": {
-                "description": "VM Size for the nsf vms"
-            },
-            "defaultValue": "Standard_E16s_v3 (128 GB)"
-        },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
-        "osType": {
-            "type": "string",
-            "allowedValues": [
-                "Windows Server 2016 Datacenter",
-                "SLES 12 SP3",
-                "SLES 12 SP3 BYOS",
-                "SLES 12 SP2",
-                "SLES 12 SP2 BYOS"
-            ],
-            "defaultValue": "SLES 12 SP3",
-            "metadata": {
-                "description": "The type of the operating system you want to deploy."
-            }
-        },
-        "vmntpName": {
-            "defaultValue": "ntpserver",
+        "HANAIP1": {
+            "defaultValue": "10.0.0.20",
             "type": "string"
         },
-        "vmiscsiName": {
-            "defaultValue": "iscsiserver",
+        "HANAIP2": {
+            "defaultValue": "10.0.0.21",
             "type": "string"
         },
-        "jbStaticIp": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address for the Jump Box virtual machine"
-            },
-            "defaultValue": "10.0.0.4"
+        "HANAILBIP": {
+            "defaultValue": "10.0.0.22",
+            "type": "string"
         },
-        "ntpStaticIp": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address for the NTP virtual machine"
-            },
-            "defaultValue": "10.0.0.5"
+        "ISCSIIP": {
+            "defaultValue": "10.0.2.6",
+            "type": "string"
         },
-        "iscsiStaticIp": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address for the ISCSI virtual machine"
-            },
-            "defaultValue": "10.0.0.6"
+        "JBIP": {
+            "defaultValue": "10.0.2.7",
+            "type": "string"
         },
-        "nsfStaticIP1": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address 1 for the nsf virtual machine"
-            },
-            "defaultValue": "10.0.0.7"
+        "ASCSVMNAME1": {
+            "defaultValue": "ascs1",
+            "type": "string"
         },
-        "nsfStaticIP2": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address 2 for the nsf virtual machine"
-            },
-            "defaultValue": "10.0.0.8"
+        "ASCSVMNAME2": {
+            "defaultValue": "ascs2",
+            "type": "string"
         },
-        "nsfiSCSIIP": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address iSCSI for the nsf virtual machine"
-            },
-            "defaultValue": "10.0.0.9"
+        "ASCSIP1": {
+            "defaultValue": "10.0.1.17",
+            "type": "string"
         },
-        "nsfILBIP": {
-            "type": "string",
-            "metadata": {
-                "description": "static ip address ILB for the nsf virtual machine"
-            },
-            "defaultValue": "10.0.0.10"
+        "ASCSIP2": {
+            "defaultValue": "10.0.1.18",
+            "type": "string"
         },
-        "VMName1": {
-            "type": "string",
-            "metadata": {
-                "description": "nfs vmname 1"
-            },
-            "defaultValue": "nfs1"
+        "ASCSILBIP": {
+            "defaultValue": "10.0.1.20",
+            "type": "string"
         },
-        "VMName2": {
-            "type": "string",
-            "metadata": {
-                "description": "nfs vmname 2"
-            },
-            "defaultValue": "nfs2"
+        "ERSLBIP": {
+            "defaultValue": "10.0.1.21",
+            "type": "string"
         },
-        "nsfOperatingSystem": {
-            "type": "string",
-            "metadata": {
-                "description": "NSF Operating system"
-            },
-            "defaultValue": "SLES for SAP 12 SP2"
+
+        "HANASID": {
+            "defaultValue": "H10",
+            "type": "string"
         },
-        "_artifactsLocation": {
-            "type": "string",
-            "metadata": {
-                "description": "The base URI where artifacts required by this template are located. When the template is deployed using the accompanying scripts, a private location in the subscription will be used and this value will be automatically generated."
-            },
-            "defaultValue": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/"
+        "ASCSSID": {
+            "defaultValue": "S40",
+            "type": "string"
         },
-        "_artifactsLocationSasToken": {
-            "type": "securestring",
-            "metadata": {
-                "description": "The sasToken required to access _artifactsLocation.  When the template is deployed using the accompanying scripts, a sasToken will be automatically generated."
-            },
-            "defaultValue": ""
-        }
+
+        "NWVMNAME1": {
+            "defaultValue": "nw1",
+            "type": "string"
+        },
+        "NWVMNAME2": {
+            "defaultValue": "nw2",
+            "type": "string"
+        },
+        "NWVMIP1": {
+            "defaultValue": "10.0.1.30",
+            "type": "string"
+        },
+        "NWVMIP2": {
+            "defaultValue": "10.0.1.31",
+            "type": "string"
+        },
+
+        
+
     },
     "variables": {
-        "vmJbName": "hanajb",
-        "vmName": "ntpserver"
+        "NFSIQN": "iqn.1991-05.com.microsoft:nfsserver-target" ,
+        "NFSIQNCLIENT1": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1" ,
+        "NFSIQNCLIENT2": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm2", 
+        "HANAIQN": "iqn.1991-05.com.microsoft:hana-target" ,
+        "HANAIQNCLIENT1": "iqn.1991-05.com.microsoft:hana-target:hanavm1" ,
+        "HANAIQNCLIENT2": "iqn.1991-05.com.microsoft:hana-target:hanavm2" ,
+        "ASCSIQN": "iqn.1991-05.com.microsoft:ascs-target" ,
+        "ASCSIQNCLIENT1": "iqn.1991-05.com.microsoft:ascs-target:ascsvm1" , 
+        "ASCSIQNCLIENT2": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2" ,
+        
+        "SAPBITSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/SapBits')]" ,
+        "SAPMNTMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/sapmntH10')]" ,
+        "USRSAPSIDMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCS')]"  ,
+        "USRSAPASCSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCS')]" ,
+        "USRSAPERSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/ASCSERS')]" ,
+        "SAPTRANSMOUNT": "[concat(parameters('NFSILBIP'), '/NWS/trans')]" ,
     },
     "resources": [
         {
@@ -195,203 +170,28 @@
                 },
                 "parameters": {
                     "vnetName": {
-                        "value": "[parameters('vnetName')]"
+                        "value": "[parameters('VNETNAME')]"
                     },
                     "addressPrefix": {
-                        "value": "[parameters('addressPrefix')]"
+                        "value": "10.0.0.0/16"
                     },
                     "DBSubnetName": {
-                        "value": "[parameters('DBSubnetName')]"
+                        "value": "[parameters('DBSUBNETNAME')]"
                     },
                     "DBSubnetPrefix": {
-                        "value": "[parameters('DBSubnetPrefix')]"
+                        "value": "10.0.0.0/24"
                     },
                     "AppSubnetName": {
-                        "value": "[parameters('AppSubnetName')]"
+                        "value": "[parameters('APPSUBNETNAME')]"
                     },
                     "AppSubnetPrefix": {
-                        "value": "[parameters('AppSubnetPrefix')]"
+                        "value": "10.0.1.0/24"
                     },
                     "MgtSubnetName": {
-                        "value": "[parameters('MgtSubnetName')]"
+                        "value": "[parameters('MGTSUBNETNAME')]"
                     },
                     "MgtSubnetPrefix": {
-                        "value": "[parameters('MgtSubnetPrefix')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "[variables('vmJbName')]",
-            "apiVersion": "2016-09-01",
-            "dependsOn": [
-                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
-              ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/Vms/hanajumpbox.json"
-                },
-                "parameters": {
-                    "vmUserName": {
-                        "value": "[parameters('vmJbUserName')]"
-                    },
-                    "ExistingNetworkResourceGroup": {
-                        "value": "[parameters('vnetResourceGroup')]"
-                    },
-                    "vnetName": {
-                        "value": "[parameters('vnetName')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmJbPassword')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
-                    },
-                    "StaticIP": {
-                        "value": "[parameters('jbStaticIp')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "[parameters('vmntpName')]",
-            "apiVersion": "2016-09-01",
-            "dependsOn": [
-                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
-              ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-infra.json"
-                },
-                "parameters": {
-                    "vmUserName": {
-                        "value": "[parameters('vmJbUserName')]"
-                    },
-                    "ExistingNetworkResourceGroup": {
-                        "value": "[parameters('vnetResourceGroup')]"
-                    },
-                    "vnetName": {
-                        "value": "[parameters('vnetName')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },
-                    "osType": {
-                        "value": "[parameters('osType')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmJbPassword')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
-                    },
-                    "StaticIP": {
-                        "value": "[parameters('ntpStaticIp')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "[parameters('vmiscsiName')]",
-            "apiVersion": "2016-09-01",
-            "dependsOn": [
-                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
-              ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-infra.json"
-                },
-                "parameters": {
-                    "vmUserName": {
-                        "value": "[parameters('vmJbUserName')]"
-                    },
-                    "ExistingNetworkResourceGroup": {
-                        "value": "[parameters('vnetResourceGroup')]"
-                    },
-                    "vnetName": {
-                        "value": "[parameters('vnetName')]"
-                    },
-                    "subnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },
-                    "osType": {
-                        "value": "[parameters('osType')]"
-                    },
-                    "vmPassword": {
-                        "value": "[parameters('vmJbPassword')]"
-                    },
-                    "customUri": {
-                        "value": "[parameters('customUri')]"
-                    },
-                    "StaticIP": {
-                        "value": "[parameters('iscsiStaticIp')]"
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "name": "NFSDeployment",
-            "apiVersion": "2016-09-01",
-            "dependsOn": [
-                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
-              ],
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/azuredeploy-nfs-infra.json"
-                },
-                "parameters": {
-                    "VMUserName": {
-                        "value": "[parameters('vmJbUserName')]"
-                    },
-                    "prefix": {
-                        "value": "[parameters('prefix')]"
-                    },
-                    "ExistingNetworkResourceGroup": {
-                        "value": "[parameters('vnetResourceGroup')]"
-                    },
-                    "VMName1": {
-                        "value": "[parameters('vmName1')]"
-                    },
-                    "VMName2": {
-                        "value": "[parameters('VMName2')]"
-                    },
-                    "VMSize": {
-                        "value": "[parameters('vmSize')]"
-                    },
-                    "vnetName": {
-                        "value": "[parameters('vnetName')]"
-                    },
-                    "SubnetName": {
-                        "value": "[parameters('subnetName')]"
-                    },                    
-                    "VMPassword": {
-                        "value": "[parameters('vmJbPassword')]"
-                    },
-                    "OperatingSystem": {
-                        "value": "[parameters('nsfOperatingSystem')]"
-                    },                    
-                    "StaticIP1": {
-                        "value": "[parameters('nsfStaticIP1')]"
-                    },
-                    "StaticIP2": {
-                        "value": "[parameters('nsfStaticIP2')]"
-                    },
-                    "iSCSIIP": {
-                        "value": "[parameters('nsfiSCSIIP')]"
-                    },
-                    "ILBIP": {
-                        "value": "[parameters('nsfILBIP')]"
+                        "value": "10.0.2.0/24"
                     }
                 }
             }
