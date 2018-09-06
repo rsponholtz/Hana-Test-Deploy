@@ -195,6 +195,45 @@
                     }
                 }
             }
+        },
+
+
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "iscsiDeployment",
+            "apiVersion": "2016-09-01",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/deployments/', parameters('vnetName'))]"
+              ],            
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-infra.json"
+                },
+                "parameters": {
+                    "vnetName": {
+                        "value": "[parameters('VNETNAME')]"
+                    },
+                    "subnetName": {
+                        "value": "[parameters('MGTSUBNETNAME')]"
+                    },
+                    "osType": {
+                        "value": "SLES 12 SP3" 
+                    },
+                    "osType": {
+                        "value": "SLES 12 SP3" 
+                    },
+                    "customUri": {
+                        "value": "[parameters('CUSTOMURI')]"
+                    },
+                    "vmName": {
+                        "value": "iscsiserver"
+                    },
+                    "StaticIP": {
+                        "value": "ISCSIIP"
+                    }
+                }
+            }
         }
     ],
     "outputs": {}
