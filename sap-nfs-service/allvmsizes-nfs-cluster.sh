@@ -535,9 +535,9 @@ crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
                stonith-action="reboot" \
                stonith-timeout=$STONITHTIMEOUT
 
-crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 
-crm configure  op_defaults $id="op-options"  timeout="600"
+crm configure  op_defaults \$id="op-options"  timeout="600"
 
 #  crm node standby $OTHERVMNAME
 #  crm node standby $VMNAME
