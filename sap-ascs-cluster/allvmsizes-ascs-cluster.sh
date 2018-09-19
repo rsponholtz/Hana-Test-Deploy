@@ -455,7 +455,6 @@ NW_HDB_DB.abapSchemaName = SAPABAPDB
 NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
 NW_HDB_DB.javaSchemaName = SAPABAPDB
 NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
-HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_ABAP_Import_Dialog.dbCodepage = 4103
 NW_ABAP_Import_Dialog.migmonJobNum = 12
 NW_ABAP_Import_Dialog.migmonLoadArgs = -c 100000 -rowstorelist /silent_db/rowstorelist.txt
@@ -477,9 +476,11 @@ storageBasedCopy.hdb.instanceNumber = $P_DBINSTANCE
 storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
 SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
 SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
-HDB_Schema_Check_Dialogs.dropSchema = true
-HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB2
+#HDB_Schema_Check_Dialogs.dropSchema = true
+#HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB2
+#HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_readProfileDir.profilesAvailable = true
+hdb.create.dbacockpit.user=true
 
 EOF
 chown root:sapinst $P_INIFILE
