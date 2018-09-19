@@ -793,7 +793,7 @@ crm configure group g_ip_$HANAID rsc_ip_$HANAID rsc_nc_$HANAID
 
 #crm configure colocation col_saphana_ip_$HANAID 2000: rsc_ip_$HANAID:Started \
 #    msl_SAPHana_$HANAID:Master
-crm configure colocation col_saphana_ip_$HANAID 2000: rsc_ip_$HANAID:Started  msl_SAPHana_$HANAID:Master
+crm configure colocation col_saphana_ip_$HANAID 4000: g_ip_$HANAID:Started  msl_SAPHana_$HANAID:Master
 
 crm configure order ord_SAPHana_$HANAID Optional: cln_SAPHanaTopology_$HANAID  msl_SAPHana_$HANAID
 

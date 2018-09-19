@@ -44,7 +44,7 @@ DBINSTANCE=${30}
 ASCSLBIP=${31}
 CONFIGURECRM=${32}
 CONFIGURESCHEMA=${33}
-SAPBITSMOUNT=${34}
+SAPBITSMOUNT=${34} 
 SAPMNTMOUNT=${35}
 USRSAPSIDMOUNT=${36}
 SAPTRANSMOUNT=${37}
@@ -477,7 +477,10 @@ storageBasedCopy.hdb.instanceNumber = $P_DBINSTANCE
 storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
 SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
 SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
-HDB_Schema_Check_Dialogs.dropSchema = true 
+HDB_Schema_Check_Dialogs.dropSchema = true
+HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB
+NW_readProfileDir.profilesAvailable = true
+
 EOF
 chown root:sapinst $P_INIFILE
 chmod g+r $P_INIFILE
@@ -508,7 +511,6 @@ exec_sapinst() {
   /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
 
 }
-
 ##end of bash function definitions
 
 
@@ -532,6 +534,7 @@ sedcmd2="s/ResourceDisk.SwapSizeMB=0/ResourceDisk.SwapSizeMB=163840/g"
 cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
+
 
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
@@ -634,7 +637,7 @@ if [ "${SAPBITSMOUNT}" != "" ]; then
   echo "${SAPBITSMOUNT} /sapbits nfs4 defaults 0 0" >> /etc/fstab
   SAPBITSDIR="/sapbits"
 else
-  mkdir /hana/data/sapbits
+  mkdir -p /hana/data/sapbits
   SAPBITSDIR="/hana/data/sapbits"
   ln -s /sapbits /hana/data/sapbits
 fi
