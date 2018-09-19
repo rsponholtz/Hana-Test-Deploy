@@ -478,7 +478,7 @@ storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
 SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
 SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
 HDB_Schema_Check_Dialogs.dropSchema = true
-HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB
+HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB2
 NW_readProfileDir.profilesAvailable = true
 
 EOF
@@ -754,11 +754,11 @@ crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
                stonith-action="reboot" \
                stonith-timeout=$STONITHTIMEOUT
 
-crm configure  rsc_defaults $id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 
-crm configure  op_defaults $id="op-options"  timeout="600"
+crm configure  op_defaults \$id="op-options"  timeout="600"
 
- if ["$CONFIGURECRM" = "yes"]; then
+ if [ "${CONFIGURECRM}" = "yes" ]; then
  crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
  operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
