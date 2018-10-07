@@ -1,5 +1,10 @@
 echo "Reading config...." >&2
-source ./azuredeploy.cfg
+if ["${1}" != "" ]; then
+    source ${1}
+else
+    source ./azuredeploy.cfg
+fi
+
 
 ./ascs-delete.sh
 ./ascs-inf.sh

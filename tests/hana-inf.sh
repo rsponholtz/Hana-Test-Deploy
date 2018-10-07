@@ -3,7 +3,11 @@
 #Standard_M128ms (3.8 TB, Certified)
 set -x
 echo "Reading config...." >&2
-source ./azuredeploy.cfg
+if [ "${1}" != "" ]; then
+    source ${1}
+else
+    source ./azuredeploy.cfg
+fi
 
 #hanavmsize="Standard_E16s_v3 (128 GB)"
 #hanavmsize="Standard_M128s (2 TB, Certified)"

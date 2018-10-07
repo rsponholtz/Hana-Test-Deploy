@@ -1,10 +1,15 @@
 #!/bin/bash
-
+set -x
 echo "Reading config...." >&2
-source ./azuredeploy.cfg
+if [ "${1}" != "" ]; then
+    source ${1}
+else
+    source ./azuredeploy.cfg
+fi
 
+az account set --subscription $subscriptionid
 echo "creating resource group"
-az group create --name $rgname --location "West US 2"
+az group create --name $rgname --location "${location}"
 
 echo "creating vnet"
 az group deployment create \

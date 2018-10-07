@@ -1,5 +1,10 @@
 #!/bin/bash
-source ./azuredeploy.cfg
+if [ "${1}" != "" ]; then
+    source ${1}
+else
+    source ./azuredeploy.cfg
+fi
+
 
 echo "$NTPIP $NTPNAME"
 echo "$NFSIP1 $NFSVMNAME1"
@@ -11,6 +16,7 @@ echo "$HANAILBIP hanailb"
 echo "$ISCSIIP iscsi"
 echo "$JBPIP hanajumpbox"
 echo "$ASCSIP1 $ASCSVMNAME1"
-echo "$ASCSIP2 $ASCSVMNAME1"
-echo "$ASCSILBIP ascsilb"
-echo "$FIRSTNWIPADDR nw-1"
+echo "$ASCSIP2 $ASCSVMNAME2"
+echo "$ASCSLBIP ascslb"
+echo "$PASIPADDR $PASVMNAME"
+echo "$AASIPADDR $AASVMNAME"

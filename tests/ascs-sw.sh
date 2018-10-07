@@ -1,7 +1,11 @@
 #!/bin/bash
 set -x
 echo "Reading config...." >&2
-source ./azuredeploy.cfg
+if [ "${1}" != "" ]; then
+    source ${1}
+else
+    source ./azuredeploy.cfg
+fi
 
 echo "installing ascs cluster"
 az group deployment create \
@@ -28,7 +32,7 @@ az group deployment create \
    DBIP="$HANAILBIP" \
    ASCSLBIP="$ASCSLBIP" \
    CONFIGURECRM="no" \
-   CONFIGURESCHEMA="no" \
+   CONFIGURESCHEMA="yes" \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
    SMTUri="$slessmt" \
