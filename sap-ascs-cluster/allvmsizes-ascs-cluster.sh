@@ -60,34 +60,46 @@ STONITHTIMEOUT="150s"
 #
 
 echo "small.sh receiving:"
-echo "USRNAME:" $USRNAME >> /tmp/variables.txt
-echo "ASCSPWD:" $ASCSPWD >> /tmp/variables.txt
-echo "VMNAME:" $VMNAME >> /tmp/variables.txt
-echo "OTHERVMNAME:" $OTHERVMNAME >> /tmp/variables.txt
-echo "VMIPADDR:" $VMIPADDR >> /tmp/variables.txt
-echo "OTHERIPADDR:" $OTHERIPADDR >> /tmp/variables.txt
-echo "ISPRIMARY:" $ISPRIMARY >> /tmp/variables.txt
-echo "REPOURI:" $REPOURI >> /tmp/variables.txt
-echo "ISCSIIP:" $ISCSIIP >> /tmp/variables.txt
-echo "IQN:" $IQN >> /tmp/variables.txt
-echo "IQNCLIENT:" $IQNCLIENT >> /tmp/variables.txt
-echo "LBIP:" $LBIP >> /tmp/variables.txt
-echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
-echo "SUBID:" $SUBID >> /tmp/variables.txt
-echo "SUBURL:" $SUBURL >> /tmp/variables.txt
-echo "NFSILBIP:" $NFSILBIP >> /tmp/variables.txt
-echo "ASCSSID" $ASCSSID >> /tmp/variables.txt
-echo "ASCSINSTANCE:" $ASCSINSTANCE >>/tmp/variables.txt
-echo "SAPINSTGID:" $SAPINSTGID >>/tmp/variables.txt
-echo "SAPSYSGID:" $SAPSYSGID >>/tmp/variables.txt
-echo "SAPADMUID:" $SAPADMUID >>/tmp/variables.txt
-echo "SIDADMUID:" $SIDADMUID >>/tmp/variables.txt
-echo "SAPPASSWD:" $SAPPASSWD >>/tmp/variables.txt
-echo "ERSINSTANCE:" $ERSINSTANCE >>/tmp/variables.txt
-echo "DBHOST:" $DBHOST >>/tmp/variables.txt
-echo "DBIP:" $DBIP >>/tmp/variables.txt
-echo "DBINSTANCE:" $DBINSTANCE >>/tmp/variables.txt
-echo "ASCSLBIP:" $ASCSLBIP >>/tmp/variables.txt
+echo "USRNAME: ${USRNAME}" >> /tmp/variables.txt
+echo "ASCSPWD: ${ASCSPWD}" >> /tmp/variables.txt
+echo "VMNAME: ${VMNAME}" >> /tmp/variables.txt
+echo "OTHERVMNAME: ${OTHERVMNAME}" >> /tmp/variables.txt
+echo "VMIPADDR: ${VMIPADDR}" >> /tmp/variables.txt
+echo "OTHERIPADDR: ${OTHERIPADDR}" >> /tmp/variables.txt
+echo "ISPRIMARY: ${ISPRIMARY}" >> /tmp/variables.txt
+echo "URI: ${URI}" >> /tmp/variables.txt
+echo "HANASID: ${HANASID}" >> /tmp/variables.txt
+echo "REPOURI: ${REPOURI}" >> /tmp/variables.txt
+echo "ISCSIIP: ${ISCSIIP}" >> /tmp/variables.txt
+echo "IQN: ${IQN}" >> /tmp/variables.txt
+echo "IQNCLIENT: ${IQNCLIENT}" >> /tmp/variables.txt
+echo "ASCSLBIP: ${ASCSLBIP}" >> /tmp/variables.txt
+echo "ERSLBIP: ${ERSLBIP}" >> /tmp/variables.txt
+echo "SUBEMAIL: ${SUBEMAIL}" >> /tmp/variables.txt
+echo "SUBID: ${SUBID}" >> /tmp/variables.txt
+echo "SUBURL: ${SUBURL}" >> /tmp/variables.txt
+echo "NFSILBIP: ${NFSILBIP}" >> /tmp/variables.txt
+echo "ASCSSID: ${ASCSSID}" >> /tmp/variables.txt
+echo "ASCSINSTANCE: ${ASCSINSTANCE}" >> /tmp/variables.txt
+echo "SAPINSTGID: ${SAPINSTGID}" >> /tmp/variables.txt
+echo "SAPSYSGID: ${SAPSYSGID}" >> /tmp/variables.txt
+echo "SAPADMUID: ${SAPADMUID}" >> /tmp/variables.txt
+echo "SIDADMUID: ${SIDADMUID}" >> /tmp/variables.txt
+echo "SAPPASSWD: ${SAPPASSWD}" >> /tmp/variables.txt
+echo "ERSINSTANCE: ${ERSINSTANCE}" >> /tmp/variables.txt
+echo "DBHOST: ${DBHOST}" >> /tmp/variables.txt
+echo "DBIP: ${DBIP}" >> /tmp/variables.txt
+echo "DBINSTANCE: ${DBINSTANCE}" >> /tmp/variables.txt
+echo "ASCSLBIP: ${ASCSLBIP}" >> /tmp/variables.txt
+echo "CONFIGURESAP: ${CONFIGURESAP}" >> /tmp/variables.txt
+echo "CONFIGURECRM: ${CONFIGURECRM}" >> /tmp/variables.txt
+echo "CONFIGURESCHEMA: ${CONFIGURESCHEMA}" >> /tmp/variables.txt
+echo "SAPBITSMOUNT: ${SAPBITSMOUNT}" >> /tmp/variables.txt
+echo "SAPMNTMOUNT: ${SAPMNTMOUNT}" >> /tmp/variables.txt
+echo "USRSAPSIDMOUNT: ${USRSAPSIDMOUNT}" >> /tmp/variables.txt
+echo "SAPTRANSMOUNT: ${SAPTRANSMOUNT}" >> /tmp/variables.txt
+echo "USRSAPASCSMOUNT: ${USRSAPASCSMOUNT}" >> /tmp/variables.txt
+echo "USRSAPERSMOUNT: ${USRSAPERSMOUNT}" >> /tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -697,8 +709,10 @@ echo  "10.0.0.22 hanailb"  >>/etc/hosts
 if [ "$ISPRIMARY" = "yes" ]; then
   #clean out the usr/sap/SID/SYS
   rm -r -f /usr/sap/S40/SYS/exe/uc/linuxx86_64/*
-  write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
+  if [ "${CONFIGURESAP}" = "yes" ]; then 
+    write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
+    exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
+  fi
   touch /tmp/ascscomplete.txt
 
 crm node online $VMNAME
