@@ -31,7 +31,7 @@ SUBEMAIL=${17}
 SUBID=${18}
 SUBURL=${19}
 NFSIP=${20}
-
+HANAVER=${21}
 ###
 # cluster tuning values
 WATCHDOGTIMEOUT="30"
@@ -257,6 +257,30 @@ setup_cluster() {
 
 
 register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
+
+#decode hana version parameter
+HANAVER=${HANAVER^^}
+if [ "${HANAVER}" = "SAP HANA PLATFORM EDITION 2.0 SPS01 REV 10 (51052030)" ]
+then
+  hanapackage="51052030"
+else
+  echo "not 51052030"
+  if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS02 (51052325)" ]
+  then
+    hanapackage="51052325"
+  else
+  echo "not 51052325"
+    if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS03 REV30 (51053061)" ]
+    then
+      hanapackage="51053061"
+    else
+      echo "not 51053061, default to 51052325"
+      hanapackage="51052325"
+    fi
+  fi
+fi
+
+
 
 mkdir /etc/systemd/login.conf.d
 mkdir /hana
@@ -537,10 +561,10 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 #!/bin/bash
 cd $SAPBITSDIR
 echo "hana download start" >> /tmp/parameter.txt
-download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part1.exe"
-download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part2.rar"  
-download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part3.rar"  
-download_if_needed $SAPBITSDIR "$URI/SapBits" "51052325_part4.rar"  
+download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part1.exe"
+download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part2.rar"  
+download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part3.rar"  
+download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part4.rar"  
 
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
@@ -558,7 +582,7 @@ cd $SAPBITSDIR
 echo "hana unrar start" >> /tmp/parameter.txt
 #!/bin/bash
 cd $SAPBITSDIR
-unrar  -o- x 51052325_part1.exe
+unrar  -o- x ${hanapackage}_part1.exe
 echo "hana unrar end" >> /tmp/parameter.txt
 echo "hana prepare start" >> /tmp/parameter.txt
 cd $SAPBITSDIR
@@ -568,9 +592,9 @@ cd $SAPBITSDIR
 myhost=`hostname`
 sedcmd="s/REPLACE-WITH-HOSTNAME/$myhost/g"
 if [ "$NFSIP" != "" ]; then
- sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/sapbits\/51052325/g"
+ sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/sapbits\/${hanapackage}/g"
 else
- sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/hana\/data\/sapbits\/51052325/g"
+ sedcmd2="s/\/hana\/shared\/sapbits\/51052325/\/hana\/data\/sapbits\/${hanapackage}/g"
 fi
 
 sedcmd3="s/root_user=root/root_user=$HANAUSR/g"
@@ -586,8 +610,8 @@ echo "hana preapre end" >> /tmp/parameter.txt
 
 #!/bin/bash
 echo "install hana start" >> /tmp/parameter.txt
-cd $SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64
-$SAPBITSDIR/51052325/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile ${hdbinstfile}
+cd $SAPBITSDIR/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64
+$SAPBITSDIR/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfile ${hdbinstfile}
 echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
