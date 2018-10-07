@@ -708,7 +708,7 @@ echo  "10.0.0.22 hanailb"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
   #clean out the usr/sap/SID/SYS
-  rm -r -f /usr/sap/S40/SYS/exe/uc/linuxx86_64/*
+  rm -r -f /usr/sap/${ASCSSID}/SYS/exe/uc/linuxx86_64/*
   if [ "${CONFIGURESAP}" = "yes" ]; then 
     write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
     exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
