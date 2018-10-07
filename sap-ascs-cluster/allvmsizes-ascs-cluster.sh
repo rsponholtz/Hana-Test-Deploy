@@ -42,14 +42,15 @@ DBHOST=${28}
 DBIP=${29}
 DBINSTANCE=${30}
 ASCSLBIP=${31}
-CONFIGURECRM=${32}
-CONFIGURESCHEMA=${33}
-SAPBITSMOUNT=${34} 
-SAPMNTMOUNT=${35}
-USRSAPSIDMOUNT=${36}
-SAPTRANSMOUNT=${37}
-USRSAPASCSMOUNT=${38}
-USRSAPERSMOUNT=${39}
+CONFIGURESAP=${32}
+CONFIGURECRM=${33}
+CONFIGURESCHEMA=${34}
+SAPBITSMOUNT=${35} 
+SAPMNTMOUNT=${36}
+USRSAPSIDMOUNT=${37}
+SAPTRANSMOUNT=${38}
+USRSAPASCSMOUNT=${39}
+USRSAPERSMOUNT=${40}
 
 ###
 # cluster tuning values
@@ -720,14 +721,18 @@ sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
   download_dbbits $URI /sapbits
   waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
-  write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
-  if [ "$CONFIGURESCHEMA" = "yes" ]; then
-  exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
+  if [ "${CONFIGURESAP}" = "yes" ]; then 
+    write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
+    if [ "$CONFIGURESCHEMA" = "yes" ]; then
+    exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
+    fi
   fi
 else
   waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
-  write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-  exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root
+  if [ "${CONFIGURESAP}" = "yes" ]; then
+    write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
+    exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root
+  fi
   touch /tmp/erscomplete.txt
 fi
 

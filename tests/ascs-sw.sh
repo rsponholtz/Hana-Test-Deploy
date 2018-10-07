@@ -31,6 +31,7 @@ az group deployment create \
    DBHOST="hanailb" \
    DBIP="$HANAILBIP" \
    ASCSLBIP="$ASCSLBIP" \
+   CONFIGURESAP="yes" \
    CONFIGURECRM="no" \
    CONFIGURESCHEMA="yes" \
    SubscriptionEmail="$slesemail" \
