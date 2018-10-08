@@ -18,7 +18,7 @@ az group deployment create \
    vmUserName="$vmusername" \
    vmPassword="$vmpassword" \
    vnetName="$vnetname" \
-   ExistingNetworkResourceGroup="$rgname" \
+   ExistingNetworkResourceGroup="$vnetrgname" \
    vmSize="Standard_DS2_v2" \
    osType="SLES 12 SP3" \
    appAvailSetName="nwavailset" \

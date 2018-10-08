@@ -22,7 +22,7 @@ az group deployment create \
    VMUserName=$vmusername \
    VMPassword=$vmpassword \
    OperatingSystem="SLES for SAP 12 SP3" \
-   ExistingNetworkResourceGroup=$rgname \
+   ExistingNetworkResourceGroup=$vnetrgname \
    StaticIP1=$NFSIP1 \
    StaticIP2=$NFSIP2 \
    iSCSIIP=$ISCSIIP \

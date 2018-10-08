@@ -14,7 +14,7 @@ az group deployment create \
 --resource-group $rgname \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-infra.json" \
 --parameters vmUserName=$vmusername \
-             ExistingNetworkResourceGroup=$rgname \
+             ExistingNetworkResourceGroup=$vnetrgname \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
                    osType="SLES 12 SP3" \
