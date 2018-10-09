@@ -2,6 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "vmName": {
+            "type": "string",
+            "metadata": {
+                "description": "ISCSI VM name"
+            },
+            "defaultValue": "iscsiserver"
+        },
         "osType": {
             "type": "string",
             "allowedValues": [
@@ -92,7 +99,6 @@
           }        
     },
     "variables": {
-        "vmName": "iscsiserver",
         "images": {
             "Windows Server 2016 Datacenter": {
               "sku": "2016-Datacenter",
@@ -157,7 +163,7 @@
     "resources": [
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "name": "[concat(variables('vmName'),'/', 'CustomScript')]",
+            "name": "[concat(parameters('vmName'),'/', 'CustomScript')]",
             "apiVersion": "2017-12-01",
             "location": "[resourceGroup().location]",
             "dependsOn": [ ],

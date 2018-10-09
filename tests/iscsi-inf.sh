@@ -13,7 +13,8 @@ az group deployment create \
 --name ISCSIDeployment \
 --resource-group $rgname \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-infra.json" \
---parameters vmUserName=$vmusername \
+--parameters vmName="${ISCSIVMNAME}" \
+            vmUserName=$vmusername \
              ExistingNetworkResourceGroup=$vnetrgname \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
