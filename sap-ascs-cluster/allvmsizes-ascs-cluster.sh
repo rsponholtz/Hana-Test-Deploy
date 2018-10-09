@@ -566,6 +566,8 @@ EOF
 
 
 ##external dependency on sshpt
+    retry 5 "zypper --non-interactive --no-gpg-checks addrepo https://download.opensuse.org/repositories/openSUSE:/Tools/SLE_12_SP3/openSUSE:Tools.repo"
+    retry 5 "zypper --non-interactive --no-gpg-checks refresh"
     retry 5 "zypper install -y python-pip"
     retry 5 "pip install sshpt"
     #set up passwordless ssh on both sides
