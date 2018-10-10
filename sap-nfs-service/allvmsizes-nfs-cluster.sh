@@ -273,9 +273,8 @@ register_subscription  "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #!/bin/bash
 echo "logicalvol start" >> /tmp/parameter.txt
-  nfslun="$(lsscsi 5 0 0 0 | grep -o '.\{9\}$')"
-  pvcreate $nfslun
-  vgcreate vg_NFS $nfslun 
+  pvcreate /dev/disk/azure/scsi1/lun0
+  vgcreate vg_NFS /dev/disk/azure/scsi1/lun0
   lvcreate -l 100%FREE -n lv_NFS vg_NFS 
 echo "logicalvol end" >> /tmp/parameter.txt
 
@@ -394,15 +393,25 @@ common {
         }
         options {
         }
-
-        disk {
-                resync-rate 50M;
-        }
-        net {
-                after-sb-0pri discard-younger-primary;
-                after-sb-1pri discard-secondary;
-                after-sb-2pri call-pri-lost-after-sb;
-        }
+     disk {
+          md-flushes yes;
+          disk-flushes yes;
+          c-plan-ahead 1;
+          c-min-rate 100M;
+          c-fill-target 20M;
+          c-max-rate 4G;
+     }
+     net {
+          after-sb-0pri discard-younger-primary;
+          after-sb-1pri discard-secondary;
+          after-sb-2pri call-pri-lost-after-sb;
+          protocol     C;
+          tcp-cork yes;
+          max-buffers 20000;
+          max-epoch-size 20000;
+          sndbuf-size 0;
+          rcvbuf-size 0;
+     }
 }
 EOF
 
@@ -413,7 +422,7 @@ cat >/etc/drbd.d/NWS-nfs.res <<EOF
 resource NWS-nfs {
    protocol     C;
    disk {
-      on-io-error       pass_on;
+      on-io-error       detach;
    }
    on $VMNAME {
       address   $VMIPADDR:7790;
@@ -439,11 +448,12 @@ mkdir /srv/nfs/
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
 #drbdadm status
-
-  drbdsetup wait-connect-resource NWS-nfs
+drbdadm new-current-uuid --clear-bitmap NWS-nfs
+drbdadm primary --force NWS-nfs
+drbdsetup wait-sync-resource NWS-nfs  
 #  drbdadm status
 
-  drbdadm new-current-uuid --clear-bitmap NWS-nfs
+
 #  drbdadm status
 
   drbdadm -- --overwrite-data-of-peer --force primary NWS-nfs
@@ -486,7 +496,7 @@ cat >/etc/drbd.d/NWS-nfs.res <<EOL
 resource NWS-nfs {
    protocol     C;
    disk {
-      on-io-error       pass_on;
+      on-io-error       detach;
    }
    on $OTHERVMNAME {
       address   $OTHERIPADDR:7790;
@@ -550,23 +560,15 @@ crm configure  op_defaults \$id="op-options"  timeout="600"
   crm configure ms ms-drbd_NWS_nfs drbd_NWS_nfs meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true" interleave="true"
   crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs options="sync,dirsync" op monitor interval="10s"
 
-  crm configure primitive ex_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"  
-  crm configure primitive ex_NWS_"$HANASID"sys ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/$HANASIDsys" options="rw,no_root_squash" clientspec="*" fsid=2 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_sapmnt"$HANASID" ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/sapmnt$HANASID" options="rw,no_root_squash" clientspec="*" fsid=3 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_trans ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/trans" options="rw,no_root_squash" clientspec="*" fsid=4 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_ASCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCS" options="rw,no_root_squash" clientspec="*" fsid=5 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_ASCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/ASCSERS" options="rw,no_root_squash" clientspec="*" fsid=6 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_SCS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCS" options="rw,no_root_squash" clientspec="*" fsid=7 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  crm configure primitive ex_NWS_SCSERS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SCSERS" options="rw,no_root_squash" clientspec="*" fsid=8 wait_for_leasetime_on_stop=true op monitor interval="30s"
-  #crm configure primitive ex_NWS_SapBits ocf:heartbeat:exportfs params directory="/srv/nfs/NWS/SapBits" options="rw,no_root_squash" clientspec="*" fsid=9 wait_for_leasetime_on_stop=true op monitor interval="30s"
-    
+  crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"  
+     
   lbprobe="61000"
   mask="24"
 
   crm configure primitive vip_NWS_nfs IPaddr2 params ip=$LBIP cidr_netmask=$mask op monitor interval=10 timeout=20
   crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k $lbprobe" op monitor timeout=20s interval=10 depth=0
 
-  crm configure group g-NWS_nfs fs_NWS_sapmnt ex_NWS ex_NWS_trans ex_NWS_ASCS ex_NWS_ASCSERS ex_NWS_SCS ex_NWS_SCSERS nc_NWS_nfs vip_NWS_nfs ex_NWS_sapmnt"$HANASID" ex_NWS_"$HANASID"sys
+  crm configure group g-NWS_nfs  fs_NW2_sapmnt exportfs_NW2 nc_NW2_nfs vip_NW2_nfs
   crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start
   crm configure colocation col-NWS_nfs_on_drbd inf: g-NWS_nfs ms-drbd_NWS_nfs:Master
 
