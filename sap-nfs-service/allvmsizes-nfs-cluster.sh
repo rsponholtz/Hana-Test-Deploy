@@ -456,16 +456,16 @@ drbdsetup wait-sync-resource NWS-nfs
 
 #  drbdadm status
 
-  drbdadm -- --overwrite-data-of-peer --force primary NWS-nfs
+  #drbdadm -- --overwrite-data-of-peer --force primary NWS-nfs
   #drbdadm primary --force NWS_nfs
 #  drbdadm status
 
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS-nfs
+ # drbdsetup wait-sync-resource NWS-nfs
   sleep 1m
   mkfs.xfs /dev/drbd0
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS-nfs
+ # drbdsetup wait-sync-resource NWS-nfs
 
  
   mask=$(echo $LBIP | cut -d'/' -f 2)
@@ -486,7 +486,7 @@ drbdsetup wait-sync-resource NWS-nfs
   umount /srv/nfs/NWS
 
   echo "waiting for drbd sync"
-  drbdsetup wait-sync-resource NWS-nfs
+#  drbdsetup wait-sync-resource NWS-nfs
 
 fi
 #node2
