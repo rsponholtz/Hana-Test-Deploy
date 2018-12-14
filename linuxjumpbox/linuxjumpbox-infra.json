@@ -26,7 +26,6 @@
         "osType": {
             "type": "string",
             "allowedValues": [
-                "Windows Server 2016 Datacenter",
                 "SLES 12 SP3",
                 "SLES 12 SP3 BYOS",
                 "SLES 12 SP2",
@@ -87,13 +86,6 @@
         "vNicName": "[concat(parameters('vmName'),'nic')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
-            "Windows Server 2016 Datacenter": {
-                "sku": "2016-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",

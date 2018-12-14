@@ -9,6 +9,8 @@ else
     source ./azuredeploy.cfg
 fi
 
+az account set --subscription "$subscriptionid"
+
 #hanavmsize="Standard_E16s_v3 (128 GB)"
 #hanavmsize="Standard_M128s (2 TB, Certified)"
 

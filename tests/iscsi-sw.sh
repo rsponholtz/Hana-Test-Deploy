@@ -7,6 +7,7 @@ else
     source ./azuredeploy.cfg
 fi
 
+az account set --subscription "$subscriptionid"
 
 echo "installing iscsi server software"
 az group deployment create \

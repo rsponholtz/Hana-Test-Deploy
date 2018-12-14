@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 echo "Reading config...." >&2
 if [ "${1}" != "" ]; then
     source ${1}
@@ -7,6 +7,7 @@ else
     source ./azuredeploy.cfg
 fi
 
+az account set --subscription "$subscriptionid"
 
 echo "creating iscsi server"
 az group deployment create \

@@ -56,7 +56,7 @@ download_sapbits() {
 }
 
 #!/bin/bash
-  nfslun="$(lsscsi 5 0 0 0 | grep -o '.\{9\}$')"
+  nfslun=/dev/disk/azure/scsi1/lun0
   pvcreate $nfslun
   vgcreate vg_sapbits $nfslun 
   lvcreate -l 100%FREE -n lv_sapbits vg_sapbits 

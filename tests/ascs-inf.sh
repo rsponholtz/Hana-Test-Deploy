@@ -8,6 +8,7 @@ else
     source ./azuredeploy.cfg
 fi
 
+az account set --subscription "$subscriptionid"
 
 echo "creating ascs cluster"
 az group deployment create \
