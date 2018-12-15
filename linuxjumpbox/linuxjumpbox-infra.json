@@ -20,7 +20,7 @@
             "type": "string"
         },
         "subnetName": {
-            "defaultValue": "subnet",
+            "defaultValue": "mgtsubnet",
             "type": "string"
         },
         "osType": {
@@ -50,6 +50,7 @@
         },
         "StaticIP": {
             "type": "string",
+            "defaultValue": "10.0.2.7",            
             "metadata": {
                 "description": "static ip address for the virtual machine"
             }
@@ -73,7 +74,7 @@
             "metadata": {
                 "description": "Name of the Virtual Machine"
             },
-            "defaultValue": "sapbits"
+            "defaultValue": "linuxjumpbox"
         }
     },
     "variables": {
@@ -126,7 +127,9 @@
                 "scriptCall": "sh ntpserver.sh"
             }
         },
-        "scriptFolder": "."
+        "scriptFolder": ".",
+        "PublicIpAddressName":"ipcftsapbitspip",
+        "networkSecurityGroupName":"ipcftsapbitsnsg"
     },
     "resources": [
         {
@@ -134,7 +137,9 @@
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('vNicName')]",
             "location": "[resourceGroup().location]",
-            "dependsOn": [],
+            "dependsOn": [
+                "[concat('Microsoft.Network/publicIpAddresses/', variables('PublicIpAddressName'))]"
+            ],
             "properties": {
                 "ipConfigurations": [
                     {
@@ -144,10 +149,35 @@
                             "privateIPAddress": "[parameters('StaticIP')]",
                             "subnet": {
                                 "id": "[variables('subnetRef')]"
+                            },
+                            "publicIpAddress": {
+                                "id": "[resourceId(resourceGroup().name, 'Microsoft.Network/publicIpAddresses',variables('PublicIpAddressName'))]"
                             }
                         }
                     }
                 ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "name": "[variables('networkSecurityGroupName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIpAddresses",
+            "sku": {
+                "name": "basic"
+            },
+            "name": "[variables('PublicIpAddressName')]",
+            "apiVersion": "2018-08-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "publicIpAllocationMethod": "dynamic"
             }
         },
         {

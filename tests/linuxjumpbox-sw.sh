@@ -13,7 +13,7 @@ echo "installing linuxjumpbox software"
 az group deployment create \
 --name LINUXJUMPBOXDeployment \
 --resource-group "$rgname" \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/linuxjumbox/linuxjumpbox-sw.json" \
+--template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumbox/linuxjumpbox-sw.json" \
 --parameters \
 vmUserName=$vmusername \
 ExistingNetworkResourceGroup="$rgname" \

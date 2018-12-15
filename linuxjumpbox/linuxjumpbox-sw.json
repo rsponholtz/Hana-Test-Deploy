@@ -96,7 +96,7 @@
             "metadata": {
                 "description": "Name of the Virtual Machine"
             },
-            "defaultValue": "ntpserver"
+            "defaultValue": "linuxjumpbox"
         }
     },
     "variables": {
