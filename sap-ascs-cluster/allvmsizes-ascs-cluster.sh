@@ -598,11 +598,11 @@ sed -i "/InitiatorName=/d" "/etc/iscsi/initiatorname.iscsi"
 echo "InitiatorName=$IQNCLIENT" >> /etc/iscsi/initiatorname.iscsi
 systemctl restart iscsid
 systemctl restart iscsi
-iscsiadm -m discovery --type=st --portal=$ISCSIIP
+retry 5 "iscsiadm -m discovery --type=st --portal=$ISCSIIP"
 
 
-iscsiadm -m node -T "$IQN" --login --portal=$ISCSIIP:3260
-iscsiadm -m node -p "$ISCSIIP":3260 --op=update --name=node.startup --value=automatic
+retry 5 "iscsiadm -m node -T "$IQN" --login --portal=$ISCSIIP:3260"
+retry 5 "iscsiadm -m node -p "$ISCSIIP":3260 --op=update --name=node.startup --value=automatic"
 
 sleep 10 
 echo "hana iscsi end" >> /tmp/parameter.txt
