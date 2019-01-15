@@ -448,7 +448,8 @@ drbdadm up NWS-nfs
 #drbdadm status
 drbdadm new-current-uuid --clear-bitmap NWS-nfs
 drbdadm primary --force NWS-nfs
-drbdsetup wait-sync-resource NWS-nfs  
+#removing the wait-sync-resource for now.  this shouldn't impact the long-term health of the NFS server
+#drbdsetup wait-sync-resource NWS-nfs  
 #  drbdadm status
 
 
