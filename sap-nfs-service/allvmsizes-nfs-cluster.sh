@@ -566,7 +566,7 @@ crm configure  op_defaults \$id="op-options"  timeout="600"
   crm configure primitive vip_NWS_nfs IPaddr2 params ip=$LBIP cidr_netmask=$mask op monitor interval=10 timeout=20
   crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k $lbprobe" op monitor timeout=20s interval=10 depth=0
 
-  crm configure group g-NWS_nfs  fs_NW2_sapmnt exportfs_NW2 nc_NW2_nfs vip_NW2_nfs
+  crm configure group g-NWS_nfs  fs_NWS_sapmnt exportfs_NWS nc_NWS_nfs vip_NWS_nfs
   crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start
   crm configure colocation col-NWS_nfs_on_drbd inf: g-NWS_nfs ms-drbd_NWS_nfs:Master
 
