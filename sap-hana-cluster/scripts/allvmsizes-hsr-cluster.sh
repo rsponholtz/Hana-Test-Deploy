@@ -524,14 +524,23 @@ fi
 
 
 if [ "$NFSIP" != "" ]; then
-mkdir /sapbits
-mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
-echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
-SAPBITSDIR="/sapbits"
+  mkdir /sapbits
+  mount -t nfs4 nfsnfslb:/NWS/SapBits /sapbits
+  RESULT=$?
+  ##if the mount of sapbits fails, use the local volume instead.
+  ##
+  if [ "$RESULT" != "0" ]; then
+    mkdir /hana/data/sapbits
+    SAPBITSDIR="/hana/data/sapbits"
+    ln -s  /hana/data/sapbits /sapbits
+  else
+    echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
+    SAPBITSDIR="/sapbits"
+  fi
 else
   mkdir /hana/data/sapbits
   SAPBITSDIR="/hana/data/sapbits"
-  ln -s /sapbits /hana/data/sapbits
+  ln -s  /hana/data/sapbits /sapbits
 fi
 
 #install hana prereqs
