@@ -446,12 +446,17 @@ mkdir /srv/nfs/
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
 #drbdadm status
+###RWS
+waitfor root $OTHERVMNAME /tmp/drbdupsecond.txt	
+touch /tmp/drbdupprime.txt	
 
 drbdadm new-current-uuid --clear-bitmap NWS-nfs
 drbdadm primary --force NWS-nfs
-drbdadm -- --overwrite-data-of-peer primary NWS-nfs  
+drbdsetup wait-sync-resource NWS-nfs  
+
+#drbdadm -- --overwrite-data-of-peer primary NWS-nfs  
 #removing the wait-sync-resource for now.  this shouldn't impact the long-term health of the NFS server
-#drbdsetup wait-sync-resource NWS-nfs  
+#
 #  drbdadm status
 
 
@@ -522,6 +527,9 @@ service nfsserver restart
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
 #drbdadm status
+
+touch /tmp/drbdupsecond.txt	
+waitfor root $OTHERVMNAME /tmp/drbdupprime.txt	
 
 echo "waiting for connection"
 
