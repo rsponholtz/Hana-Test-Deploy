@@ -15,7 +15,7 @@ az group deployment create \
 --resource-group "$rgname" \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-sw.json" \
 --parameters \
-vmName="$LINUXJUMPBOXNAME"
+vmName="$LINUXJUMPBOXNAME" \
 vmUserName=$vmusername \
 ExistingNetworkResourceGroup="$rgname" \
 vnetName="$vnetname" \

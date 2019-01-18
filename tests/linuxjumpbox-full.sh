@@ -6,7 +6,6 @@ else
 fi
 
 
-#./hana-delete.sh
-./hana-inf.sh
-./hana-sw.sh
-
+#
+./linuxjumpbox-inf.sh
+./linuxjumpbox-sw.sh

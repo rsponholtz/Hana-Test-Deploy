@@ -6,7 +6,7 @@ else
 fi
 
 
-./ascs-delete.sh
+#./ascs-delete.sh
 ./ascs-inf.sh
 ./ascs-sw.sh
 

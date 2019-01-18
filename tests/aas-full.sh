@@ -6,7 +6,6 @@ else
 fi
 
 
-#./hana-delete.sh
-./hana-inf.sh
-./hana-sw.sh
-
+#./ascs-delete.sh
+./aas-inf.sh
+./aas-sw.sh

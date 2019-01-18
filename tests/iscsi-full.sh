@@ -7,6 +7,6 @@ fi
 
 
 #./hana-delete.sh
-./hana-inf.sh
-./hana-sw.sh
+./iscsi-inf.sh
+./iscsi-sw.sh
 
