@@ -434,7 +434,7 @@
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
-                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
+                        "imageOffer": "[variables('OperatingSystemSpec').imageOffer]",
                         "sku": "[variables('OperatingSystemSpec').sku]",
                         "version": "latest"
                     },
