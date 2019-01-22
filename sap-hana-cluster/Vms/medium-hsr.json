@@ -400,8 +400,8 @@
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
-                        "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
-                        "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]",            
+                        "imageOffer": "[variables('OperatingSystemSpec').imageOffer]",
+                        "sku": "[variables('OperatingSystemSpec').sku]",
                         "version": "latest"
                     },
                     "osDisk": {
