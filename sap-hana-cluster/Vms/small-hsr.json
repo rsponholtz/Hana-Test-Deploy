@@ -408,7 +408,7 @@
             }
         },
         {
-            "apiVersion": "[variables('api-version-vm')]",
+            "apiVersion": "2018-06-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('vmName1')]",
             "location": "[resourceGroup().location]",
@@ -434,7 +434,7 @@
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
-                        "imageOffer": "[variables('OperatingSystemSpec').imageOffer]",
+                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
                         "sku": "[variables('OperatingSystemSpec').sku]",
                         "version": "latest"
                     },
