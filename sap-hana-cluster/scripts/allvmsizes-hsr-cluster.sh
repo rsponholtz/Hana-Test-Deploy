@@ -533,6 +533,7 @@ if [ "$NFSIP" != "" ]; then
     mkdir /hana/data/sapbits
     SAPBITSDIR="/hana/data/sapbits"
     ln -s  /hana/data/sapbits /sapbits
+    NFSIP=""
   else
     echo "nfsnfslb:/NWS/SapBits /sapbits nfs4 defaults 0 0" >> /etc/fstab
     SAPBITSDIR="/sapbits"
