@@ -13,9 +13,9 @@ az group deployment create \
 --name sapbitsDeployment \
 --resource-group $rgname \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-infra.json" \
---parameters 
+--parameters \
 vmName="$LINUXJUMPBOXNAME" \
-vmUserName==$vmusername  \
+vmUserName=$vmusername  \
              ExistingNetworkResourceGroup=$rgname \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
