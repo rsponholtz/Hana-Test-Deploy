@@ -27,6 +27,7 @@ az group deployment create \
    StaticIP1=$NFSIP1 \
    StaticIP2=$NFSIP2 \
    iSCSIIP=$ISCSIIP \
-   ILBIP=$NFSILBIP
+   ILBIP=$NFSILBIP \
+   DataDiskSize=$NFSDISKSIZE
 
 echo "nfs cluster created"

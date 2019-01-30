@@ -115,7 +115,14 @@
                 "description": "IP Address for the internal load balancer"
             },
             "defaultValue": "10.0.1.10"
-        }
+        },
+        "DataDiskSize": {
+            "type": "int",
+            "metadata": {
+                "description": "size of the data disk"
+            },
+            "defaultValue": "1023"
+        }        
     },
     "variables": {
         "prefix": "[toLower(parameters('prefix'))]",
@@ -361,6 +368,9 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
+                    },
+                    "DataDiskSize": {
+                        "value":  "[variables('DataDiskSize')]"
                     }
                 }
             }
@@ -425,6 +435,9 @@
                         "value": {
                             "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
                         }
+                    },
+                    "DataDiskSize": {
+                        "value":  "[variables('DataDiskSize')]"
                     }
                 }
             }

@@ -135,6 +135,13 @@
             "metadata": {
                 "description": "Availability set."
             }
+        },
+        "DataDiskSize": {
+            "type": "int",
+            "metadata": {
+                "description": "size of the data disk"
+            },
+            "defaultValue": "1023"
         }
     },
     "variables": {
@@ -147,7 +154,6 @@
             "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),'SLES-SAP','RHEL-SAP-HANA')]",
             "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
         },
-        "DataDiskSize": "1023",
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
     "resources": [
@@ -190,7 +196,7 @@
                 "creationData": {
                     "createOption": "Empty"
                 },
-                "diskSizeGB": "[variables('DataDiskSize')]"
+                "diskSizeGB": "[parameters('DataDiskSize')]"
             }
         },
         {

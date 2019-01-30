@@ -372,7 +372,7 @@
             }
         },
         {
-            "apiVersion": "2018-04-01",
+            "apiVersion": "2018-06-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('vmName1')]",
             "location": "[resourceGroup().location]",
@@ -400,7 +400,7 @@
                 "storageProfile": {
                     "imageReference": {
                         "publisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
-                        "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
+                        "offer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
                         "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]",
                         "version": "latest"
                     },

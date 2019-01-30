@@ -706,7 +706,7 @@ groupadd -g $SAPSYSGID sapsys
 usermod -a -G sapinst root
 usermod -a -G sapsys root
 
-echo  "10.0.0.22 hanailb"  >>/etc/hosts
+echo  "$DBIP $DBHOST"  >>/etc/hosts
 
 if [ "$ISPRIMARY" = "yes" ]; then
   #clean out the usr/sap/SID/SYS
