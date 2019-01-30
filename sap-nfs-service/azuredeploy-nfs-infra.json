@@ -370,7 +370,7 @@
                         }
                     },
                     "DataDiskSize": {
-                        "value":  "[variables('DataDiskSize')]"
+                        "value":  "[parameters('DataDiskSize')]"
                     }
                 }
             }
@@ -437,7 +437,7 @@
                         }
                     },
                     "DataDiskSize": {
-                        "value":  "[variables('DataDiskSize')]"
+                        "value":  "[parameters('DataDiskSize')]"
                     }
                 }
             }
