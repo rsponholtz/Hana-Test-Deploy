@@ -724,7 +724,6 @@ systemctl restart iscsid
 systemctl restart iscsi
 retry 5 "iscsiadm -m discovery --type=st --portal=$ISCSIIP"
 
-
 retry 5 "iscsiadm -m node -T $IQN --login --portal=$ISCSIIP:3260"
 retry 5 "iscsiadm -m node -p $ISCSIIP:3260 --op=update --name=node.startup --value=automatic"
 
@@ -752,7 +751,7 @@ device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
-sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
+sbdcmd="s#SBD_DEVICE=\"\"SBD_DEVICE=\"$sbdid\"#g"
 sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
 cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
