@@ -356,7 +356,7 @@ fi
 cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 
-sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
+sbdcmd="s#SBD_DEVICE=\"\"SBD_DEVICE=\"$sbdid\"#g"
 sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
 cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified

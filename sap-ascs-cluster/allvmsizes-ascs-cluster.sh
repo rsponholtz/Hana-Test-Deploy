@@ -51,6 +51,7 @@ USRSAPSIDMOUNT=${37}
 SAPTRANSMOUNT=${38}
 USRSAPASCSMOUNT=${39}
 USRSAPERSMOUNT=${40}
+SAPSOFTWARETODEPLOY=${41}
 
 ###
 # cluster tuning values
@@ -599,8 +600,6 @@ echo "InitiatorName=$IQNCLIENT" >> /etc/iscsi/initiatorname.iscsi
 systemctl restart iscsid
 systemctl restart iscsi
 retry 5 "iscsiadm -m discovery --type=st --portal=$ISCSIIP"
-
-
 retry 5 "iscsiadm -m node -T "$IQN" --login --portal=$ISCSIIP:3260"
 retry 5 "iscsiadm -m node -p "$ISCSIIP":3260 --op=update --name=node.startup --value=automatic"
 
@@ -620,7 +619,7 @@ fi
 cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 
-sbdcmd="s#SBD_DEVICE=\"\"#SBD_DEVICE=\"$sbdid\"#g"
+sbdcmd="s#SBD_DEVICE=\"\"SBD_DEVICE=\"$sbdid\"#g"
 sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
 cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
@@ -697,7 +696,7 @@ systemctl enable autofs
 service autofs restart
 
 cd /sapbits
-download_sapbits $URI /sapbits
+
 touch /tmp/sapbitsdownloaded.txt
 create_temp_swapfile "/localstore/tempswap" 2000000
 
@@ -712,6 +711,15 @@ if [ "$ISPRIMARY" = "yes" ]; then
   #clean out the usr/sap/SID/SYS
   rm -r -f /usr/sap/${ASCSSID}/SYS/exe/uc/linuxx86_64/*
   if [ "${CONFIGURESAP}" = "yes" ]; then 
+    #determine the package to install
+    case "$SAPSOFTWARETODEPLOY" in
+      'S4 1709')
+
+      ;;
+      'IDES 1610"')
+      ;;
+    esac
+    download_sapbits $URI /sapbits $SAPSOFTWARETODEPLOY
     write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
     exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
   fi
