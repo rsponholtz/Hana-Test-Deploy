@@ -177,7 +177,7 @@
             "metadata": {
                 "description": "Instance number for the ERS"
             },
-            "defaultValue": "00"
+            "defaultValue": "01"
         },
         "DBHOST": {
             "type": "string",

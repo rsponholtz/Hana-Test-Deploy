@@ -164,6 +164,13 @@
             },
             "defaultValue": "00"
         },        
+        "ERSINSTANCE": {
+            "type": "string",
+            "metadata": {
+                "description": "Instance number for the ERS install"
+            },
+            "defaultValue": "01"
+        },         
         "SubscriptionEmail": {
             "type": "string",
             "metadata": {
@@ -403,8 +410,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
                             },
-                            "frontendPort": "[concat('33', parameters('ASCSINSTANCE'))]",
-                            "backendPort": "[concat('33', parameters('ASCSINSTANCE'))]",
+                            "frontendPort": "[concat('33', parameters('ERSINSTANCE'))]",
+                            "backendPort": "[concat('33', parameters('ERSINSTANCE'))]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -424,8 +431,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
                             },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'13')]",
+                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
+                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'13')]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -445,8 +452,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
                             },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'14')]",
+                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
+                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'14')]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -466,8 +473,8 @@
                             "frontendIPConfiguration": {
                                 "id": "[concat(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '/frontendIpConfigurations/ERSFrontEnd')]"
                             },
-                            "frontendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
-                            "backendPort": "[concat('5', parameters('ASCSINSTANCE'),'16')]",
+                            "frontendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
+                            "backendPort": "[concat('5', parameters('ERSINSTANCE'),'16')]",
                             "enableFloatingIP": true,
                             "idleTimeoutInMinutes": 30,
                             "protocol": "Tcp",
@@ -500,7 +507,7 @@
                     {
                         "properties": {
                             "protocol": "Tcp",
-                            "port":  "[concat('621', parameters('ASCSINSTANCE'))]",
+                            "port":  "[concat('621', parameters('ERSINSTANCE'))]",
                             "intervalInSeconds": 5,
                             "numberOfProbes": 2
                         },
