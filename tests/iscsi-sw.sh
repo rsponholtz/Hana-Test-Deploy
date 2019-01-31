@@ -13,7 +13,7 @@ echo "installing iscsi server software"
 az group deployment create \
 --name ISCSIDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-sw.json" \
+--template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-iscsi-server/iscsiserver-sw.json" \
    --parameters vmName="${ISCSIVMNAME}" \
                    osType="SLES 12 SP3" \
 		   customUri="$customuri" \

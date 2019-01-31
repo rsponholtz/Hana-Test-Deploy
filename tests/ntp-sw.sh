@@ -12,7 +12,7 @@ echo "installing ntp server software"
 az group deployment create \
 --name NTPDeployment \
 --resource-group "$rgname" \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-ntp-server/ntpserver-sw.json" \
+--template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-ntp-server/ntpserver-sw.json" \
 --parameters \
 vmUserName=$vmusername \
 ExistingNetworkResourceGroup="$rgname" \

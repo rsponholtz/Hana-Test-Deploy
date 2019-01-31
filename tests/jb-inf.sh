@@ -13,7 +13,7 @@ echo "creating jumpbox"
 az group deployment create \
 --name JumpboxDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanajumpbox/hanajumpbox.json" \
+--template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fhanajumpbox/hanajumpbox.json" \
 --parameters vmName=hanajumpbox \
    vmUserName=$vmusername \
    StaticIP=$JBPIP \

@@ -12,7 +12,7 @@ echo "creating additional application server"
 az group deployment create \
 --name NetWeaver-Deployment \
 --resource-group "$rgname" \
-   --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/azuredeploy-nw-infra.json" \
+   --template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-netweaver-server/azuredeploy-nw-infra.json" \
    --parameters \
    vmName="$AASVMNAME" \
    vmUserName="$vmusername" \

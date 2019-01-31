@@ -15,7 +15,7 @@ echo "creating vnet"
 az group deployment create \
 --name vnetDeployment \
 --resource-group $rgname \
---template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json" \
+--template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fvnet.json" \
 --parameters \
              addressPrefix="10.0.0.0/16" \
              DBSubnetName=$dbsubnetname \

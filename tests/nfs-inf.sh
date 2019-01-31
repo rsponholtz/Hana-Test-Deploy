@@ -13,7 +13,7 @@ echo "creating nfs cluster"
 az group deployment create \
 --name NFSDeployment \
 --resource-group $rgname \
-   --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service/azuredeploy-nfs-infra.json" \
+   --template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Fsap-nfs-service/azuredeploy-nfs-infra.json" \
    --parameters prefix=nfs \
    VMName1=$NFSVMNAME1 \
    VMName2=$NFSVMNAME2 \
