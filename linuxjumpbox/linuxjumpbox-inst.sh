@@ -15,6 +15,7 @@ URI=${1}
 SAPID=${2}
 SAPPASSWD=${3}
 DOWNLOADBITSFROM=${4}
+SAPSOFTWARETODOWNLOAD=${5}
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -36,85 +37,110 @@ retry() {
 
 declare -fxr retry
 
-download_sapbits() {
-    URI=$1
+#this function will download a given package to the given location.
 
-  cd  /sapbits
-#retry 5 "wget $URI/SapBits/50144807_6.ZIP"
-retry 5 "wget $URI/SapBits/51050423_3.ZIP"
-retry 5 "wget $URI/SapBits/51050829_JAVA_part1.exe"
-retry 5 "wget $URI/SapBits/51050829_JAVA_part2.rar"
-retry 5 "wget $URI/SapBits/51052190_part1.exe"
-retry 5 "wget $URI/SapBits/51052190_part2.rar"
-retry 5 "wget $URI/SapBits/51052190_part3.rar"
-retry 5 "wget $URI/SapBits/51052190_part4.rar"
-retry 5 "wget $URI/SapBits/51052190_part5.rar"
-retry 5 "wget $URI/SapBits/51052318_part1.exe"
-retry 5 "wget $URI/SapBits/51052318_part2.rar"
-retry 5 "wget $URI/SapBits/51052916.ZIP"
-retry 5 "wget $URI/SapBits/51053061_part1.exe"
-retry 5 "wget $URI/SapBits/51053061_part2.rar"
-retry 5 "wget $URI/SapBits/51053061_part3.rar"
-retry 5 "wget $URI/SapBits/51053061_part4.rar"
-#retry 5 "wget $URI/SapBits/70SWPM10SP23_1-20009701.sar"
-retry 5 "wget $URI/SapBits/HWCCT_212_5-20011536.SAR"
-retry 5 "wget $URI/SapBits/igsexe_0-80003187.sar"
-retry 5 "wget $URI/SapBits/igsexe_1-80003187.sar"
-retry 5 "wget $URI/SapBits/igsexe_2-80003187.sar"
-retry 5 "wget $URI/SapBits/igsexe_3-80003187.sar"
-retry 5 "wget $URI/SapBits/igsexe_4-80003187.sar"
-retry 5 "wget $URI/SapBits/igsexe_5-80003187.sar"
-retry 5 "wget $URI/SapBits/igshelper_0-10010245.sar"
-retry 5 "wget $URI/SapBits/igshelper_15-10010245.sar"
-retry 5 "wget $URI/SapBits/igshelper_17-10010245.sar"
-retry 5 "wget $URI/SapBits/igshelper_3-10010245.sar"
-retry 5 "wget $URI/SapBits/igshelper_4-10010245.sar"
-#retry 5 "wget $URI/SapBits/SAPACEXT_44-20010403"
-retry 5 "wget $URI/SapBits/SAPACEXT_44-20010403.SAR"
-retry 5 "wget $URI/SapBits/SAPCAR_1014-80000935.EXE"
-retry 5 "wget $URI/SapBits/SAPEXE_200-80002573.SAR"
-retry 5 "wget $URI/SapBits/SAPEXEDB_200-80002572.SAR"
-#retry 5 "wget $URI/SapBits/SAPHOSTAGENT36_36-20009394.SAR"
-#retry 5 "wget $URI/SapBits/SAPHOSTAGENT40_40-20009394"
-retry 5 "wget $URI/SapBits/SAPHOSTAGENT40_40-20009394.SAR"
-retry 5 "wget $URI/SapBits/saprouter_211-80003478.sar"
-retry 5 "wget $URI/SapBits/SWPM10SP23_1-20009701.SAR"
-#retry 5 "wget $URI/SapBits/SWPM20SP00_2-80003424.SAR"
-retry 5 "wget $URI/SapBits/vc_redist.x64.exe"
-retry 5 "wget $URI/SapBits/51052822_part01.exe"
-retry 5 "wget $URI/SapBits/51052822_part02.rar"
-retry 5 "wget $URI/SapBits/51052822_part03.rar"
-retry 5 "wget $URI/SapBits/51052822_part04.rar"
-retry 5 "wget $URI/SapBits/51052822_part05.rar"
-retry 5 "wget $URI/SapBits/51052822_part06.rar"
-retry 5 "wget $URI/SapBits/51052822_part07.rar"
-retry 5 "wget $URI/SapBits/51052822_part08.rar"
-zypper install -y unrar
-unrar x 51050829_JAVA_part1.exe
-unrar x 51052010_part1.exe
-unrar x 51052822_part01.exe
-unrar x 51052190_part1.exe
+#
+#verified but not tested
+IDES_1610_DOWNLOADS=( "0030000000860202018" "0030000000860222018" "0030000000860232018" "0030000000860242018" \
+"0020000002171982018" "0030000009413282017" "0030000009413292017" "0030000009413302017" "0030000009413312017" \
+"0030000000233052018" "0030000000233152018" "0030000000233182018" "0030000000233202018" "0030000000233252018" \
+"0030000000233312018" "0030000000235422018" "0030000000236392018" "0030000000698812016" "0020000002304082018" \
+"0020000002266252018" "0020000001703522018" )
 
-chmod u+x SAPCAR_1014-80000935.EXE
-ln -s SAPCAR_1014-80000935.EXE sapcar
-mkdir SWPM10SP23_1
-cd SWPM10SP23_1
-../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-cd ..
-mkdir IMDB_CLIENT20_002_76-80002082
-cd IMDB_CLIENT20_002_76-80002082
-../sapcar -xf ../IMDB_CLIENT20_002_76-80002082.SAR
+S4_1709_DOWNLOADS=( )
+    
+S4_1810_DOWNLOADS=(
+"0010000002434002018" "0020000002172162018" "0020000000167912019" "0020000000167822019"
+"0010000002434012018" "0010000002434022018" "0010000002434032018" "0020000000159362019"
+"0010000000026952019" "0030000001872432018" "0030000001872652018" "0030000001872832018"
+"0030000001872972018" "0030000001873122018" "0030000001873222018" "0030000001873272018"
+"0030000001873292018" "0030000001873302018" "0030000001873372018" "0030000001873442018"
+"0030000001873452018" "0030000001873472018" "0030000001873492018" "0030000001873502018"
+"0030000001873512018" "0030000001873572018" "0030000001873642018" "0030000001873732018"
+"0030000001873832018" "0010000002433912018" "0030000001873852018" "0030000001873892018"
+"0030000001873922018" "0030000001873972018" "0030000001874012018" "0030000001874042018"
+"0030000001874062018" "0030000001874092018" "0030000001874152018" "0030000001874172018"
+"0030000001874202018" "0030000001874252018" "0030000001874292018" "0030000001874332018"
+"0030000001874362018" "0030000001874392018" "0030000001874422018" "0030000001874482018"
+"0030000001874562018" "0030000001874612018" "0030000001874632018" "0030000001874662018"
+"0030000001874672018" "0030000001874712018" "0030000001874732018" "0030000001874782018"
+"0030000001874822018" "0030000001874872018" "0030000001874922018" "0030000001874962018"
+"0030000001875002018" "0030000001875042018" "0030000001875062018" "0030000001875082018"
+"0030000001875112018" "0030000001875132018" "0030000001875152018" "0030000001875192018"
+"0030000001875212018" "0020000002120452018" "0020000000703122018" "0010000002469792018"
+"0010000002433642018" "0010000002433652018" "0010000002433662018" "0010000001550262018"
+"0010000001782192018" "0010000001976222018" "0010000002091612018" "0010000001783292018"
+"0010000002433672018" "0010000000093362019" "0010000002014762018" "0010000002257102018"
+"0010000000161692019" "0020000000119332019" "0010000002253762018" "0010000001433022018"
+"0010000000003932019"
+ )
+
+
+
+download_requirements() {
+    P_USER=${1}
+    shift
+    P_PASS=${1}
+    shift
+    local P_REQUIREMENTS=("$@")
+    
+for i in "${P_REQUIREMENTS[@]}"
+do
+    # access each element  
+    # as $i
+    echo "wget --user=$P_USER --password=$P_PASS --content-disposition  https://softwaredownloads.sap.com/file/${i}"
+    #echo $i 
+done
+
 }
 
+declare -fxr download_requirements
+
+download_sapbits_from_sap() 
+{
+    P_SAPSOFTWARETODOWNLOAD = $1
+    P_USER=$2
+    P_PASS=$3
+    P_SAPBITS=$4
+
+    cd $P_SAPBITS
+
+    if ($P_SAPSOFTWARETODOWNLOAD == "IDES 1610")
+    then
+        download_requirements $P_USER $P_PASS "${IDES_1610_DOWNLOADS[@]}"
+    fi
+    if ($P_SAPSOFTWARETODOWNLOAD == "S4 1709")
+    then
+        download_requirements $P_USER $P_PASS "${S4_1709_DOWNLOADS[@]}"
+    fi
+
+    zypper install -y unrar
+    unrar x 51050829_JAVA_part1.exe
+    unrar x 51052010_part1.exe
+    unrar x 51052822_part01.exe
+    unrar x 51052190_part1.exe
+
+    chmod u+x SAPCAR_1014-80000935.EXE
+    ln -s SAPCAR_1014-80000935.EXE sapcar
+    mkdir SWPM10SP23_1
+    cd SWPM10SP23_1
+    ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+    cd ..
+    mkdir IMDB_CLIENT20_002_76-80002082
+    cd IMDB_CLIENT20_002_76-80002082
+    ../sapcar -xf ../IMDB_CLIENT20_002_76-80002082.SAR
+}
+
+
 #!/bin/bash
-  nfslun=/dev/disk/azure/scsi1/lun0
-  pvcreate $nfslun
-  vgcreate vg_sapbits $nfslun 
-  lvcreate -l 100%FREE -n lv_sapbits vg_sapbits 
+nfslun=/dev/disk/azure/scsi1/lun0
+pvcreate $nfslun
+vgcreate vg_sapbits $nfslun 
+lvcreate -l 100%FREE -n lv_sapbits vg_sapbits 
 
 mkdir /sapbits
 mkfs -t xfs  /dev/vg_sapbits/lv_sapbits 
- mount -t xfs /dev/vg_sapbits/lv_sapbits /sapbits
+mount -t xfs /dev/vg_sapbits/lv_sapbits /sapbits
 echo "/dev/vg_sapbits/lv_sapbits /sapbits xfs defaults 0 0" >> /etc/fstab
 
 #install hana prereqs
@@ -123,5 +149,8 @@ zypper update -y
 #set up nfs
 
 echo "/sapbits   *(rw,sync)" >> "/etc/exports"
+
+mkdir /sapbits/SapBits
+
 systemctl restart nfsserver
-download_sapbits $URI
+download_sapbits_from_sap  $SAPSOFTWARETODOWNLOAD $SAPID $SAPPASSWD "/sapbits/SapBits"

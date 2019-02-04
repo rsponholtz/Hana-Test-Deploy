@@ -97,7 +97,18 @@
                 "description": "Name of the Virtual Machine"
             },
             "defaultValue": "linuxjumpbox"
-        }
+        },
+        "SAPSOFTWARETODOWNLOAD": {
+            "type": "string",
+            "metadata": {
+                "description": "Which SAP software to download"
+            },
+            "defaultValue": "S4 1709",
+            "allowedValues": [
+                "S4 1709",
+                "IDES 1610"
+            ]            
+        }        
     },
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
@@ -169,7 +180,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-inst.sh"
                     ],
-                    "commandToExecute": "[concat('bash linuxjumpbox-inst.sh \"',parameters('customURI'),'\" \"',parameters('sapid'),'\" \"',parameters('sappasswd'),'\" \"' ,parameters('downloadbitsfrom'),'\"')]"
+                    "commandToExecute": "[concat('bash linuxjumpbox-inst.sh \"',parameters('customURI'),'\" \"',parameters('sapid'),'\" \"',parameters('sappasswd'),'\" \"' ,parameters('downloadbitsfrom'),'\" \"' ,parameters('SAPSOFTWARETODOWNLOAD'),'\"')]"
                 }
             }
         }

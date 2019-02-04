@@ -170,6 +170,16 @@
             "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]"
         },
         "diskConfig": "[variables(concat('diskConfig_', parameters('vmSize')))]",
+        "diskConfig_Standard_E8s_v3": {
+            "shared": 511,
+            "sap": 63,
+            "backup": 511,
+            "data1": 511,
+            "data2": 511,
+            "data3": 511,
+            "log1": 511,
+            "log2": 511
+        },        
         "diskConfig_Standard_E16s_v3": {
             "shared": 511,
             "sap": 63,
