@@ -43,12 +43,6 @@
                 "description": "Password for the Virtual Machine"
             }
         },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
         "StaticIP": {
             "type": "string",
             "defaultValue": "10.0.2.5",

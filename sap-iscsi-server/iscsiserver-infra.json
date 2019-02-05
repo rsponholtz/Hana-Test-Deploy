@@ -43,12 +43,6 @@
                 "description": "Password for the Virtual Machine"
             }
         },
-        "customUri": {
-            "type": "string",
-            "metadata": {
-                "description": "Uri for SAP Bits"
-            }
-        },
         "vmName": {
             "type": "string",
             "metadata": {

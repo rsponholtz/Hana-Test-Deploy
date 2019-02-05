@@ -104,6 +104,10 @@ download_sapbits_from_sap()
     P_SAPBITS=$4
 
     cd $P_SAPBITS
+    if ($P_SAPSOFTWARETODOWNLOAD == "NONE")
+    then
+        return;
+    fi
 
     if ($P_SAPSOFTWARETODOWNLOAD == "IDES 1610")
     then
@@ -131,6 +135,22 @@ download_sapbits_from_sap()
     ../sapcar -xf ../IMDB_CLIENT20_002_76-80002082.SAR
 }
 
+setup_nfs_share() 
+{
+    #set up nfs
+
+    echo "/sapbits   *(rw,sync)" >> "/etc/exports"
+
+    mkdir /sapbits/SapBits
+
+    systemctl restart nfsserver
+}
+
+setup_http_share()
+{
+    zypper install -y httpd
+
+}
 
 #!/bin/bash
 nfslun=/dev/disk/azure/scsi1/lun0
@@ -146,11 +166,7 @@ echo "/dev/vg_sapbits/lv_sapbits /sapbits xfs defaults 0 0" >> /etc/fstab
 #install hana prereqs
 echo "installing packages"
 zypper update -y
-#set up nfs
 
-echo "/sapbits   *(rw,sync)" >> "/etc/exports"
-
-mkdir /sapbits/SapBits
-
-systemctl restart nfsserver
+setup_nfs_share
+setup_http_share
 download_sapbits_from_sap  $SAPSOFTWARETODOWNLOAD $SAPID $SAPPASSWD "/sapbits/SapBits"

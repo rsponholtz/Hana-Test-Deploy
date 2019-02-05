@@ -26,5 +26,6 @@ customUri="$customuri" \
 StaticIP="$LINUXJUMPBOXIP" \
 sapid="$SAPID" \
 sappasswd="$SAPPASSWD" \
-downloadbitsfrom="SAP"
+downloadbitsfrom="SAP" \
+SAPSOFTWARETODOWNLOAD="NONE"
 

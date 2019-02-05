@@ -103,10 +103,11 @@
             "metadata": {
                 "description": "Which SAP software to download"
             },
-            "defaultValue": "S4 1709",
+            "defaultValue": "NONE",
             "allowedValues": [
                 "S4 1709",
-                "IDES 1610"
+                "IDES 1610",
+                "NONE"
             ]            
         }        
     },
