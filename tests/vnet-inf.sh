@@ -17,11 +17,11 @@ az group deployment create \
 --resource-group $rgname \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/vnet.json" \
 --parameters \
-             addressPrefix="10.0.0.0/16" \
+             addressPrefix=$vnetaddressPrefix \
              DBSubnetName=$dbsubnetname \
-             DBSubnetPrefix="10.0.0.0/24" \
+             DBSubnetPrefix=$DBSubnetPrefix \
              AppSubnetName=$appsubnetname \
-             AppSubnetPrefix="10.0.1.0/24" \
+             AppSubnetPrefix=$AppSubnetPrefix \
              MgtSubnetName=$mgtsubnetname \
-             MgtSubnetPrefix="10.0.2.0/24" \
+             MgtSubnetPrefix=$MgtSubnetPrefix \
              vnetName=$vnetname
