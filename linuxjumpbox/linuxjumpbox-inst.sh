@@ -167,4 +167,4 @@ echo "installing packages"
 zypper update -y
 
 setup_nfs_share "/srv/www/htdocs/SapBits"
-download_sapbits_from_sap  $SAPSOFTWARETODOWNLOAD $SAPID $SAPPASSWD "/srv/www/htdocs/SapBits"
+download_sapbits_from_sap  "$SAPSOFTWARETODOWNLOAD" "$SAPID" "$SAPPASSWD" "/srv/www/htdocs/SapBits"
