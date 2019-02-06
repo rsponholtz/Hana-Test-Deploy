@@ -88,7 +88,7 @@ for i in "${P_REQUIREMENTS[@]}"
 do
     # access each element  
     # as $i
-    echo "wget --user=$P_USER --password=$P_PASS --content-disposition  https://softwaredownloads.sap.com/file/${i}"
+    wget --user=$P_USER --password=$P_PASS --content-disposition  https://softwaredownloads.sap.com/file/${i}
     #echo $i 
 done
 
@@ -118,21 +118,21 @@ download_sapbits_from_sap()
         download_requirements $P_USER $P_PASS "${S4_1709_DOWNLOADS[@]}"
     fi
 
-    zypper install -y unrar
-    unrar x 51050829_JAVA_part1.exe
-    unrar x 51052010_part1.exe
-    unrar x 51052822_part01.exe
-    unrar x 51052190_part1.exe
+    # zypper install -y unrar
+    # unrar x 51050829_JAVA_part1.exe
+    # unrar x 51052010_part1.exe
+    # unrar x 51052822_part01.exe
+    # unrar x 51052190_part1.exe
 
-    chmod u+x SAPCAR_1014-80000935.EXE
-    ln -s SAPCAR_1014-80000935.EXE sapcar
-    mkdir SWPM10SP23_1
-    cd SWPM10SP23_1
-    ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-    cd ..
-    mkdir IMDB_CLIENT20_002_76-80002082
-    cd IMDB_CLIENT20_002_76-80002082
-    ../sapcar -xf ../IMDB_CLIENT20_002_76-80002082.SAR
+    # chmod u+x SAPCAR_1014-80000935.EXE
+    # ln -s SAPCAR_1014-80000935.EXE sapcar
+    # mkdir SWPM10SP23_1
+    # cd SWPM10SP23_1
+    # ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+    # cd ..
+    # mkdir IMDB_CLIENT20_002_76-80002082
+    # cd IMDB_CLIENT20_002_76-80002082
+    # ../sapcar -xf ../IMDB_CLIENT20_002_76-80002082.SAR
 }
 
 setup_nfs_share() 
