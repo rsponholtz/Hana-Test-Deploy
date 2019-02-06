@@ -104,16 +104,16 @@ download_sapbits_from_sap()
     P_SAPBITS=$4
 
     cd $P_SAPBITS
-    if ($P_SAPSOFTWARETODOWNLOAD == "NONE")
+    if [ "$P_SAPSOFTWARETODOWNLOAD" == "NONE" ]
     then
         return;
     fi
 
-    if ($P_SAPSOFTWARETODOWNLOAD == "IDES 1610")
+    if [ "$P_SAPSOFTWARETODOWNLOAD" == "IDES 1610" ]
     then
         download_requirements $P_USER $P_PASS "${IDES_1610_DOWNLOADS[@]}"
     fi
-    if ($P_SAPSOFTWARETODOWNLOAD == "S4 1709")
+    if [ "$P_SAPSOFTWARETODOWNLOAD" == "S4 1709" ]
     then
         download_requirements $P_USER $P_PASS "${S4_1709_DOWNLOADS[@]}"
     fi
