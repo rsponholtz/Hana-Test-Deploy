@@ -121,7 +121,7 @@
             "metadata": {
                 "description": "size of the data disk"
             },
-            "defaultValue": "1023"
+            "defaultValue": 1023
         }        
     },
     "variables": {
