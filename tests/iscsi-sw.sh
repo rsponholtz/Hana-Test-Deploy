@@ -16,6 +16,7 @@ az group deployment create \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-iscsi-server/iscsiserver-sw.json" \
    --parameters vmName="${ISCSIVMNAME}" \
                    osType="SLES 12 SP3" \
+            customUri=$customuri \
 IQN1="$NFSIQN" \
 IQN1client1="$NFSIQNCLIENT1" \
 IQN1client2="$NFSIQNCLIENT2" \

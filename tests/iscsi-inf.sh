@@ -21,7 +21,6 @@ az group deployment create \
              subnetName=$mgtsubnetname \
                    osType="SLES 12 SP3" \
              vmPassword=$vmpassword \
-             customUri=$customuri \
                    StaticIP=$ISCSIIP
 
 echo "iscsi server created"
