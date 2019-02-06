@@ -98,7 +98,7 @@ declare -fxr download_requirements
 
 download_sapbits_from_sap() 
 {
-    P_SAPSOFTWARETODOWNLOAD = $1
+    P_SAPSOFTWARETODOWNLOAD=$1
     P_USER=$2
     P_PASS=$3
     P_SAPBITS=$4
