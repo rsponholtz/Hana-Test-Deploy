@@ -12,7 +12,7 @@ echo "creating linuxjumpbox"
 az group deployment create \
 --name sapbitsDeployment \
 --resource-group $rgname \
---template-uri "https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Flinuxjumpbox/linuxjumpbox-infra.json" \
+--template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-infra.json" \
 --parameters \
 vmName="$LINUXJUMPBOXNAME" \
 vmUserName=$vmusername  \
