@@ -137,20 +137,20 @@ download_sapbits_from_sap()
 
 setup_nfs_share() 
 {
+    P_SAPBITS=$1
     #set up nfs
 
-    echo "/sapbits   *(rw,sync)" >> "/etc/exports"
-
-    mkdir /sapbits/SapBits
-
+    echo "$P_SAPBITS   *(rw,sync)" >> "/etc/exports"
     systemctl restart nfsserver
 }
 
 setup_http_share()
 {
     zypper install -y httpd
-
+    systemctl start apache2.service
 }
+
+setup_http_share
 
 #!/bin/bash
 nfslun=/dev/disk/azure/scsi1/lun0
@@ -158,15 +158,13 @@ pvcreate $nfslun
 vgcreate vg_sapbits $nfslun 
 lvcreate -l 100%FREE -n lv_sapbits vg_sapbits 
 
-mkdir /sapbits
 mkfs -t xfs  /dev/vg_sapbits/lv_sapbits 
-mount -t xfs /dev/vg_sapbits/lv_sapbits /sapbits
-echo "/dev/vg_sapbits/lv_sapbits /sapbits xfs defaults 0 0" >> /etc/fstab
+mkdir /srv/www/htdocs/SapBits
+mount -t xfs /dev/vg_sapbits/lv_sapbits /srv/www/htdocs/SapBits
+echo "/dev/vg_sapbits/lv_sapbits /srv/www/htdocs/SapBits xfs defaults 0 0" >> /etc/fstab
 
-#install hana prereqs
 echo "installing packages"
 zypper update -y
 
-setup_nfs_share
-setup_http_share
-download_sapbits_from_sap  $SAPSOFTWARETODOWNLOAD $SAPID $SAPPASSWD "/sapbits/SapBits"
+setup_nfs_share "/srv/www/htdocs/SapBits"
+download_sapbits_from_sap  $SAPSOFTWARETODOWNLOAD $SAPID $SAPPASSWD "/srv/www/htdocs/SapBits"
