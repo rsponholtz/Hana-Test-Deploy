@@ -40,7 +40,7 @@
         },
         "NetworkName": {
             "type": "string",
-            "defaultValue": "ra-sap-hana-vnet",
+            "defaultValue": "vnet",
             "metadata": {
                 "description": "The HANA VNET"
             }
@@ -109,8 +109,7 @@
             "type": "string",
             "metadata": {
                 "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
-            },
-            "defaultValue": "yes"
+            }
         },
         "StaticIP1": {
             "type": "string",

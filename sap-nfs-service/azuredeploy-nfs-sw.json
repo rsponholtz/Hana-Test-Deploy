@@ -55,7 +55,7 @@
             "metadata": {
                 "description": "IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:nfsserver"
+            "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target"
         },
         "IQNClient1": {
             "type": "string",
