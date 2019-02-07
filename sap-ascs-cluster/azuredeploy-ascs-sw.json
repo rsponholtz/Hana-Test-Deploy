@@ -199,12 +199,6 @@
             },
             "defaultValue": "00"
         },
-        "ASCSLBIP": {
-            "type": "string",
-            "metadata": {
-                "description": "IP Address for the ASCS load balancer"
-            }
-        },
         "CONFIGURESAP": {
             "type": "string",
             "metadata": {
