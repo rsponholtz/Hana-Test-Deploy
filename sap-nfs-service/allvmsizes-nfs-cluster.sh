@@ -448,7 +448,7 @@ drbdadm up NWS-nfs
 #drbdadm status
 ###RWS
 waitfor root $OTHERVMNAME /tmp/drbdupsecond.txt	
-touch /tmp/drbdupprime.txt	
+
 
 drbdadm new-current-uuid --clear-bitmap NWS-nfs
 drbdadm primary --force NWS-nfs
@@ -491,6 +491,7 @@ drbdsetup wait-sync-resource NWS-nfs
   mkdir /srv/nfs/NWS/SapBits
   umount /srv/nfs/NWS
 
+  touch /tmp/drbdupprime.txt	
   echo "waiting for drbd sync"
 #  drbdsetup wait-sync-resource NWS-nfs
 

@@ -85,8 +85,7 @@
             "type": "string",
             "metadata": {
                 "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
-            },
-            "defaultValue": "no"
+            }
         },
         "StaticIP1": {
             "type": "string",
@@ -121,7 +120,7 @@
             "metadata": {
                 "description": "size of the data disk"
             },
-            "defaultValue": 1023
+            "defaultValue": 255
         }        
     },
     "variables": {
