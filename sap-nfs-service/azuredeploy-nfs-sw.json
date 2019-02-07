@@ -6,13 +6,15 @@
             "type": "string",
             "metadata": {
                 "description": "First VM Name"
-            }
+            },
+            "defaultValue": "nfs1"
         },
         "VMName2": {
             "type": "string",
             "metadata": {
                 "description": "Second VM Name"
-            }
+            },
+            "defaultValue": "nfs2"
         },
         "VMUserName": {
             "type": "string",
@@ -30,23 +32,23 @@
         "StaticIP1": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the first NFS VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.4"
+            "defaultValue": "10.0.1.7"
         },
         "StaticIP2": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the firssecondt NFS VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.5"
+            "defaultValue": "10.0.1.8"
         },
         "iSCSIIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the iscsi server"
             },
-            "defaultValue": "10.0.6.4"
+            "defaultValue": "10.0.2.6"
         },
         "IQN": {
             "type": "string",

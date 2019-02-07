@@ -33,55 +33,64 @@
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN1 to present"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target"
         },
         "IQN1client1": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN1 client1"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1"
         },
         "IQN1client2": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN1 client2"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm2"
         },
         "IQN2": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN2 to present"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
         },
         "IQN2client1": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN2 client1"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
         },
         "IQN2client2": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN2 client2"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
         },
         "IQN3": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN3 to present"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target"
         },
         "IQN3client1": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN3 client1"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm1"
         },
         "IQN3client2": {
           "type": "string",
           "metadata": {
             "description": "iSCSI IQN3 client2"
-          }
+          },
+          "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2"
         },
         "_artifactsLocation": {
             "type": "string",
