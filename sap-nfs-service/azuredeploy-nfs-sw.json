@@ -55,21 +55,21 @@
             "metadata": {
                 "description": "IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
+            "defaultValue": "iqn.1991-05.com.microsoft:nfsserver"
         },
         "IQNClient1": {
             "type": "string",
             "metadata": {
                 "description": "Client 1 IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
+            "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1"
         },
         "IQNClient2": {
             "type": "string",
             "metadata": {
                 "description": "Client 2 IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
+            "defaultValue": "iqn.1991-05.com.microsoft:nfsserver-target:nfsvm1"
         },
         "ILBIP": {
             "type": "string",
