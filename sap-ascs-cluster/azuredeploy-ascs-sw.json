@@ -30,58 +30,58 @@
         "StaticIP1": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the ASCS VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.4"
+            "defaultValue": "10.0.1.17"
         },
         "StaticIP2": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the ERS VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.5"
+            "defaultValue": "10.0.1.18"
         },
         "iSCSIIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the iscsi server"
             },
-            "defaultValue": "10.0.6.4"
+            "defaultValue": "10.0.2.6"
         },
         "IQN": {
             "type": "string",
             "metadata": {
                 "description": "IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target"
+            "defaultValue": "iqn.1991-05.com.microsoft:ascs-target"
         },
         "IQNClient1": {
             "type": "string",
             "metadata": {
                 "description": "Client 1 IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm1"
+            "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm1"
         },
         "IQNClient2": {
             "type": "string",
             "metadata": {
                 "description": "Client 2 IQN for the iscsi server"
             },
-            "defaultValue": "iqn.1991-05.com.microsoft:hana-target:hanavm2"
+            "defaultValue": "iqn.1991-05.com.microsoft:ascs-target:ascsvm2"
         },
         "ASCSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the ASCS internal load balancer"
             },
-            "defaultValue": "10.0.5.10"
+            "defaultValue": "10.0.1.20"
         },
         "ERSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the ERS internal load balancer"
             },
-            "defaultValue": "10.0.5.11"
+            "defaultValue": "10.0.1.21"
         },
         "customURI": {
             "type": "string",
@@ -190,7 +190,8 @@
             "type": "string",
             "metadata": {
                 "description": "IP Address for the database"
-            }
+            },
+            "defaultValue": "10.0.0.22"
         },
         "DBINSTANCE": {
             "type": "string",
@@ -236,37 +237,43 @@
             "type": "string",
             "metadata": {
                 "description": "NFS mount point for sapbits"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/SapBits"
         },
         "SAPMNTMOUNT": {
             "type": "string",
             "metadata": {
                 "description": "NFS mount point for /sapmnt"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/sapmntH10"
         },
         "USRSAPSIDMOUNT": {
             "type": "string",
             "metadata": {
                 "description": "nfs mount point for /usr/sap/SID/SYS"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/ASCS"
         },
         "SAPTRANSMOUNT": {
             "type": "string",
             "metadata": {
                 "description": "nfs mount point for /usr/sap/trans"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/trans"
         },        
         "USRSAPASCSMOUNT": {
             "type": "string",
             "metadata": {
                 "description": "nfs mount point for /usr/sap/SID/ASCSinstance"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/ASCS"
         },
         "USRSAPERSMOUNT": {
             "type": "string",
             "metadata": {
                 "description": "nfs mount point for /usr/sap/SID/ERSinstance"
-            }
+            },
+            "defaultValue": "10.0.1.10:/NWS/ASCSERS"
         },
         "SAPSOFTWARETODEPLOY": {
             "type": "string",
@@ -275,6 +282,7 @@
             },
             "defaultValue": "S4 1709",
             "allowedValues": [
+                "NONE",
                 "S4 1709",
                 "IDES 1610"
             ]            

@@ -88,7 +88,7 @@ for i in "${P_REQUIREMENTS[@]}"
 do
     # access each element  
     # as $i
-    wget --user=$P_USER --password=$P_PASS --content-disposition  https://softwaredownloads.sap.com/file/${i}
+    wget -q --user=$P_USER --password=$P_PASS --content-disposition  https://softwaredownloads.sap.com/file/${i}
     #echo $i 
 done
 
@@ -109,6 +109,7 @@ download_sapbits_from_sap()
         return;
     fi
 
+    
     if [ "$P_SAPSOFTWARETODOWNLOAD" == "IDES 1610" ]
     then
         download_requirements $P_USER $P_PASS "${IDES_1610_DOWNLOADS[@]}"

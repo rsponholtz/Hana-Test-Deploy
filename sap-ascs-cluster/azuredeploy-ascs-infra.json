@@ -78,16 +78,16 @@
         },
         "vnetName": {
             "type": "string",
-            "defaultValue": "ra-sap-hana-vnet",
+            "defaultValue": "vnet",
             "metadata": {
                 "description": "The HANA VNET"
             }
         },
         "SubnetName": {
             "type": "string",
-            "defaultValue": "SAPDataSubnet",
+            "defaultValue": "appsubnet",
             "metadata": {
-                "description": "The data subnet name"
+                "description": "The application tier subnet name"
             }
         },
         "VMUserName": {
@@ -125,37 +125,37 @@
         "StaticIP1": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the ASCS  VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.4"
+            "defaultValue": "10.0.1.17"
         },
         "StaticIP2": {
             "type": "string",
             "metadata": {
-                "description": "IP Address for the firssecondt HANA VM when Static IP Allocation Method has been selected"
+                "description": "IP Address for the ERS VM when Static IP Allocation Method has been selected"
             },
-            "defaultValue": "10.0.5.5"
+            "defaultValue": "10.0.1.18"
         },
         "iSCSIIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the iscsi server"
             },
-            "defaultValue": "10.0.6.4"
+            "defaultValue": "10.0.2.6"
         },
         "ASCSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer ASCS frontend"
             },
-            "defaultValue": "10.0.5.10"
+            "defaultValue": "10.0.1.20"
         },
         "ERSLBIP": {
             "type": "string",
             "metadata": {
                 "description": "IP Address for the internal load balancer ERS frontend"
             },
-            "defaultValue": "10.0.5.11"
+            "defaultValue": "10.0.1.21"
         },
         "ASCSINSTANCE": {
             "type": "string",
