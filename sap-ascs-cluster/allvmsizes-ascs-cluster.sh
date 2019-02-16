@@ -689,8 +689,8 @@ chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 echo "/sapmnt/${ASCSSID} -nfsvers=4,nosymlink,sync ${SAPMNTMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/trans -nfsvers=4,nosymlink,sync ${SAPTRANSMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/${ASCSSID}/SYS -nfsvers=4,nosymlink,sync ${USRSAPSIDMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ASCS00 -nfsvers=4,nosymlink,sync ${USRSAPASCSMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ERS00 -nfsvers=4,nosymlink,sync ${USRSAPERSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE} -nfsvers=4,nosymlink,sync ${USRSAPASCSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ERS${ERSINSTANCE} -nfsvers=4,nosymlink,sync ${USRSAPERSMOUNT}" >> /etc/auto.direct
 
 systemctl enable autofs
 service autofs restart
@@ -714,7 +714,6 @@ if [ "$ISPRIMARY" = "yes" ]; then
     #determine the package to install
     case "$SAPSOFTWARETODEPLOY" in
       'S4 1709')
-
       ;;
       'IDES 1610"')
       ;;
@@ -789,17 +788,17 @@ crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migra
 crm configure  op_defaults \$id="op-options"  timeout="600"
 
  if [ "${CONFIGURECRM}" = "yes" ]; then
- crm configure primitive rsc_sap_${ASCSSID}_ASCS00 SAPInstance \
- operations \$id=rsc_sap_${ASCSSID}_ASCS00-operations \
+ crm configure primitive rsc_sap_${ASCSSID}_ASCS${ASCSINSTANCE} SAPInstance \
+ operations \$id=rsc_sap_${ASCSSID}_ASCS${ASCSINSTANCE}-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ASCS00_nw1-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
+ params InstanceName=${ASCSSID}_ASCS${ASCSINSTANCE}_nw1-ascs START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ASCS00_ascs1" \
  AUTOMATIC_RECOVER=false \
  meta resource-stickiness=5000 failure-timeout=60 migration-threshold=1 priority=10
 
- crm configure primitive rsc_sap_${ASCSSID}_ERS02 SAPInstance \
- operations \$id=rsc_sap_${ASCSSID}_ERS02-operations \
+ crm configure primitive rsc_sap_${ASCSSID}_ERS${ERSINSTANCE} SAPInstance \
+ operations \$id=rsc_sap_${ASCSSID}_ERS${ERSINSTANCE}-operations \
  op monitor interval=11 timeout=60 on_fail=restart \
- params InstanceName=${ASCSSID}_ERS02_nw1-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS00_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
+ params InstanceName=${ASCSSID}_ERS${ERSINSTANCE}_nw1-aers START_PROFILE="/sapmnt/${ASCSSID}/profile/${ASCSSID}_ERS${ERSINSTANCE}_ascs2" AUTOMATIC_RECOVER=false IS_ERS=true \
  meta priority=1000
 
  crm configure modgroup g-${ASCSSID}_ASCS add rsc_sap_${ASCSSID}_ASCS00
@@ -807,7 +806,7 @@ crm configure  op_defaults \$id="op-options"  timeout="600"
 
  crm configure colocation col_sap_${ASCSSID}_no_both -5000: g-${ASCSSID}_ERS g-${ASCSSID}_ASCS
  crm configure location loc_sap_${ASCSSID}_failover_to_ers rsc_sap_${ASCSSID}_ASCS00 rule 2000: runs_ers_${ASCSSID} eq 1
- crm configure order ord_sap_${ASCSSID}_first_start_ascs Optional: rsc_sap_${ASCSSID}_ASCS00:start rsc_sap_${ASCSSID}_ERS00:stop symmetrical=false
+ crm configure order ord_sap_${ASCSSID}_first_start_ascs Optional: rsc_sap_${ASCSSID}_ASCS00:start rsc_sap_${ASCSSID}_ERS${ERSINSTANCE}:stop symmetrical=false
 fi
  crm node online ${ASCSSID}-cl-0
  crm configure property maintenance-mode="false"
