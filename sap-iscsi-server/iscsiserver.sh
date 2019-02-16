@@ -38,8 +38,12 @@ setupTarget() {
 #step 2
 zypper update -y
 #step 3 (with SP3 updates)
-zypper remove -y lio-utils python-rtslib python-configshell targetcli
-zypper install -y targetcli-fb dbus-1-python
+zypper remove -y lio-utils 
+zypper remove -y python-rtslib 
+zypper remove -y python-configshell 
+zypper remove -y targetcli
+zypper install -y targetcli-fb
+zypper install -y dbus-1-python
 
 
 #step 4
