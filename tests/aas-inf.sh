@@ -10,7 +10,7 @@ fi
 
 echo "creating additional application server"
 az group deployment create \
---name NetWeaver-Deployment \
+--name NetWeaver-aas-Deployment \
 --resource-group "$rgname" \
    --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/azuredeploy-nw-infra.json" \
    --parameters \
