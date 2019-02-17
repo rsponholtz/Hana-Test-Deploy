@@ -464,10 +464,11 @@ write_db_ini_file() {
   P_DBSID=${7}
   P_DBINSTANCE=${8}
 
+#we used to use SAPABAPDB for this, now SAPABAP1
   cat > $P_INIFILE <<EOF
-NW_HDB_DB.abapSchemaName = SAPABAPDB
+NW_HDB_DB.abapSchemaName = SAPABAP1
 NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
-NW_HDB_DB.javaSchemaName = SAPABAPDB
+NW_HDB_DB.javaSchemaName = SAPABAP1
 NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
 NW_ABAP_Import_Dialog.dbCodepage = 4103
 NW_ABAP_Import_Dialog.migmonJobNum = 12
