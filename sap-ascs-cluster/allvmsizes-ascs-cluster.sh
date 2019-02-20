@@ -524,9 +524,9 @@ exec_sapinst() {
   cd $SILENTDIR
 
   if [ "${P_INSTHOST}" != "" ]; then
-    SAPINSTHOST = "SAPINST_USE_HOSTNAME=$P_INSTHOST"
+    SAPINSTHOST="SAPINST_USE_HOSTNAME=$P_INSTHOST"
   else
-    SAPINSTHOST = ""
+    SAPINSTHOST=""
   fi
 
 ##  sudo -u $P_INSTUSER bash << EOF
