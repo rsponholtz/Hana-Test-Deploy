@@ -342,24 +342,24 @@ download_sapbits() {
   if [ "$RESULT" = "1" ]; then
     #need to download the sap bits
     cd  $SBDIR
-    download_if_needed "/sapbits" "$URI/SapBits/" "51050423_3.ZIP"
-    download_if_needed "/sapbits" "$URI/SapBits/" "51050829_JAVA_part1.exe"   
-    download_if_needed "/sapbits" "$URI/SapBits/" "51050829_JAVA_part2.rar" 
+    download_if_needed "/sapbits" "$URI/SapBits" "51050423_3.ZIP"
+    download_if_needed "/sapbits" "$URI/SapBits" "51050829_JAVA_part1.exe"   
+    download_if_needed "/sapbits" "$URI/SapBits" "51050829_JAVA_part2.rar" 
     #retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
     #retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
     #retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
     #retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
     #retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-    download_if_needed "/sapbits" "$URI/SapBits/" "51052318_part1.exe"
-    download_if_needed "/sapbits" "$URI/SapBits/" "51052318_part2.rar"
-    download_if_needed "/sapbits" "$URI/SapBits/" "SAPCAR_1014-80000935.EXE"
-    download_if_needed "/sapbits" "$URI/SapBits/" "SWPM10SP23_1-20009701.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits/" "SAPHOSTAGENT36_36-20009394.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits/" "SAPEXE_200-80002573.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits/" "SAPEXEDB_200-80002572.SAR"
+    download_if_needed "/sapbits" "$URI/SapBits" "51052318_part1.exe"
+    download_if_needed "/sapbits" "$URI/SapBits" "51052318_part2.rar"
+    download_if_needed "/sapbits" "$URI/SapBits" "SAPCAR_1014-80000935.EXE"
+    download_if_needed "/sapbits" "$URI/SapBits" "SWPM10SP23_1-20009701.SAR"
+    download_if_needed "/sapbits" "$URI/SapBits" "SAPHOSTAGENT36_36-20009394.SAR"
+    download_if_needed "/sapbits" "$URI/SapBits" "SAPEXE_200-80002573.SAR"
+    download_if_needed "/sapbits" "$URI/SapBits" "SAPEXEDB_200-80002572.SAR"
 
-    download_if_needed "/sapbits" "$URI/SapBits/" "igsexe_5-80003187.sar"
-    download_if_needed "/sapbits" "$URI/SapBits/" "igshelper_17-10010245.sar"
+    download_if_needed "/sapbits" "$URI/SapBits" "igsexe_5-80003187.sar"
+    download_if_needed "/sapbits" "$URI/SapBits" "igshelper_17-10010245.sar"
     #unpack some of this
     #retry 5 "zypper install -y unrar"
 
