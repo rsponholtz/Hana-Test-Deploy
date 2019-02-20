@@ -79,50 +79,7 @@ echo "SAPINSTGID:" $SAPINSTGID >> /tmp/variables.txt
 echo "ASCSILBIP:" $ASCSILBIP >> /tmp/variables.txt
 echo "DBIP:" $DBIP >> /tmp/variables.txt
 
-######
-set -x
-# store arguments in a special array
-args=("$@")
-# get number of elements
-ELEMENTS=${#args[@]}
-
-# echo each element in array
-# for loop
-for (( i=0;i<$ELEMENTS;i++)); do
-    echo "ARG[${i}]: ${args[${i}]}"
-done
-
-VMNAME=${1}
-VMIPADDR=${2}
-HANASID=${3}
-ASCSLBIP=${4}
-ERSLBIP=${5}
-SUBEMAIL=${6}
-
-SUBID=${7}
-SUBURL=${8}
-NFSILBIP=${9}
-ASCSSID=${10}
-ASCSINSTANCE=${11}
-SAPINSTGID=${12}
-SAPSYSGID=${13}
-
-SAPADMUID=${14}
-SIDADMUID=${15}
-SAPPASSWD=${16}
-ERSINSTANCE=${17}
-DBHOST=${18}
-DBIP=${19}
-DBINSTANCE=${20}
-
-SAPBITSMOUNT=${21}
-SAPMNTMOUNT=${22}
-USRSAPSIDMOUNT=${23}
-SAPTRANSMOUNT=${24}
-USRSAPASCSMOUNT=${25}
-USRSAPERSMOUNT=${26}
-
-#
+##
 
 retry() {
     local -r -i max_attempts="$1"; shift
