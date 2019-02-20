@@ -507,11 +507,14 @@ exec_sapinst() {
   P_INIFILE=${2}
   P_PRODUCTID=${3}
   P_INSTUSER=${4}
+  P_INSTHOST=${5}
 
   echo "run sapinst"
   echo "P_SAPINSTFUNC:" $P_SAPINSTFUNC >> /tmp/variables.txt
   echo "P_INIFILE:" $P_INIFILE>> /tmp/variables.txt
   echo "P_PRODUCTID:" $P_PRODUCTID>> /tmp/variables.txt
+  echo "P_INSTUSER:" $P_INSTUSER>> /tmp/variables.txt
+  echo "P_INSTHOST:" $P_INSTHOST>> /tmp/variables.txt
 
   echo "running sapinst for $P_SAPINSTFUNC"
   SILENTDIR="/silent_$P_SAPINSTFUNC"
@@ -520,12 +523,17 @@ exec_sapinst() {
   chmod 775 $SILENTDIR    
   cd $SILENTDIR
 
+  if [ "${P_INSTHOST}" != "" ]; then
+    SAPINSTHOST = "SAPINST_USE_HOSTNAME=$P_INSTHOST"
+  else
+    SAPINSTHOST = ""
+  fi
+
 ##  sudo -u $P_INSTUSER bash << EOF
 ##  cd $SILENTDIR
 ##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
 ## EOF
-  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
-
+  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false $SAPINSTHOST
 }
 ##end of bash function definitions
 
@@ -556,13 +564,10 @@ cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
 $NFSILBIP nfsnfslb
-EOF
-
-
-cat >>/etc/hosts <<EOF
-$VMIPADDR $VMNAME
-$OTHERIPADDR $OTHERVMNAME
-$NFSILBIP nfsnfslb
+$ASCSLBIP ascsvh
+$ERSLBIP ersvh
+$DBIP hanavh
+$DBIP $DBHOST
 EOF
 
 
@@ -721,7 +726,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
     esac
     download_sapbits $URI /sapbits $SAPSOFTWARETODEPLOY
     write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-    exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root
+    exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root ascsvh
   fi
   touch /tmp/ascscomplete.txt
 
@@ -746,16 +751,16 @@ sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
   waitfor  root $P_OTHERVMNAME /tmp/erscomplete.txt
   sleep 10m
   if [ "${CONFIGURESAP}" = "yes" ]; then 
-    write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$HANASID" "$DBINSTANCE"
+    write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "hanavh" "$HANASID" "$DBINSTANCE"
     if [ "$CONFIGURESCHEMA" = "yes" ]; then
-    exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root
+    exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root ascsvh
     fi
   fi
 else
   waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
   if [ "${CONFIGURESAP}" = "yes" ]; then
     write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-    exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root
+    exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root ersvh
   fi
   touch /tmp/erscomplete.txt
 fi

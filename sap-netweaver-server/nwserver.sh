@@ -246,10 +246,12 @@ nw_prereqs() {
   #if you are running this by hand (eg NOT as a custom script extension), do
   #systemctl restart waagent
 
-  update_hostsfile nfsnfslb $NFSILBIP 
-  update_hostsfile ascs $ASCSLBIP 
-  update_hostsfile nfsnfslb $NFSILBIP 
-  update_hostsfile $DBHOST $DBIP 
+  update_hostsfile nfsnfslb $P_NFSILBIP
+  update_hostsfile nfsvh $P_NFSILBIP 
+  update_hostsfile ascs $P_ASCSLBIP 
+  update_hostsfile ascsvh $P_ASCSLBIP  
+  update_hostsfile $P_DBHOST $P_DBIP 
+  update_hostsfile hanavh $P_DBIP 
 
   #configure autofs
   configure_mounts ${P_ASCSSID} ${P_ASCSINSTANCE} ${P_ERSINSTANCE} ${P_SAPBITSMOUNT} ${P_SAPMNTMOUNT} ${P_SAPTRANSMOUNT} \
@@ -354,7 +356,7 @@ HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_CI_Instance.ascsVirtualHostname = $P_VMNAME
 NW_CI_Instance.ciInstanceNumber = $P_NWINSTANCE
 NW_CI_Instance.ciVirtualHostname = $P_VMNAME
-NW_Cz0b   v∫√I_Instance.scsVirtualHostname = $P_VMNAME
+NW_CI_Instance.scsVirtualHostname = $P_VMNAME
 NW_CI_Instance_ABAP_Reports.executeReportsForDepooling = true
 NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
 NW_HDB_getDBInfo.systemDbPassword = $P_MASTERPASSWD
