@@ -438,9 +438,9 @@ resource NWS-nfs {
 EOF
 
 echo "Create NFS server and root share"
-echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
-systemctl enable nfsserver
-service nfsserver restart
+#echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
+#systemctl enable nfsserver
+#service nfsserver restart
 mkdir /srv/nfs/
 
 drbdadm create-md NWS-nfs
@@ -568,9 +568,12 @@ crm configure  op_defaults \$id="op-options"  timeout="600"
 #
   crm configure primitive drbd_NWS_nfs ocf:linbit:drbd params drbd_resource="NWS-nfs" op monitor interval="15" role="Master" op monitor interval="30" role="Slave"
   crm configure ms ms-drbd_NWS_nfs drbd_NWS_nfs meta master-max="1" master-node-max="1" clone-max="2" clone-node-max="1" notify="true" interleave="true"
-  crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs options="sync,dirsync" op monitor interval="10s"
+  crm configure primitive fs_NWS_sapmnt ocf:heartbeat:Filesystem params device=/dev/drbd0 directory=/srv/nfs/NWS fstype=xfs op monitor interval="10s"
 
-  crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"  
+  crm configure primitive nfsserver systemd:nfs-server op monitor interval="30s"
+  crm configure clone cl-nfsserver nfsserver
+
+  crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash,crossmnt" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"  
      
   lbprobe="61000"
   mask="24"
