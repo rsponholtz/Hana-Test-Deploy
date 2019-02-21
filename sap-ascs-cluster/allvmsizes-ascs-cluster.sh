@@ -405,7 +405,7 @@ NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
 NW_GetSidNoProfiles.sid = $P_ASCSSID
 NW_SAPCrypto.SAPCryptoFile = /sapbits/SAPEXE_200-80002573.SAR
 NW_SCS_Instance.instanceNumber = $P_ASCSINSTANCE
-NW_SCS_Instance.scsVirtualHostname = $P_VMNAME
+NW_SCS_Instance.scsVirtualHostname = ascsvh
 NW_Unpack.sapExeSar = /sapbits/SAPEXE_200-80002573.SAR
 NW_getFQDN.setFQDN = false
 archives.downloadBasket = /sapbits
@@ -448,7 +448,7 @@ nwUsers.sapsysGID = $P_SAPSYSGID
 nwUsers.sidAdmUID = $P_SIDADMUID
 nwUsers.sidadmPassword = $P_MASTERPASSWD
 nw_instance_ers.ersInstanceNumber = $P_ERSINSTANCE
-nw_instance_ers.ersVirtualHostname = $P_VMNAME
+nw_instance_ers.ersVirtualHostname = ersvh
 EOF
 chown root:sapinst $P_INIFILE
 chmod g+r $P_INIFILE

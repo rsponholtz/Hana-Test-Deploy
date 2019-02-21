@@ -395,7 +395,7 @@ install_nw() {
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
   echo "P_ISPRIMARY:" $P_ISPRIMARY> /tmp/variables.txt
 
-  if [ "${P_ISPRIMARY}" = "yes" ]; then
+  if [ "${P_ISPRIMARY}" = "YES" ]; then
     PRODUCT="NW_ABAP_CI:S4HANA1709.CORE.HDB.ABAPHA"
   else
     PRODUCT="NW_DI:S4HANA1709.CORE.HDB.ABAPHA" 
