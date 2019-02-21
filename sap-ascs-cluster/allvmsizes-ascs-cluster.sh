@@ -564,8 +564,8 @@ cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
 $NFSILBIP nfsnfslb
-$ASCSLBIP ascsvh
-$ERSLBIP ersvh
+$VMIPADDR ascsvh
+$OTHERIPADDR ersvh
 $DBIP hanavh
 $DBIP $DBHOST
 EOF
