@@ -181,6 +181,8 @@ $NFSILBIP nfsnfslb
 $ASCSLBIP ascs
 $ASCS1IP ASCS1VM
 $ASCS2IP ASCS2VM
+$DBIP $DBHOST
+$DBIP hanalb
 EOF
 
 #insert download sapbits here
