@@ -559,7 +559,7 @@ cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
 
-
+if [ "$ISPRIMARY" = "yes" ]; then
 cat >>/etc/hosts <<EOF
 $VMIPADDR $VMNAME
 $OTHERIPADDR $OTHERVMNAME
@@ -569,7 +569,17 @@ $OTHERIPADDR ersvh
 $DBIP hanavh
 $DBIP $DBHOST
 EOF
-
+else
+cat >>/etc/hosts <<EOF
+$VMIPADDR $VMNAME
+$OTHERIPADDR $OTHERVMNAME
+$NFSILBIP nfsnfslb
+$OTHERIPADDR ascsvh
+$VMIPADDR ersvh
+$DBIP hanavh
+$DBIP $DBHOST
+EOF
+fi
 
 
 ##external dependency on sshpt
@@ -738,7 +748,7 @@ crm configure primitive vip_${ASCSSID} IPaddr2 \
         op monitor interval="10s" timeout="20s" 
 
 crm configure primitive rsc_nc_${ASCSSID} anything \
-     params binfile="/usr/bin/nc" cmdline_options="-l -k 61000" \
+     params binfile="/usr/bin/nc" cmdline_options="-l -k 62000" \
      op monitor timeout=20s interval=10 depth=0
 
 # WARNING: Resources nc_NW1_ASCS,nc_NW1_ERS violate uniqueness for parameter "binfile": "/usr/bin/nc"

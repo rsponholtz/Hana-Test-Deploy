@@ -252,6 +252,8 @@ nw_prereqs() {
   update_hostsfile ascsvh $P_ASCSLBIP  
   update_hostsfile $P_DBHOST $P_DBIP 
   update_hostsfile hanavh $P_DBIP 
+  update_hostsfile $VMNAME $VMIPADDR 
+
 
   #configure autofs
   configure_mounts ${P_ASCSSID} ${P_ASCSINSTANCE} ${P_ERSINSTANCE} ${P_SAPBITSMOUNT} ${P_SAPMNTMOUNT} ${P_SAPTRANSMOUNT} \
