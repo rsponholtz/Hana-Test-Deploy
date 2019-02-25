@@ -449,7 +449,6 @@ drbdadm up NWS-nfs
 ###RWS
 waitfor root $OTHERVMNAME /tmp/drbdupsecond.txt	
 
-
 drbdadm new-current-uuid --clear-bitmap NWS-nfs
 drbdadm primary --force NWS-nfs
 drbdsetup wait-sync-resource NWS-nfs  
@@ -522,8 +521,8 @@ EOL
 
 echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
-systemctl enable nfsserver
-service nfsserver restart
+#systemctl enable nfsserver
+#service nfsserver restart
 
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
@@ -544,22 +543,22 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
   crm configure property maintenance-mode=true
   
-crm configure delete stonith-sbd
+  crm configure delete stonith-sbd
 
-crm configure primitive stonith-sbd stonith:external/sbd \
+  crm configure primitive stonith-sbd stonith:external/sbd \
      params pcmk_delay_max="15" \
      op monitor interval="15" timeout="15"
 
-crm configure property stonith-timeout=$STONITHTIMEOUT
+  crm configure property stonith-timeout=$STONITHTIMEOUT
 
-crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
+  crm configure property \$id="cib-bootstrap-options" stonith-enabled=true \
                no-quorum-policy="ignore" \
                stonith-action="reboot" \
                stonith-timeout=$STONITHTIMEOUT
 
-crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
+  crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 
-crm configure  op_defaults \$id="op-options"  timeout="600"
+  rm configure  op_defaults \$id="op-options"  timeout="600"
 
 #  crm node standby $OTHERVMNAME
 #  crm node standby $VMNAME
