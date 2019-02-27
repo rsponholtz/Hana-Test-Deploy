@@ -228,7 +228,7 @@ nw_prereqs() {
 
   #install sap prereqs
   echo "installing packages"
-  retry 5 "zypper update -y"
+  #retry 5 "zypper update -y"
   retry 5 "zypper install -y unrar"
   retry 5 "zypper install -y saptune"
 
