@@ -36,7 +36,7 @@ setupTarget() {
 
 
 #step 2
-zypper update -y
+#zypper update -y
 #step 3 (with SP3 updates)
 zypper remove -y lio-utils 
 zypper remove -y python-rtslib 

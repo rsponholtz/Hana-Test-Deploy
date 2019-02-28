@@ -283,7 +283,7 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 
 #install hana prereqs
 echo "installing packages"
-zypper update -y
+#zypper update -y
 retry 5 "zypper install -y -l sle-ha-release fence-agents drbd drbd-kmp-default drbd-utils"
 
 

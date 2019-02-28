@@ -29,7 +29,7 @@ az group deployment create \
         DBINSTANCE="00" \
         ASCSSID="$ASCSSID" \
         ASCSHOST="ascsilb" \
-        NWINSTANCE="05" \
+        NWINSTANCE="06" \
         ASCSINSTANCE="00" \
         ERSINSTANCE="01" \
         SAPBITSMOUNT="$SAPBITSMOUNT" \

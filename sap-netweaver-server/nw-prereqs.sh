@@ -91,7 +91,7 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 
 #install sap prereqs
 echo "installing packages"
-retry 5 "zypper update -y"
+#retry 5 "zypper update -y"
 retry 5 "zypper install -y unrar"
 retry 5 "zypper install -y saptune"
 
