@@ -568,7 +568,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
   crm configure  rsc_defaults \$id="rsc-options"  resource-stickiness="1000" migration-threshold="5000"
 
-  rm configure  op_defaults \$id="op-options"  timeout="600"
+  crm configure  op_defaults \$id="op-options"  timeout="600"
 
 #  crm node standby $OTHERVMNAME
 #  crm node standby $VMNAME
