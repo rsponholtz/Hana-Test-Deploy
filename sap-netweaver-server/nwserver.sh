@@ -200,6 +200,14 @@ configure_mounts() {
   service autofs restart  
 }
 
+do_zypper_update() {
+  #this will update all packages but waagent and msrestazure
+  zypper -q list-updates | tail -n +3 | cut -d\| -f3  >/tmp/zypperlist
+  cat /tmp/zypperlist  | grep -v "python.*azure*" > /tmp/cleanlist
+  cat /tmp/cleanlist | awk '{$1=$1};1' >/tmp/cleanlist2
+  cat /tmp/cleanlist2 | xargs -L 1 -I '{}' zypper update -y '{}'
+}
+
 nw_prereqs() {
   P_SUBEMAIL=${1}
   P_SUBID=${2}
@@ -228,7 +236,7 @@ nw_prereqs() {
 
   #install sap prereqs
   echo "installing packages"
-  #retry 5 "zypper update -y"
+  do_zypper_update
   retry 5 "zypper install -y unrar"
   retry 5 "zypper install -y saptune"
 

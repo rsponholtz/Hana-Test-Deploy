@@ -269,6 +269,15 @@ cd ..
 
 }
 
+do_zypper_update() {
+  #this will update all packages but waagent and msrestazure
+  zypper -q list-updates | tail -n +3 | cut -d\| -f3  >/tmp/zypperlist
+  cat /tmp/zypperlist  | grep -v "python.*azure*" > /tmp/cleanlist
+  cat /tmp/cleanlist | awk '{$1=$1};1' >/tmp/cleanlist2
+  cat /tmp/cleanlist2 | xargs -L 1 -I '{}' zypper update -y '{}'
+}
+
+
 register_subscription  "$SUBEMAIL"  "$SUBID" "$SUBURL"
 
 #!/bin/bash
@@ -283,6 +292,7 @@ VMSIZE=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/compute/
 
 #install hana prereqs
 echo "installing packages"
+do_zypper_update
 #zypper update -y
 retry 5 "zypper install -y -l sle-ha-release fence-agents drbd drbd-kmp-default drbd-utils"
 
@@ -438,7 +448,7 @@ resource NWS-nfs {
 EOF
 
 echo "Create NFS server and root share"
-#echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
+echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
 #systemctl enable nfsserver
 #service nfsserver restart
 mkdir /srv/nfs/
