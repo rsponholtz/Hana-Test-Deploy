@@ -533,6 +533,7 @@ echo "Create NFS server and root share"
 echo "/srv/nfs/ *(rw,no_root_squash,fsid=0)">/etc/exports
 #systemctl enable nfsserver
 #service nfsserver restart
+mkdir /srv/nfs/
 
 drbdadm create-md NWS-nfs
 drbdadm up NWS-nfs
