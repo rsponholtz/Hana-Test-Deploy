@@ -26,6 +26,8 @@
         "osType": {
             "type": "string",
             "allowedValues": [
+                "SLES 15",
+                "SLES 15 BYOS",
                 "SLES 12 SP3",
                 "SLES 12 SP3 BYOS",
                 "SLES 12 SP2",
@@ -87,6 +89,13 @@
         "vNicName": "[concat(parameters('vmName'),'nic')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
+            "SLES 15": {
+                "sku": "15",
+                "offer": "SLES-Priority",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
