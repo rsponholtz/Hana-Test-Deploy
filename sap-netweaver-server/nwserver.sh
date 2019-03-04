@@ -44,6 +44,7 @@ USRSAPERSMOUNT=${29}
 SAPINSTGID=${30}
 ASCSILBIP=${31}
 DBIP=${32}
+CONFIGURESAP=${33}
 
 echo "nwserver.sh receiving:"
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
@@ -78,6 +79,7 @@ echo "USRSAPERSMOUNT:" $USRSAPERSMOUNT >> /tmp/variables.txt
 echo "SAPINSTGID:" $SAPINSTGID >> /tmp/variables.txt
 echo "ASCSILBIP:" $ASCSILBIP >> /tmp/variables.txt
 echo "DBIP:" $DBIP >> /tmp/variables.txt
+echo "CONFIGURESAP:" $CONFIGURESAP >> /tmp/variables.txt
 
 ##
 
@@ -427,6 +429,8 @@ declare -fxr install_nw
 
 nw_prereqs  "$SUBEMAIL" "$SUBID" "$SUBURL" "$ASCSSID" "$ASCSINSTANCE" "$ERSINSTANCE" "$SAPBITSMOUNT" "$SAPMNTMOUNT" "$USRSAPSIDMOUNT" "$USRSAPASCSMOUNT" \
     "$USRSAPERSMOUNT" "$SAPINSTGID" "$SAPSYSGID" "$VMIPADDR" "$VMNAME" "$NFSILBIP" "$ASCSILBIP" "$DBIP" "$DBHOST"
-download_sapbits "$URI" "/sapbits"
-write_nw_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$DBSID" "$DBINSTANCE" "$ASCSSID" "$ASCSILBIP" "$NWINSTANCE"
-install_nw  "$VMNAME" "$ISPRIMARY" 
+if [ "${CONFIGURESAP}" = "yes" ]; then     
+  download_sapbits "$URI" "/sapbits"
+  write_nw_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$DBSID" "$DBINSTANCE" "$ASCSSID" "$ASCSILBIP" "$NWINSTANCE"
+  install_nw  "$VMNAME" "$ISPRIMARY" 
+fi

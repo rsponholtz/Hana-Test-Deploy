@@ -23,6 +23,7 @@ az group deployment create \
    osType="SLES 12 SP3" \
    appAvailSetName="nwavailset" \
    StaticIP="$PASIPADDR" \
-   subnetName="$appsubnetname"
+   subnetName="$appsubnetname" \
+   CONFIGURESAP="YES"
 
 echo "netweaver cluster created"
