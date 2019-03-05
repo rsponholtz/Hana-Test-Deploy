@@ -16,7 +16,7 @@ az group deployment create \
 --parameters \
 vmName="$LINUXJUMPBOXNAME" \
 vmUserName=$vmusername  \
-             ExistingNetworkResourceGroup=$rgname \
+             ExistingNetworkResourceGroup=$vnetrgname \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
                    osType="SLES 12 SP3" \

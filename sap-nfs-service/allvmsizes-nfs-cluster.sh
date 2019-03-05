@@ -53,7 +53,6 @@ echo "SUBEMAIL:" $SUBEMAIL >> /tmp/variables.txt
 echo "SUBID:" $SUBID >> /tmp/variables.txt
 echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 
-
 retry() {
     local -r -i max_attempts="$1"; shift
     local -r cmd="$@"
@@ -586,10 +585,10 @@ if [ "$ISPRIMARY" = "yes" ]; then
   crm configure primitive exportfs_NWS ocf:heartbeat:exportfs params directory="/srv/nfs/NWS" options="rw,no_root_squash,crossmnt" clientspec="*" fsid=1 wait_for_leasetime_on_stop=true op monitor interval="30s"  
      
   lbprobe="61000"
-  mask="24"
+  SUBNETMASK=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/subnet/0/prefix?api-version=2017-08-01&format=text"`
 
-  crm configure primitive vip_NWS_nfs IPaddr2 params ip=$LBIP cidr_netmask=$mask op monitor interval=10 timeout=20
-  crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k $lbprobe" op monitor timeout=20s interval=10 depth=0
+  crm configure primitive vip_NWS_nfs IPaddr2 params ip=${LBIP} cidr_netmask=${SUBNETMASK} op monitor interval=10 timeout=20
+  crm configure primitive nc_NWS_nfs anything params binfile="/usr/bin/nc" cmdline_options="-l -k ${lbprobe}" op monitor timeout=20s interval=10 depth=0
 
   crm configure group g-NWS_nfs  fs_NWS_sapmnt exportfs_NWS nc_NWS_nfs vip_NWS_nfs
   crm configure order o-NWS_drbd_before_nfs inf: ms-drbd_NWS_nfs:promote g-NWS_nfs:start

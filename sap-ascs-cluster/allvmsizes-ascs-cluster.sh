@@ -53,6 +53,7 @@ USRSAPASCSMOUNT=${39}
 USRSAPERSMOUNT=${40}
 SAPSOFTWARETODEPLOY=${41}
 
+
 ###
 # cluster tuning values
 WATCHDOGTIMEOUT="30"
@@ -753,8 +754,10 @@ if [ "$ISPRIMARY" = "yes" ]; then
 crm node online $VMNAME
 crm node standby $OTHERVMNAME
 
+SUBNETMASK=`curl -H Metadata:true "http://169.254.169.254/metadata/instance/network/interface/0/ipv4/subnet/0/prefix?api-version=2017-08-01&format=text"`
+
 crm configure primitive vip_${ASCSSID} IPaddr2 \
-        params ip="$ASCSLBIP" cidr_netmask=24 \
+        params ip="${ASCSLBIP}" cidr_netmask=${SUBNETMASK} \
         op monitor interval="10s" timeout="20s" 
 
 crm configure primitive rsc_nc_${ASCSSID} anything \
