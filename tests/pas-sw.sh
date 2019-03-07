@@ -38,7 +38,8 @@ az group deployment create \
         USRSAPASCSMOUNT="$USRSAPASCSMOUNT" \
         USRSAPERSMOUNT="$USRSAPERSMOUNT" \
         ASCSILBIP="$ASCSLBIP" \
-        DBIP="$HANAILBIP" 
+        DBIP="$HANAILBIP" \
+        CONFIGURESAP="YES"
 
 echo "netweaver cluster created"
 
