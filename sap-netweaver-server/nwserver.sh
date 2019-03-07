@@ -429,7 +429,10 @@ declare -fxr install_nw
 
 nw_prereqs  "$SUBEMAIL" "$SUBID" "$SUBURL" "$ASCSSID" "$ASCSINSTANCE" "$ERSINSTANCE" "$SAPBITSMOUNT" "$SAPMNTMOUNT" "$USRSAPSIDMOUNT" "$USRSAPASCSMOUNT" \
     "$USRSAPERSMOUNT" "$SAPINSTGID" "$SAPSYSGID" "$VMIPADDR" "$VMNAME" "$NFSILBIP" "$ASCSILBIP" "$DBIP" "$DBHOST"
-if [ "${CONFIGURESAP}" = "yes" ]; then     
+
+if [ "${CONFIGURESAP}" = "NO" ]; then
+  echo "sap software not installed"
+else     
   download_sapbits "$URI" "/sapbits"
   write_nw_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$DBSID" "$DBINSTANCE" "$ASCSSID" "$ASCSILBIP" "$NWINSTANCE"
   install_nw  "$VMNAME" "$ISPRIMARY" 
