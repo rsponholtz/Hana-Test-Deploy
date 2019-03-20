@@ -292,6 +292,14 @@ setup_cluster() {
     systemctl start pacemaker
     touch /tmp/corosyncconfig3.txt	
 
+    crm configure property stonith-timeout=144
+    crm configure property stonith-enabled=true
+
+    sudo crm resource stop stonith-sbd
+    sudo crm configure delete stonith-sbd
+    sudo crm configure primitive stonith-sbd stonith:external/sbd \
+      params pcmk_delay_max="15" op monitor interval="15" timeout="15"
+
     sleep 10
   else
     waitfor root $P_OTHERVMNAME /tmp/corosyncconfig1.txt	
@@ -565,7 +573,7 @@ echo $URI >> /tmp/url.txt
 
 cp -f /etc/waagent.conf /etc/waagent.conf.orig
 sedcmd="s/ResourceDisk.EnableSwap=n/ResourceDisk.EnableSwap=y/g"
-sedcmd2="s/ResourceDisk.SwapSizeMB=0/ResourceDisk.SwapSizeMB=163840/g"
+sedcmd2="s/ResourceDisk.SwapSizeMB=0/ResourceDisk.SwapSizeMB=16384/g"
 cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
