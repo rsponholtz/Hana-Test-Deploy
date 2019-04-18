@@ -45,6 +45,7 @@ SAPINSTGID=${30}
 ASCSILBIP=${31}
 DBIP=${32}
 CONFIGURESAP=${33}
+SAPSOFTWARETODEPLOY=${34}
 
 echo "nwserver.sh receiving:"
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt

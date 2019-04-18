@@ -284,6 +284,7 @@
             "allowedValues": [
                 "NONE",
                 "S4 1709",
+                "S4 1809",                
                 "IDES 1610"
             ]            
         }

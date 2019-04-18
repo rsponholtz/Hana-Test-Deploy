@@ -238,7 +238,20 @@
                 "description": "YES to install the SAP app server software - NO otherwise"
             },
             "defaultValue": "YES"
-        }
+        },
+        "SAPSOFTWARETODEPLOY": {
+            "type": "string",
+            "metadata": {
+                "description": "Which SAP software to deploy in the app tier"
+            },
+            "defaultValue": "S4 1709",
+            "allowedValues": [
+                "NONE",
+                "S4 1709",
+                "S4 1809",                
+                "IDES 1610"
+            ]            
+        }        
     },
     "variables": {},
     "resources": [
