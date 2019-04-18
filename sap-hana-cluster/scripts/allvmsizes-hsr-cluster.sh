@@ -584,10 +584,29 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 #!/bin/bash
 cd $SAPBITSDIR
 echo "hana download start" >> /tmp/parameter.txt
-download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part1.exe"
-download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part2.rar"  
-download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part3.rar"  
-download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part4.rar"  
+if [ "${hanapackage}" = "51053787" ]
+  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
+  cd $SAPBITSDIR
+  mkdir ${hanapackage}
+  cd ${hanapackage}
+  unzip ../${hanapackage}.ZIP
+  #add additional requirement
+  zypper install -y libatomic1
+else
+
+  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part1.exe"
+  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part2.rar"  
+  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part3.rar"  
+  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part4.rar"  
+  cd $SAPBITSDIR
+
+  echo "hana unrar start" >> /tmp/parameter.txt
+  #!/bin/bash
+  cd $SAPBITSDIR
+  unrar  -o- x ${hanapackage}_part1.exe
+  echo "hana unrar end" >> /tmp/parameter.txt
+
+fi
 
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
@@ -600,13 +619,7 @@ fi
 echo "hana download end" >> /tmp/parameter.txt
 
 date >> /tmp/testdate
-cd $SAPBITSDIR
 
-echo "hana unrar start" >> /tmp/parameter.txt
-#!/bin/bash
-cd $SAPBITSDIR
-unrar  -o- x ${hanapackage}_part1.exe
-echo "hana unrar end" >> /tmp/parameter.txt
 echo "hana prepare start" >> /tmp/parameter.txt
 cd $SAPBITSDIR
 
