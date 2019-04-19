@@ -15,7 +15,7 @@ az group deployment create \
 --resource-group "$rgname" \
    --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-hana-cluster/azuredeploy-hsr-sw.json" \
    --parameters \
-   HanaVersion=$HANAVERSION \
+   HanaVersion="$HANAVERSION" \
    VMName1="$HANAVMNAME1" \
    VMName2="$HANAVMNAME2" \
    customURI="$customuri" \

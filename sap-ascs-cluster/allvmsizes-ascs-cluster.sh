@@ -323,37 +323,63 @@ download_sapbits() {
   URI=$1
   SBDIR=$2
 
+  case "$SAPSOFTWARETODEPLOY" in
+    'S4 1709')
+      filelist=( "51050423_3.ZIP" "51050829_JAVA_part1.exe" "51050829_JAVA_part2.rar" "51052190_part1.exe" "51052190_part2.rar" \
+        "51052190_part3.rar"  "51052190_part4.rar"  "51052190_part5.rar"   "51052318_part1.exe"  "51052318_part2.rar"  \
+        "SAPCAR_1014-80000935.EXE" "SWPM10SP23_1-20009701.SAR"   "SAPHOSTAGENT36_36-20009394.SAR"  "SAPEXE_200-80002573.SAR" \
+        "SAPEXEDB_200-80002572.SAR" )
+      swpmsar="SWPM10SP23_1-20009701.SAR"
+      swpmdir="SWPM10SP23_1"
+      ;;
+    'S4 1809')
+      filelist=( 51053061_part1.exe 51053061_part2.rar 51053061_part3.rar 51053061_part4.rar 51053381_part1.exe 51053381_part2.rar \
+        51053381_part3.rar 51053381_part4.rar 51053787.ZIP igsexe_7-80003187.sar igshelper_17-10010245.sar \
+        IMDB_CLIENT20_002_83-80002082.SAR IMDB_CLIENT20_003_144-80002082.SAR IMDB_CLIENT20_004_126-80002082.SAR \
+        IMDB_SERVER20_024_9-80002031.SAR IMDB_SERVER20_036_0-80002031.SAR IMDB_SERVER20_037_0-80002031.SAR \
+        IMDB_SERVER20_040_0-80002031.SAR K-10301INS4CORE.SAR K-10301INS4FND.SAR K-40001INUIBAS001.SAR K-400AGINUIBAS001.SAR \
+        K-60011INSRA004.SAR K-74009INSTPI.SAR K-74010INSTPI.SAR K-75301INSAPBASIS.SAR K-75301INSAPBW.SAR K-75301INSAPGWFND.SAR \
+        K-75301INSAPUI.SAR K-75302INSAPUI.SAR K-75D01INSAPABA.SAR K-80301INISUT.SAR K-80301INMDGAPPL.SAR K-80301INMDGFND.SAR \
+        K-80301INMDGUX.SAR KD75371.SAR KE60857.SAR KE60858.SAR KE60859.SAR KE60860.SAR KITAB9V.SAR S4HANAOP103_ERP_LANG_AR.SAR \
+        S4HANAOP103_ERP_LANG_BG.SAR S4HANAOP103_ERP_LANG_CA.SAR S4HANAOP103_ERP_LANG_CS.SAR S4HANAOP103_ERP_LANG_DA.SAR \
+        S4HANAOP103_ERP_LANG_DE.SAR S4HANAOP103_ERP_LANG_EL.SAR S4HANAOP103_ERP_LANG_EN.SAR S4HANAOP103_ERP_LANG_ES.SAR \
+        S4HANAOP103_ERP_LANG_ET.SAR S4HANAOP103_ERP_LANG_FI.SAR S4HANAOP103_ERP_LANG_FR.SAR S4HANAOP103_ERP_LANG_HE.SAR \
+        S4HANAOP103_ERP_LANG_HI.SAR S4HANAOP103_ERP_LANG_HR.SAR S4HANAOP103_ERP_LANG_HU.SAR S4HANAOP103_ERP_LANG_IT.SAR \
+        S4HANAOP103_ERP_LANG_JA.SAR S4HANAOP103_ERP_LANG_KK.SAR S4HANAOP103_ERP_LANG_KO.SAR S4HANAOP103_ERP_LANG_LT.SAR \
+        S4HANAOP103_ERP_LANG_LV.SAR S4HANAOP103_ERP_LANG_MS.SAR S4HANAOP103_ERP_LANG_NL.SAR S4HANAOP103_ERP_LANG_NO.SAR \
+        S4HANAOP103_ERP_LANG_PL.SAR S4HANAOP103_ERP_LANG_PT.SAR S4HANAOP103_ERP_LANG_RO.SAR S4HANAOP103_ERP_LANG_RU.SAR \
+        S4HANAOP103_ERP_LANG_SH.SAR S4HANAOP103_ERP_LANG_SK.SAR S4HANAOP103_ERP_LANG_SL.SAR S4HANAOP103_ERP_LANG_SV.SAR \
+        S4HANAOP103_ERP_LANG_TH.SAR S4HANAOP103_ERP_LANG_TR.SAR S4HANAOP103_ERP_LANG_UK.SAR S4HANAOP103_ERP_LANG_VI.SAR \
+        S4HANAOP103_ERP_LANG_ZF.SAR S4HANAOP103_ERP_LANG_ZH.SAR SAPCAR_1211-80000935.EXE SAPEXE_28-80003386.SAR \
+        SAPEXEDB_28-80003385.SAR SAPHOSTAGENT40_40-20009394.SAR SWPM20SP02_7-80003424.SAR )    
+      swpmsar="SWPM20SP02_7-80003424.SAR"
+      swpmdir="SWPM20SP02_7"
+      ;;
+    'IDES 1610"')
+      ;;
+  esac
+
   test -e $SBDIR/download_complete.txt
   RESULT=$?
   echo $RESULT
   if [ "$RESULT" = "1" ]; then
     #need to download the sap bits
     cd  $SBDIR
+    for i in "${filelist[@]}"
+    do
+      download_if_needed $SBDIR "$URI/SapBits" "${i}"
+    done
 
-    download_if_needed $SBDIR "$URI/SapBits" "51050423_3.ZIP"
-    download_if_needed $SBDIR "$URI/SapBits" "51050829_JAVA_part1.exe"   
-    download_if_needed $SBDIR "$URI/SapBits" "51050829_JAVA_part2.rar" 
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part1.exe"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part2.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part3.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part4.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part5.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052318_part1.exe"
-    download_if_needed $SBDIR "$URI/SapBits" "51052318_part2.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "SAPCAR_1014-80000935.EXE"
-    download_if_needed $SBDIR "$URI/SapBits" "SWPM10SP23_1-20009701.SAR"
-    download_if_needed $SBDIR "$URI/SapBits" "SAPHOSTAGENT36_36-20009394.SAR"
-    download_if_needed $SBDIR "$URI/SapBits" "SAPEXE_200-80002573.SAR"
-    download_if_needed $SBDIR "$URI/SapBits" "SAPEXEDB_200-80002572.SAR"
     #unpack some of this
     retry 5 "zypper install -y unrar"
 
-    chmod u+x SAPCAR_1014-80000935.EXE
-    ln -s ./SAPCAR_1014-80000935.EXE sapcar
+    chmod u+x SAPCAR_*.EXE
+    ln -s ./SAPCAR_*.EXE sapcar
 
-    mkdir SWPM10SP23_1
-    cd SWPM10SP23_1
-    ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
+    mkdir $swpmdir
+    ln -s $swpmdir swpmdir
+    cd $swpmdir
+    ../sapcar -xf ../${swpmsar}
     cd $SBDIR
     touch $SBDIR/download_complete.txt
   fi
@@ -365,6 +391,7 @@ download_dbbits() {
   URI=$1
   SBDIR=$2
 
+  retry 5 "zypper install -y unrar"
   test -e $SBDIR/dbdownload_complete.txt
   RESULT=$?
   echo $RESULT
@@ -372,23 +399,42 @@ download_dbbits() {
       #need to download the sap bits
     cd  $SBDIR
 
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part1.exe"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part2.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part3.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part4.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052190_part5.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052318_part1.exe"
-    download_if_needed $SBDIR "$URI/SapBits" "51052318_part2.rar"
-    download_if_needed $SBDIR "$URI/SapBits" "51052325_part1.exe"
-    download_if_needed $SBDIR "$URI/SapBits" "51052325_part2.rar"  
-    download_if_needed $SBDIR "$URI/SapBits" "51052325_part3.rar"  
-    download_if_needed $SBDIR "$URI/SapBits" "51052325_part4.rar"  
-    #unpack some of this
-    retry 5 "zypper install -y unrar"
+  case "$SAPSOFTWARETODEPLOY" in
+    'S4 1709')
+      filelist=( "51052190_part1.exe" "51052190_part2.rar" "51052190_part3.rar" "51052190_part4.rar" \
+        "51052190_part5.rar" "51052318_part1.exe" "51052318_part2.rar" "51052325_part1.exe" \
+        "51052325_part2.rar" "51052325_part3.rar" "51052325_part4.rar" )
+      swpmsar="SWPM10SP23_1-20009701.SAR"
+      swpmdir="SWPM10SP23_1"
+      cd  $SBDIR
+      for i in "${filelist[@]}"
+      do
+        download_if_needed $SBDIR "$URI/SapBits" "${i}"
+      done
 
-    unrar -o- x 51052325_part1.exe
-    unrar -o- x 51052190_part1.exe
-    touch $SBDIR/dbdownload_complete.txt
+      unrar -o- x 51052325_part1.exe
+      unrar -o- x 51052190_part1.exe
+
+      ;;
+    'S4 1809')
+      filelist=( S4CORE103_INST_EXPORT_10.zip \
+        S4CORE103_INST_EXPORT_11.zip S4CORE103_INST_EXPORT_12.zip S4CORE103_INST_EXPORT_13.zip S4CORE103_INST_EXPORT_14.zip \
+        S4CORE103_INST_EXPORT_15.zip S4CORE103_INST_EXPORT_16.zip S4CORE103_INST_EXPORT_17.zip S4CORE103_INST_EXPORT_18.zip \
+        S4CORE103_INST_EXPORT_19.zip S4CORE103_INST_EXPORT_1.zip S4CORE103_INST_EXPORT_20.zip S4CORE103_INST_EXPORT_2.zip \
+        S4CORE103_INST_EXPORT_3.zip S4CORE103_INST_EXPORT_4.zip S4CORE103_INST_EXPORT_5.zip S4CORE103_INST_EXPORT_6.zip \
+        S4CORE103_INST_EXPORT_7.zip S4CORE103_INST_EXPORT_8.zip S4CORE103_INST_EXPORT_9.zip  )
+      swpmsar="SWPM20SP02_7-80003424.SAR"
+      swpmdir="SWPM20SP02_7"
+      cd  $SBDIR
+      for i in "${filelist[@]}"
+      do
+        download_if_needed $SBDIR "$URI/SapBits" "${i}"
+      done
+      ;;
+    'IDES 1610"')
+      ;;
+  esac
+  touch $SBDIR/dbdownload_complete.txt
   fi
 }
 
@@ -474,6 +520,8 @@ write_db_ini_file() {
   P_DBINSTANCE=${8}
 
 #we used to use SAPABAPDB for this, now SAPABAP1
+  case "$SAPSOFTWARETODEPLOY" in
+    'S4 1709')
   cat > $P_INIFILE <<EOF
 NW_HDB_DB.abapSchemaName = SAPABAP1
 NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
@@ -507,6 +555,72 @@ NW_readProfileDir.profilesAvailable = true
 hdb.create.dbacockpit.user=true
 
 EOF
+
+      ;;
+    'S4 1809')
+    $SIDADMNAME=""
+  cat > $P_INIFILE <<EOF
+HDB_Schema_Check_Dialogs.schemaName = SAPHANADB
+HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
+HDB_Schema_Check_Dialogs.validateSchemaName = false
+NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
+NW_HDB_getDBInfo.dbhost = $P_DBHOST
+NW_HDB_getDBInfo.dbsid = $P_DBSID
+NW_HDB_getDBInfo.instanceNumber = $P_DBINSTANCE
+NW_HDB_getDBInfo.systemDbPassword = $P_MASTERPASSWD
+NW_HDB_getDBInfo.systemPassword = $P_MASTERPASSWD
+NW_HDB_getDBInfo.systemid = $P_DBINSTANCE
+NW_Recovery_Install_HDB.extractLocation = /usr/sap/H10/HDB00/backup/data/DB_H10
+NW_Recovery_Install_HDB.extractParallelJobs = 19
+NW_Recovery_Install_HDB.sidAdmName = $SIDADMNAME
+NW_Recovery_Install_HDB.sidAdmPassword = $P_MASTERPASSWD
+NW_Unpack.sapExeDbSar = /sapbits/SAPEXEDB_28-80003385.SAR
+NW_getFQDN.setFQDN = false
+NW_getLoadType.loadType = SAP
+NW_readProfileDir.profileDir = /usr/sap/${P_ASCSSID}/SYS/profile
+archives.downloadBasket = /sapbits/IMDB_CLIENT20_003_144-80002082.SAR
+nwUsers.sapsysGID = $P_SAPSYSGID
+nwUsers.sidAdmUID = $P_SIDADMUID
+
+
+EOF
+
+#NW_HDB_DB.abapSchemaName = SAPABAP1
+#NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
+#NW_HDB_DB.javaSchemaName = SAPABAP1
+#NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
+#NW_ABAP_Import_Dialog.dbCodepage = 4103
+#NW_ABAP_Import_Dialog.migmonJobNum = 12
+#NW_ABAP_Import_Dialog.migmonLoadArgs = -c 100000 -rowstorelist /silent_db/rowstorelist.txt
+#archives.downloadBasket = /sapbits
+#NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
+#NW_HDB_getDBInfo.dbhost = $P_DBHOST
+#NW_HDB_getDBInfo.dbsid = $P_DBSID
+#NW_HDB_getDBInfo.instanceNumber = $P_DBINSTANCE
+#NW_HDB_getDBInfo.systemDbPassword = $P_MASTERPASSWD
+#NW_HDB_getDBInfo.systemPassword = $P_MASTERPASSWD
+#NW_Unpack.sapExeDbSar = /sapbits/SAPEXEDB_200-80002572.SAR
+#NW_getFQDN.setFQDN = false
+#NW_getLoadType.loadType = SAP
+#NW_readProfileDir.profileDir = /usr/sap/$P_ASCSSID/SYS/profile
+#hanadb.landscape.reorg.useParameterFile = DONOTUSEFILE
+#nwUsers.sapsysGID = $P_SAPSYSGID
+#nwUsers.sidAdmUID = $P_SIDADMUID
+#storageBasedCopy.hdb.instanceNumber = $P_DBINSTANCE
+#storageBasedCopy.hdb.systemPassword = $P_MASTERPASSWD
+#SAPINST.CD.PACKAGE.EXPORT1 = /sapbits/51052190/DATA_UNITS
+#SAPINST.CD.PACKAGE.RDBMS-HDB-CLIENT = /sapbits/51052325/DATA_UNITS/HDB_CLIENT_LINUX_X86_64
+##HDB_Schema_Check_Dialogs.dropSchema = true
+##HDB_Schema_Check_Dialogs.schemaName = SAPABAPDB2
+##HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
+#NW_readProfileDir.profilesAvailable = true
+#hdb.create.dbacockpit.user=true
+
+      ;;
+    'IDES 1610"')
+      ;;
+  esac
+
 chown root:sapinst $P_INIFILE
 chmod g+r $P_INIFILE
 }
@@ -542,7 +656,7 @@ exec_sapinst() {
 ##  cd $SILENTDIR
 ##  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
 ## EOF
-  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false $SAPINSTHOST
+  /sapbits/swpmdir/sapinst SAPINST_INPUT_PARAMETERS_URL=$P_INIFILE SAPINST_EXECUTE_PRODUCT_ID=$P_PRODUCTID SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false $SAPINSTHOST
 }
 
 do_zypper_update() {
@@ -755,7 +869,18 @@ if [ "$ISPRIMARY" = "yes" ]; then
     esac
     download_sapbits $URI /sapbits $SAPSOFTWARETODEPLOY
     write_ascs_ini_file "/tmp/ascs.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ASCSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-    exec_sapinst "ascs" "/tmp/ascs.params" "NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" root ascsvh
+    case "$SAPSOFTWARETODEPLOY" in
+      'S4 1709')
+      PRODUCT="NW_ABAP_ASCS:S4HANA1709.CORE.HDB.ABAPHA" 
+        ;;
+      'S4 1809')
+       PRODUCT="NW_ABAP_ASCS:S4HANA1809.CORE.HDB.ABAPHA" 
+        ;;
+      'IDES 1610"')
+        ;;
+    esac
+
+    exec_sapinst "ascs" "/tmp/ascs.params" $PRODUCT root ascsvh
   fi
   touch /tmp/ascscomplete.txt
 
@@ -784,14 +909,39 @@ sudo crm configure group g-${ASCSSID}_ERS rsc_nc_${ASCSSID} vip_${ASCSSID}
   if [ "${CONFIGURESAP}" = "yes" ]; then 
     write_db_ini_file  "/tmp/db.params" "$ASCSSID" "$SAPPASSWD" "$SAPSYSGID" "$SIDADMUID" "hanavh" "$HANASID" "$DBINSTANCE"
     if [ "$CONFIGURESCHEMA" = "yes" ]; then
-    exec_sapinst "db" "/tmp/db.params" "NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" root ascsvh
+
+      case "$SAPSOFTWARETODEPLOY" in
+        'S4 1709')
+        PRODUCT="NW_ABAP_DB:S4HANA1709.CORE.HDB.ABAPHA" 
+          ;;
+        'S4 1809')
+        PRODUCT="NW_ABAP_DB:S4HANA1809.CORE.HDB.ABAPHA" 
+          ;;
+        'IDES 1610"')
+          ;;
+      esac
+
+    exec_sapinst "db" "/tmp/db.params" $PRODUCT root ascsvh
+   
     fi
   fi
 else
   waitfor  root $P_OTHERVMNAME /tmp/ascscomplete.txt
   if [ "${CONFIGURESAP}" = "yes" ]; then
     write_ers_ini_file "/tmp/ers.params" "$ISPRIMARY" "$VMNAME" "$OTHERVMNAME" "$ASCSSID" "$ERSINSTANCE" "$SAPPASSWD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID"
-    exec_sapinst "ers" "/tmp/ers.params" "NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" root ersvh
+      case "$SAPSOFTWARETODEPLOY" in
+        'S4 1709')
+        PRODUCT="NW_ERS:S4HANA1709.CORE.HDB.ABAPHA" 
+          ;;
+        'S4 1809')
+        PRODUCT="NW_ERS:S4HANA1809.CORE.HDB.ABAPHA" 
+          ;;
+        'IDES 1610"')
+          ;;
+      esac
+
+    exec_sapinst "ers" "/tmp/ers.params" $PRODUCT root ersvh
+
   fi
   touch /tmp/erscomplete.txt
 fi
