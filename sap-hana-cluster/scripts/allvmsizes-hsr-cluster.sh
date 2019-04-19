@@ -585,6 +585,7 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 cd $SAPBITSDIR
 echo "hana download start" >> /tmp/parameter.txt
 if [ "${hanapackage}" = "51053787" ]
+then 
   download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
   cd $SAPBITSDIR
   mkdir ${hanapackage}
