@@ -39,7 +39,8 @@ az group deployment create \
         USRSAPERSMOUNT="$USRSAPERSMOUNT" \
         ASCSILBIP="$ASCSLBIP" \
         DBIP="$HANAILBIP" \
-        CONFIGURESAP="YES"
+        CONFIGURESAP="YES" \
+        SAPSOFTWARETODEPLOY="$SAPSOFTWARETODEPLOY"
 
 echo "netweaver cluster created"
 

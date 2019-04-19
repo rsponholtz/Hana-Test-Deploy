@@ -312,34 +312,38 @@ download_sapbits() {
   if [ "$RESULT" = "1" ]; then
     #need to download the sap bits
     cd  $SBDIR
-    download_if_needed "/sapbits" "$URI/SapBits" "51050423_3.ZIP"
-    download_if_needed "/sapbits" "$URI/SapBits" "51050829_JAVA_part1.exe"   
-    download_if_needed "/sapbits" "$URI/SapBits" "51050829_JAVA_part2.rar" 
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part1.exe"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part2.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part3.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part4.rar"
-    #retry 5 "wget  --quiet $URI/SapBits/51052190_part5.rar"
-    download_if_needed "/sapbits" "$URI/SapBits" "51052318_part1.exe"
-    download_if_needed "/sapbits" "$URI/SapBits" "51052318_part2.rar"
-    download_if_needed "/sapbits" "$URI/SapBits" "SAPCAR_1014-80000935.EXE"
-    download_if_needed "/sapbits" "$URI/SapBits" "SWPM10SP23_1-20009701.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits" "SAPHOSTAGENT36_36-20009394.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits" "SAPEXE_200-80002573.SAR"
-    download_if_needed "/sapbits" "$URI/SapBits" "SAPEXEDB_200-80002572.SAR"
+  case "$SAPSOFTWARETODEPLOY" in
+    'S4 1709')
+      filelist=( "51050423_3.ZIP" "51050829_JAVA_part1.exe" "51050829_JAVA_part2.rar" "51052318_part1.exe" \
+      "51052318_part2.rar" "SAPCAR_1014-80000935.EXE" "SWPM10SP23_1-20009701.SAR" "SAPHOSTAGENT36_36-20009394.SAR" \
+      "SAPEXE_200-80002573.SAR" "SAPEXEDB_200-80002572.SAR" "igsexe_5-80003187.sar" "igshelper_17-10010245.sar" )
+      swpmsar="SWPM10SP23_1-20009701.SAR"
+      swpmdir="SWPM10SP23_1"
+      ;;
+    'S4 1809')
+      filelist=( "SWPM20SP02_7-80003424.SAR" )    
+      swpmsar="SWPM20SP02_7-80003424.SAR"
+      swpmdir="SWPM20SP02_7"
+      ;;
+    'IDES 1610"')
+      ;;
+  esac
+    
 
-    download_if_needed "/sapbits" "$URI/SapBits" "igsexe_5-80003187.sar"
-    download_if_needed "/sapbits" "$URI/SapBits" "igshelper_17-10010245.sar"
-    #unpack some of this
-    #retry 5 "zypper install -y unrar"
+    cd  $SBDIR
+    for i in "${filelist[@]}"
+    do
+      download_if_needed $SBDIR "$URI/SapBits" "${i}"
+    done
 
-    chmod u+x SAPCAR_1014-80000935.EXE
-    ln -s ./SAPCAR_1014-80000935.EXE sapcar
+    chmod u+x SAPCAR*.EXE
+    ln -s ./SAPCAR*.EXE sapcar
+  
+    mkdir $swpmdir
+    ln -s $swpmdir swpmdir
+    cd $swpmdir
+    ../sapcar -xf ../${swpmsar}
 
-    mkdir SWPM10SP23_1
-    cd SWPM10SP23_1
-    ../sapcar -xf ../SWPM10SP23_1-20009701.SAR
-    cd $SBDIR
     touch $SBDIR/appdownload_complete.txt
   fi
 }
@@ -409,15 +413,33 @@ install_nw() {
   echo "P_ISPRIMARY:" $P_ISPRIMARY> /tmp/variables.txt
 
   if [ "${P_ISPRIMARY}" = "YES" ]; then
-    PRODUCT="NW_ABAP_CI:S4HANA1709.CORE.HDB.ABAPHA"
+    case "$SAPSOFTWARETODEPLOY" in
+      'S4 1709')
+        PRODUCT="NW_ABAP_CI:S4HANA1709.CORE.HDB.ABAPHA"
+        ;;
+      'S4 1809')
+        PRODUCT="NW_ABAP_CI:S4HANA1809.CORE.HDB.ABAPHA"
+        ;;
+      'IDES 1610"')
+        ;;
+    esac
   else
-    PRODUCT="NW_DI:S4HANA1709.CORE.HDB.ABAPHA" 
+    case "$SAPSOFTWARETODEPLOY" in
+      'S4 1709')
+        PRODUCT="NW_DI:S4HANA1709.CORE.HDB.ABAPHA" 
+        ;;
+      'S4 1809')
+        PRODUCT="NW_DI:S4HANA1809.CORE.HDB.ABAPHA" 
+        ;;
+      'IDES 1610"')
+        ;;
+    esac
   fi
 
   echo "setup nw"
   rm -r -f /tmp/sapinst_instdir
   cd /silent_install
-  /sapbits/SWPM10SP23_1/sapinst SAPINST_INPUT_PARAMETERS_URL="./nw.params" SAPINST_EXECUTE_PRODUCT_ID="$PRODUCT" \
+  /sapbits/swpmdir/sapinst SAPINST_INPUT_PARAMETERS_URL="./nw.params" SAPINST_EXECUTE_PRODUCT_ID="$PRODUCT" \
       SAPINST_SKIP_DIALOGS=true SAPINST_START_GUISERVER=false
   touch /tmp/nwcomplete.txt
 }
