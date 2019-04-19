@@ -591,6 +591,7 @@ then
   mkdir ${hanapackage}
   cd ${hanapackage}
   unzip ../${hanapackage}.ZIP
+  cd $SAPBITSDIR
   #add additional requirement
   zypper install -y libatomic1
 else
@@ -609,6 +610,7 @@ else
 
 fi
 
+cd $SAPBITSDIR
 #retrieve config file.  first try on download location, then go to our repo
 /usr/bin/wget --quiet $URI/SapBits/hdbinst.cfg
 rc=$?;
