@@ -8,6 +8,8 @@ else
 fi
 
 
+az account set --subscription "$subscriptionid"
+
 echo "deleting hana servers"
 VM1DISK=`az vm show --resource-group $rgname --name $HANAVMNAME1  --query storageProfile.osDisk.managedDisk.id`
 az vm delete --yes --resource-group $rgname --name $HANAVMNAME1

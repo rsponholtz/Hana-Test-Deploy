@@ -5,6 +5,9 @@ source ./azuredeploy.cfg
 
 echo "deleting netweaver cluster"
 
+
+az account set --subscription "$subscriptionid"
+
 for (( c=0; c<$NWVMCOUNT; c++ ))
 do  
    az vm delete --yes --resource-group $rgname --name $NWVMNAME-$c

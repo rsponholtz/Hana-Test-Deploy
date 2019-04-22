@@ -8,6 +8,8 @@ else
 fi
 
 
+az account set --subscription "$subscriptionid"
+
 echo "deleting ascs servers"
 az vm delete --yes --resource-group $rgname --name $ASCSVMNAME1
 az vm delete --yes --resource-group $rgname --name $ASCSVMNAME2
