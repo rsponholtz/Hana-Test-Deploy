@@ -560,8 +560,13 @@ EOF
     'S4 1809')
     $SIDADMNAME=""
   cat > $P_INIFILE <<EOF
-HDB_Schema_Check_Dialogs.schemaName = SAPHANADB
-HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
+  cat > $P_INIFILE <<EOF
+NW_HDB_DB.abapSchemaName = SAPHANADB
+NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
+NW_HDB_DB.javaSchemaName = SAPHANADB
+NW_HDB_DB.javaSchemaPassword = $P_MASTERPASSWD
+#HDB_Schema_Check_Dialogs.schemaName = SAPHANADB
+#HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 HDB_Schema_Check_Dialogs.validateSchemaName = false
 NW_GetMasterPassword.masterPwd = $P_MASTERPASSWD
 NW_HDB_getDBInfo.dbhost = $P_DBHOST
@@ -583,7 +588,7 @@ NW_readProfileDir.profileDir = /usr/sap/${P_ASCSSID}/SYS/profile
 archives.downloadBasket = /sapbits
 nwUsers.sapsysGID = $P_SAPSYSGID
 nwUsers.sidAdmUID = $P_SIDADMUID
-
+hdb.create.dbacockpit.user=true
 
 EOF
 
