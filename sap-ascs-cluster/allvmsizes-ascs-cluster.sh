@@ -575,10 +575,12 @@ NW_Recovery_Install_HDB.extractParallelJobs = 19
 NW_Recovery_Install_HDB.sidAdmName = $SIDADMNAME
 NW_Recovery_Install_HDB.sidAdmPassword = $P_MASTERPASSWD
 NW_Unpack.sapExeDbSar = /sapbits/SAPEXEDB_28-80003385.SAR
+archives.downloadBasket = /sapbits
 NW_getFQDN.setFQDN = false
 NW_getLoadType.loadType = SAP
 NW_readProfileDir.profileDir = /usr/sap/${P_ASCSSID}/SYS/profile
-archives.downloadBasket = /sapbits/IMDB_CLIENT20_003_144-80002082.SAR
+#archives.downloadBasket = /sapbits/IMDB_CLIENT20_003_144-80002082.SAR
+archives.downloadBasket = /sapbits
 nwUsers.sapsysGID = $P_SAPSYSGID
 nwUsers.sidAdmUID = $P_SIDADMUID
 
