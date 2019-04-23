@@ -81,6 +81,8 @@ echo "SAPINSTGID:" $SAPINSTGID >> /tmp/variables.txt
 echo "ASCSILBIP:" $ASCSILBIP >> /tmp/variables.txt
 echo "DBIP:" $DBIP >> /tmp/variables.txt
 echo "CONFIGURESAP:" $CONFIGURESAP >> /tmp/variables.txt
+echo "SAPSOFTWARETODEPLOY:" $SAPSOFTWARETODEPLOY >> /tmp/variables.txt
+
 
 ##
 

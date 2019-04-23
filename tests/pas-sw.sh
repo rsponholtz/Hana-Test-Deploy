@@ -7,6 +7,7 @@ else
     source ./azuredeploy.cfg
 fi
 
+az account set --subscription "$subscriptionid"
 
 echo "creating netweaver cluster"
 az group deployment create \
