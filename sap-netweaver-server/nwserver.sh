@@ -368,9 +368,20 @@ write_nw_ini_file() {
   echo "setup netweaver"
   echo "P_VMNAME:" $P_VMNAME>> /tmp/variables.txt
 
+  case "$SAPSOFTWARETODEPLOY" in
+    'S4 1709')
+      HANADB="SAPABAP1"
+      ;;
+    'S4 1809')
+      HANADB="SAPHANADB"
+      ;;
+    'IDES 1610"')
+      ;;
+  esac
+
   cd /silent_install
   cat > /silent_install/nw.params <<EOF
-HDB_Schema_Check_Dialogs.schemaName = SAPABAP1
+HDB_Schema_Check_Dialogs.schemaName = $HANADB
 HDB_Schema_Check_Dialogs.schemaPassword = $P_MASTERPASSWD
 NW_CI_Instance.ascsVirtualHostname = $P_VMNAME
 NW_CI_Instance.ciInstanceNumber = $P_NWINSTANCE

@@ -560,7 +560,6 @@ EOF
     'S4 1809')
     $SIDADMNAME=""
   cat > $P_INIFILE <<EOF
-  cat > $P_INIFILE <<EOF
 NW_HDB_DB.abapSchemaName = SAPHANADB
 NW_HDB_DB.abapSchemaPassword = $P_MASTERPASSWD
 NW_HDB_DB.javaSchemaName = SAPHANADB
