@@ -27,6 +27,7 @@
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
+                "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP2",
                 "RHEL 7.2 for SAP HANA"
@@ -167,7 +168,7 @@
         "OperatingSystemSpec": {
             "imagePublisher": "[if (contains(parameters('OperatingSystem'),'SLES'),'SUSE','RedHat')]",
             "imageOffer": "[if (contains(parameters('OperatingSystem'),'SLES'),if (contains(parameters('SubscriptionEmail'),'@'),'SLES-SAP-BYOS','SLES-SAP'),'RHEL-SAP-HANA')]",
-            "sku": "[if (contains(parameters('OperatingSystem'),'12 SP3'),'12-SP3',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]",            
+            "sku": "[if (contains(parameters('OperatingSystem'),'12 SP4'),'gen2-12-sp4',if (contains(parameters('OperatingSystem'),'12 SP2'),'12-SP2','7.2'))]",            
             "version": "latest"
         },
         "diskConfig": "[variables(concat('diskConfig_', parameters('vmSize')))]",
@@ -184,6 +185,19 @@
             "log1": 511,
             "log2": 511
         },
+        "diskConfig_Standard M416s_v2": {
+            "shared": 1023,
+            "sap": 63,
+            "backup1": 4094,
+            "backup2": 4094,
+            "data1": 1023,
+            "data2": 1023,
+            "data3": 1023,
+            "data4": 1023,
+            "data5": 1023,
+            "log1": 511,
+            "log2": 511
+        },        
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
     "resources": [

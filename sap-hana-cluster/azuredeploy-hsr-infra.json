@@ -229,7 +229,12 @@
             },
             "Standard_M208ms_v2": {
                 "templateuri": "superlarge-hsr.json"
+            },
+            "Standard M416s_v2": {
+                "templateuri": "superlarge-hsr.json"
             }
+            
+
         },
         "mytemplatevar": "[variables('vmSizes')[parameters('VMSize')].templateuri]",
         "mytemplateuri": "[concat(variables('baseUri'), '/Vms/',variables('mytemplatevar'))]"
