@@ -35,7 +35,8 @@
                 "Standard_E8s_v3 (64 GB)",                
                 "Standard_E16s_v3 (128 GB)",
                 "Standard_E32s_v3 (256 GB)",
-                "Standard_E64s_v3 (448 GB)"
+                "Standard_E64s_v3 (448 GB)",
+                "Standard_M208ms_v2"
             ]
         },
         "NetworkName": {
@@ -225,6 +226,9 @@
             },
             "Standard_DS14_v2 (128 GB)": {
                 "templateuri": "small-hsr.json"
+            },
+            "Standard_M208ms_v2": {
+                "templateuri": "superlarge-hsr.json"
             }
         },
         "mytemplatevar": "[variables('vmSizes')[parameters('VMSize')].templateuri]",
