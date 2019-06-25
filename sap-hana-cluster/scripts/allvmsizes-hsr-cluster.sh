@@ -590,7 +590,7 @@ then
   cd $SAPBITSDIR
   mkdir ${hanapackage}
   cd ${hanapackage}
-  unzip ../${hanapackage}.ZIP
+  unzip -o ../${hanapackage}.ZIP
   cd $SAPBITSDIR
   #add additional requirement
   zypper install -y libatomic1
