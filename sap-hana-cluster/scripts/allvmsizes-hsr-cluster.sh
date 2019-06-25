@@ -348,6 +348,8 @@ echo "logicalvols start" >> /tmp/parameter.txt
   STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
+
+
   mkfs.xfs /dev/datavg/datalv
   mkfs.xfs /dev/logvg/loglv
   mkfs -t xfs /dev/sharedvg/sharedlv 
@@ -456,7 +458,7 @@ echo "logicalvols start" >> /tmp/parameter.txt
 echo "logicalvols end" >> /tmp/parameter.txt
 fi
 
-if [ $VMSIZE == "Standard_M128ms" ] ||  [ $VMSIZE == "Standard_M208ms_v2" ]; then
+if [ $VMSIZE == "Standard_M128ms" ] ||  [ $VMSIZE == "Standard_M208ms_v2" ] ||  [ $VMSIZE == "Standard_M416ms_v2" ] ; then
 
 # this assumes that 6 disks are attached at lun 0 through 5
 echo "Creating partitions and physical volumes"
@@ -500,27 +502,28 @@ echo "logicalvols start" >> /tmp/parameter.txt
   STRIPESIZE=32
   lvcreate -i$PHYSVOLUMES -I$STRIPESIZE -l 100%FREE -n loglv logvg
 
-  mkfs.xfs /dev/datavg/datalv
-  mkfs.xfs /dev/logvg/loglv
-  mkfs -t xfs /dev/sharedvg/sharedlv 
-  mkfs -t xfs /dev/backupvg/backuplv 
-  mkfs -t xfs /dev/usrsapvg/usrsaplv
+  #change to ext3 due to bug
+  mkfs.ext3 /dev/datavg/datalv
+  mkfs.ext3 /dev/logvg/loglv
+  mkfs -t ext3 /dev/sharedvg/sharedlv 
+  mkfs -t ext3 /dev/backupvg/backuplv 
+  mkfs -t ext3 /dev/usrsapvg/usrsaplv
 fi
 #!/bin/bash
 echo "mounthanashared start" >> /tmp/parameter.txt
-mount -t xfs /dev/sharedvg/sharedlv /hana/shared
-mount -t xfs /dev/backupvg/backuplv /hana/backup 
-mount -t xfs /dev/usrsapvg/usrsaplv /usr/sap
-mount -t xfs /dev/datavg/datalv /hana/data
-mount -t xfs /dev/logvg/loglv /hana/log 
+mount -t ext3 /dev/sharedvg/sharedlv /hana/shared
+mount -t ext3 /dev/backupvg/backuplv /hana/backup 
+mount -t ext3 /dev/usrsapvg/usrsaplv /usr/sap
+mount -t ext3 /dev/datavg/datalv /hana/data
+mount -t ext3 /dev/logvg/loglv /hana/log 
 echo "mounthanashared end" >> /tmp/parameter.txt
 
 echo "write to fstab start" >> /tmp/parameter.txt
-echo "/dev/mapper/datavg-datalv /hana/data xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/logvg-loglv /hana/log xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/sharedvg-sharedlv /hana/shared xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/backupvg-backuplv /hana/backup xfs defaults 0 0" >> /etc/fstab
-echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap xfs defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/datavg-datalv /hana/data ext3 defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/logvg-loglv /hana/log ext3 defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/sharedvg-sharedlv /hana/shared ext3 defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/backupvg-backuplv /hana/backup ext3 defaults 0 0" >> /etc/fstab
+echo "/dev/mapper/usrsapvg-usrsaplv /usr/sap ext3 defaults 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
 
 cat >>/etc/hosts <<EOF
