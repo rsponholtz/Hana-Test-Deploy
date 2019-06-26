@@ -552,6 +552,7 @@ if [ "$NFSIP" != "" ]; then
   if [ "$RESULT" != "0" ]; then
     mkdir /hana/data/sapbits
     SAPBITSDIR="/hana/data/sapbits"
+    rmdir /sapbits
     ln -s  /hana/data/sapbits /sapbits
     NFSIP=""
   else
