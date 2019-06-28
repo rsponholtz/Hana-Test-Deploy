@@ -1006,3 +1006,5 @@ fi
 fi
 
 remove_temp_swapfile "/localstore/tempswap" 
+
+echo "software deploy completed.  Please check for proper software install"

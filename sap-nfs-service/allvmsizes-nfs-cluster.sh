@@ -610,3 +610,4 @@ echo "waiting for connection"
 
 fi
 
+echo "software deploy completed.  Please check for proper software install"

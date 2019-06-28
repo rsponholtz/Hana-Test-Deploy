@@ -58,3 +58,4 @@ setupTarget disk03 $IQN3 $IQN3CLT1 $IQN3CLT2
 targetcli saveconfig
 #systemctl restart targetcli
 
+echo "software deploy completed.  Please check for proper software install"

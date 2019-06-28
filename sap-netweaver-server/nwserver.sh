@@ -473,3 +473,5 @@ else
   write_nw_ini_file "$VMNAME" "$MASTERPASSWORD" "$SAPADMUID" "$SAPSYSGID" "$SIDADMUID" "$DBHOST" "$DBSID" "$DBINSTANCE" "$ASCSSID" "$ASCSILBIP" "$NWINSTANCE"
   install_nw  "$VMNAME" "$ISPRIMARY" 
 fi
+
+echo "software deploy completed.  Please check for proper software install"

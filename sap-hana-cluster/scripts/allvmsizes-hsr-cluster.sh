@@ -876,3 +876,7 @@ crm resource cleanup rsc_SAPHana_$HANAID
 crm configure property maintenance-mode=false
 
 fi
+
+echo "software deploy completed.  Please check for proper software install"
+
+

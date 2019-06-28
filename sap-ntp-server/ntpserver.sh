@@ -9,3 +9,5 @@ server ntp3.jst.mfeed.ad.jp iburst
 restrict 10.0.0.0 mask 255.255.255.0 notrust 
 systemctl start ntpd 
 systemctl enable ntpd 
+
+echo "software deploy completed.  Please check for proper software install"
