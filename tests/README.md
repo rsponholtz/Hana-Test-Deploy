@@ -1,7 +1,9 @@
 To deploy an SAP S/4 environment using these scripts, do the following in Azure cloud shell:
 
+```bash
 git clone https://github.com/AzureCAT-GSI/Hana-Test-Deploy.git
 cd Hana-Test-Deploy/tests
+```
 
 Edit the azuredeploy.cfg with your own values.  You can use vi, emacs or visual studio code within cloud shell.
 
