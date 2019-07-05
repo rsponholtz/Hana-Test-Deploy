@@ -20,6 +20,6 @@ vmUserName=$vmusername  \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
                    osType="SLES 12 SP3" \
-             vmPassword=$vmpassword \
+             adminPublicKey=$jumpboxkey \
              customUri=$customuri \
                    StaticIP=$LINUXJUMPBOXIP

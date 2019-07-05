@@ -38,10 +38,10 @@
                 "description": "The type of the operating system you want to deploy."
             }
         },
-        "vmPassword": {
+        "adminPublicKey": {
             "type": "securestring",
             "metadata": {
-                "description": "Password for the Virtual Machine"
+                "description": "ssh key for the admin user"
             }
         },
         "customUri": {
@@ -220,7 +220,15 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('vmUserName')]",
-                    "adminPassword": "[parameters('vmPassword')]"
+                    "ssh": {
+                        "publicKeys": [
+                            {
+                                "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                "keyData": "[parameters('adminPublicKey')]"
+                            }
+                        ]
+                    }
+                }
                 },
                 "storageProfile": {
                     "imageReference": {
