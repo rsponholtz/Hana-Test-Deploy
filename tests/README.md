@@ -7,6 +7,8 @@ cd Hana-Test-Deploy/tests
 
 Edit the azuredeploy.cfg with your own values.  You can use vi, emacs or visual studio code within cloud shell.
 
+***VERY IMPORTANT: put in your own password and SSH public key in the proper fields of the azuredeploy.cfg***
+
 In cloud shell, if you get timed out on running any of the following, the operation that you were running will still complete - it's all running within Azure.  
 
 For all machines, the username and password to login with are controled by the azuredeploy.cfg
