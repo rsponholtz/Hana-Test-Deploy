@@ -206,7 +206,7 @@
             }
         },        
         {
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
             "location": "[resourceGroup().location]",
@@ -220,13 +220,16 @@
                 "osProfile": {
                     "computerName": "[variables('vmName')]",
                     "adminUsername": "[parameters('vmUserName')]",
-                    "ssh": {
-                        "publicKeys": [
-                            {
-                                "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
-                                "keyData": "[parameters('adminPublicKey')]"
-                            }
-                        ]
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('vmUserName'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminPublicKey')]"
+                                }
+                            ]
+                        }
                     }
                 },
                 "storageProfile": {
