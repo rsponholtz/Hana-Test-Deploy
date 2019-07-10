@@ -76,10 +76,17 @@ echo "SUBURL:" $SUBURL >> /tmp/variables.txt
 retry() {
     local -r -i max_attempts="$1"; shift
     local -r cmd="$@"
-    local -i attempt_num=1
+    local -i attempt_num=0
+    local -i resultcode=0
 
-    until $cmd
-    do
+    while  true;  do
+        $cmd
+        resultcode=$?
+        if [[ $resultcode == 0 ]]
+        then
+          return 0
+        fi
+
         if (( attempt_num == max_attempts ))
         then
             echo "Attempt $attempt_num failed and there are no more attempts left!"
@@ -124,8 +131,18 @@ download_if_needed() {
   test -e $DESTFILE
   RESULT=$?
   if [ "$RESULT" = "1" ]; then
-    #need to download the file
+    #need to download the file.
+    test -e $DESTFILE.downloading  
+    DLRESULT=$?
+    if [ "$DLRESULT" = "0" ]; then 
+    touch $DESTFILE.downloading
     retry 5 "wget --quiet -O $DESTFILE $SOURCEFILE"
+    rm $DESTFILE.downloading
+    touch $DESTFILE.complete
+    else
+      #wait until the file download is done
+      waitfor root $OTHERVMNAME $DESTFILE.complete
+    fi
   fi
 }
 
@@ -589,33 +606,35 @@ cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
 
 
-#!/bin/bash
-cd $SAPBITSDIR
-echo "hana download start" >> /tmp/parameter.txt
-if [ "${hanapackage}" = "51053787" ]
-then 
-  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
+if [ "$ISPRIMARY" = "yes" ]; then
   cd $SAPBITSDIR
-  mkdir ${hanapackage}
-  cd ${hanapackage}
-  unzip -o ../${hanapackage}.ZIP
-  cd $SAPBITSDIR
-  #add additional requirement
-  zypper install -y libatomic1
-else
+  echo "hana download start" >> /tmp/parameter.txt
+  if [ "${hanapackage}" = "51053787" ]
+  then 
+    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
+    cd $SAPBITSDIR
+    mkdir ${hanapackage}
+    cd ${hanapackage}
+    unzip -o ../${hanapackage}.ZIP
+    cd $SAPBITSDIR
+    #add additional requirement
+    zypper install -y libatomic1
+  else
+    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part1.exe"
+    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part2.rar"  
+    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part3.rar"  
+    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part4.rar"  
+    cd $SAPBITSDIR
 
-  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part1.exe"
-  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part2.rar"  
-  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part3.rar"  
-  download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}_part4.rar"  
-  cd $SAPBITSDIR
-
-  echo "hana unrar start" >> /tmp/parameter.txt
-  #!/bin/bash
-  cd $SAPBITSDIR
-  unrar  -o- x ${hanapackage}_part1.exe
-  echo "hana unrar end" >> /tmp/parameter.txt
-
+    echo "hana unrar start" >> /tmp/parameter.txt
+    #!/bin/bash
+    cd $SAPBITSDIR
+    unrar  -o- x ${hanapackage}_part1.exe
+    echo "hana unrar end" >> /tmp/parameter.txt
+  fi
+  touch /tmp/hanaunpackcomplete.txt
+  else
+    waitfor root $OTHERVMNAME /tmp/hanaunpackcomplete.txt
 fi
 
 cd $SAPBITSDIR
