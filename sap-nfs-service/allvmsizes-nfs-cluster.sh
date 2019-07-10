@@ -379,6 +379,13 @@ echo "hana watchdog end" >> /tmp/parameter.txt
 
 cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
+#turn off automatic management of IP addresses on nic
+cd /etc/sysconfig/network
+cp ifcfg-eth0 ifcfg-eth0.bak
+sbdcmd='s/CLOUD_NETCONFIG_MANAGE=.*/CLOUD_NETCONFIG_MANAGE="no"/g'
+cat  ifcfg-eth0.bak | sed $sbdcmd  > /etc/sysconfig/network/ifcfg-eth0
+
+
 setup_cluster $ISPRIMARY $sbdid $VMNAME $OTHERVMNAME "nfscluster"
 
 #get the VM size via the instance api

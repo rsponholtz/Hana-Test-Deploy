@@ -653,6 +653,12 @@ hdbinstfile="${SAPBITSDIR}/hdbinst-${myhost}.cfg"
 cat hdbinst.cfg | sed $sedcmd | sed $sedcmd2 | sed $sedcmd3 | sed $sedcmd4 | sed $sedcmd5 | sed $sedcmd6 > ${hdbinstfile}
 echo "hana preapre end" >> /tmp/parameter.txt
 
+#turn off automatic management of IP addresses on nic
+cd /etc/sysconfig/network
+cp ifcfg-eth0 ifcfg-eth0.bak
+sbdcmd='s/CLOUD_NETCONFIG_MANAGE=.*/CLOUD_NETCONFIG_MANAGE="no"/g'
+cat  ifcfg-eth0.bak | sed $sbdcmd  > /etc/sysconfig/network/ifcfg-eth0
+
 ##change this to pass passwords on command line
 
 #!/bin/bash

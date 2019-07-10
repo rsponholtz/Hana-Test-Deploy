@@ -691,12 +691,19 @@ retry 5 "zypper install -y unrar"
 # step2
 echo $URI >> /tmp/url.txt
 
+#turn off automatic management of IP addresses on nic
+cd /etc/sysconfig/network
+cp ifcfg-eth0 ifcfg-eth0.bak
+sbdcmd='s/CLOUD_NETCONFIG_MANAGE=.*/CLOUD_NETCONFIG_MANAGE="no"/g'
+cat  ifcfg-eth0.bak | sed $sbdcmd  > /etc/sysconfig/network/ifcfg-eth0
+
+
 cp -f /etc/waagent.conf /etc/waagent.conf.orig
 sedcmd="s/ResourceDisk.EnableSwap=n/ResourceDisk.EnableSwap=y/g"
 sedcmd2="s/ResourceDisk.SwapSizeMB=0/ResourceDisk.SwapSizeMB=16384/g"
 cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
-# we may be able to restart the waagent and get the swap configured immediately
+# we cannot restart the waagent to get the swap configured immediately - that would kill this script
 
 if [ "$ISPRIMARY" = "yes" ]; then
 cat >>/etc/hosts <<EOF
