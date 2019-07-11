@@ -68,7 +68,7 @@ To deploy from the portal using a graphic interface you can use the [![Deploy to
 New-AzureRmResourceGroup -Name HANADeploymentRG -Location "Central US"
 New-AzureRmResourceGroupDeployment -Name HANADeployment -ResourceGroupName HANADeploymentRG `
   -TemplateUri https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/azuredeploy.json `
-  -VMName HANAtestVM -HANAJumpbox yes -CustomURI https://yourBlobName.blob.core.windows.net/yourContainerName -VMPassword AweS0me@PW
+  -VMName HANAtestVM -HANAJumpbox yes -CustomURI https://yourBlobName.blob.core.windows.net/yourContainerName -VMPassword <your password>
 ```
 
 ### Deploy from CLI
@@ -80,7 +80,7 @@ az group deployment create \
     --name HANADeployment \
     --resource-group HANADeploymentRG \
     --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/azuredeploy.json" \
-    --parameters VMName=HANAtestVM HANAJumpbox=yes CustomURI=https://yourBlobName.blob.core.windows.net/yourContainerName VMPassword=AweS0me@PW
+    --parameters VMName=HANAtestVM HANAJumpbox=yes CustomURI=https://yourBlobName.blob.core.windows.net/yourContainerName VMPassword=<your password>
 ```
 ## Monitoring
 

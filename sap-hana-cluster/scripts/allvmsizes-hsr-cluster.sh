@@ -664,8 +664,8 @@ else
 fi
 
 sedcmd3="s/root_user=root/root_user=$HANAUSR/g"
-sedcmd4="s/root_password=AweS0me@PW/root_password=$HANAPWD/g"
-sedcmd5="s/master_password=AweS0me@PW/master_password=$HANAPWD/g"
+sedcmd4="s/root_password=REPLACE-WITH-PASSWORD/root_password=$HANAPWD/g"
+sedcmd5="s/master_password=REPLACE-WITH-PASSWORD/master_password=$HANAPWD/g"
 sedcmd6="s/sid=H10/sid=$HANASID/g"
 sedcmd7="s/number=00/number=$HANANUMBER/g"
 hdbinstfile="${SAPBITSDIR}/hdbinst-${myhost}.cfg"
