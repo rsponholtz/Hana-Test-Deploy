@@ -135,13 +135,13 @@ download_if_needed() {
     test -e $DESTFILE.downloading  
     DLRESULT=$?
     if [ "$DLRESULT" = "0" ]; then 
-    touch $DESTFILE.downloading
-    retry 5 "wget --quiet -O $DESTFILE $SOURCEFILE"
-    rm $DESTFILE.downloading
-    touch $DESTFILE.complete
-    else
       #wait until the file download is done
       waitfor root $OTHERVMNAME $DESTFILE.complete
+    else
+      touch $DESTFILE.downloading
+      retry 5 "wget --quiet -O $DESTFILE $SOURCEFILE"
+      rm $DESTFILE.downloading
+      touch $DESTFILE.complete
     fi
   fi
 }
