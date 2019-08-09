@@ -1,14 +1,188 @@
 # SAP Automation
-This repo contains two different projects. The first one will help you install install SAP HANA on a single VM running SUSE SLES 12 SP 2. The second one deals with more complex scenarios, different components and high availability.
 
- Both use the Azure SKUs for SAP. The templates take advantage of [Custom Script Extensions](https://github.com/Azure/azure-linux-extensions/tree/master/CustomScript) for the installation and configuration of the machines. Both should be used only for demonstration and sandbox environments. This is not a production deployment.
+This repository contains Azure Resource Group templates and in-VM automation that can install a Highly-Available SAP S/4 environment in Azure.
+It is meant to be an example of using the Azure built-in technologies to deploy SAP S/4, but is not currently being actively maintained.  For the official SAP HANA automation using Terraform and Ansible, please go here: https://github.com/Azure/sap-hana  
 
-## SAP HANA Single Instance Deployment
-To deploy a single instance of HANA you can use the following button. For more information on the single instance deployment, please refer to the SAP HANA single instance [documentation page](https://github.com/AzureCAT-GSI/Hana-Test-Deploy/blob/master/README-single.md).
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2FFazuredeploy.json)
 
+
+## SAP software package requirements
+
+As a prerequisite for this deployment, you need to download all of the required packages from the SAP Download Center, and place those binaries on a place that the automation can access - this is either an Azure Storage Account or an internal HTTP server.  The automation configuration refers to this by the custom_url parameter.
+
+For a successful deployment, the following software packages must be downloaded and placed in a HTTP(s) accessible location, as described above.  
+
+***Please note, this is likely not the minimal list of downloads.  However, this is the set of downloaded files that we have tested with. ***
+
+### HANA 2.0 SPS3 
+
+51053787_part1.exe
+51053787_part2.rar
+51053787_part3.rar
+51053787_part4.rar
+
+### HANA 2.0 SPS3 
+
+51053381_part1.exe
+51053381_part2.rar
+51053381_part3.rar
+51053381_part4.rar
+
+### HANA 2.0 SPS3 
+
+51053381_part1.exe
+51053381_part2.rar
+51053381_part3.rar
+51053381_part4.rar
+
+### HANA 2.0 SPS4
+
+51053787.ZIP
+
+### SAP S/4 1709
+
+51050423_3.ZIP
+51050829_JAVA_part1.exe
+51050829_JAVA_part2.rar
+51052190_part1.exe
+51052190_part2.rar
+51052190_part3.rar
+51052190_part4.rar
+51052190_part5.rar
+51052318_part1.exe
+51052318_part2.rar
+SAPCAR_1014-80000935.EXE
+SWPM10SP23_1-20009701.SAR
+SAPHOSTAGENT36_36-20009394.SAR
+SAPEXE_200-80002573.SAR
+SAPEXEDB_200-80002572.SAR
+
+### SAP S/4 1809
+
+51053381_part1.exe
+51053381_part2.rar
+51053381_part3.rar
+51053381_part4.rar
+51053787.ZIP
+igsexe_7-80003187.sar
+igshelper_17-10010245.sar
+IMDB_CLIENT20_002_83-80002082.SAR
+IMDB_CLIENT20_003_144-80002082.SAR
+IMDB_CLIENT20_004_126-80002082.SAR
+IMDB_SERVER20_024_9-80002031.SAR
+IMDB_SERVER20_036_0-80002031.SAR
+IMDB_SERVER20_037_0-80002031.SAR
+IMDB_SERVER20_040_0-80002031.SAR
+K-10301INS4CORE.SAR
+K-10301INS4FND.SAR
+K-40001INUIBAS001.SAR
+K-400AGINUIBAS001.SAR
+K-60011INSRA004.SAR
+K-74009INSTPI.SAR
+K-74010INSTPI.SAR
+K-75301INSAPBASIS.SAR
+K-75301INSAPBW.SAR
+K-75301INSAPGWFND.SAR
+K-75301INSAPUI.SAR
+K-75302INSAPUI.SAR
+K-75D01INSAPABA.SAR
+K-80301INISUT.SAR
+K-80301INMDGAPPL.SAR
+K-80301INMDGFND.SAR
+K-80301INMDGUX.SAR
+KD75371.SAR
+KE60857.SAR
+KE60858.SAR
+KE60859.SAR
+KE60860.SAR
+KITAB9V.SAR
+S4HANAOP103_ERP_LANG_AR.SAR
+S4HANAOP103_ERP_LANG_BG.SAR
+S4HANAOP103_ERP_LANG_CA.SAR
+S4HANAOP103_ERP_LANG_CS.SAR
+S4HANAOP103_ERP_LANG_DA.SAR
+S4HANAOP103_ERP_LANG_DE.SAR
+S4HANAOP103_ERP_LANG_EL.SAR
+S4HANAOP103_ERP_LANG_EN.SAR
+S4HANAOP103_ERP_LANG_ES.SAR
+S4HANAOP103_ERP_LANG_ET.SAR
+S4HANAOP103_ERP_LANG_FI.SAR
+S4HANAOP103_ERP_LANG_FR.SAR
+S4HANAOP103_ERP_LANG_HE.SAR
+S4HANAOP103_ERP_LANG_HI.SAR
+S4HANAOP103_ERP_LANG_HR.SAR
+S4HANAOP103_ERP_LANG_HU.SAR
+S4HANAOP103_ERP_LANG_IT.SAR
+S4HANAOP103_ERP_LANG_JA.SAR
+S4HANAOP103_ERP_LANG_KK.SAR
+S4HANAOP103_ERP_LANG_KO.SAR
+S4HANAOP103_ERP_LANG_LT.SAR
+S4HANAOP103_ERP_LANG_LV.SAR
+S4HANAOP103_ERP_LANG_MS.SAR
+S4HANAOP103_ERP_LANG_NL.SAR
+S4HANAOP103_ERP_LANG_NO.SAR
+S4HANAOP103_ERP_LANG_PL.SAR
+S4HANAOP103_ERP_LANG_PT.SAR
+S4HANAOP103_ERP_LANG_RO.SAR
+S4HANAOP103_ERP_LANG_RU.SAR
+S4HANAOP103_ERP_LANG_SH.SAR
+S4HANAOP103_ERP_LANG_SK.SAR
+S4HANAOP103_ERP_LANG_SL.SAR
+S4HANAOP103_ERP_LANG_SV.SAR
+S4HANAOP103_ERP_LANG_TH.SAR
+S4HANAOP103_ERP_LANG_TR.SAR
+S4HANAOP103_ERP_LANG_UK.SAR
+S4HANAOP103_ERP_LANG_VI.SAR
+S4HANAOP103_ERP_LANG_ZF.SAR
+S4HANAOP103_ERP_LANG_ZH.SAR
+SAPCAR_1211-80000935.EXE
+SAPEXE_28-80003386.SAR
+SAPEXEDB_28-80003385.SAR
+SAPHOSTAGENT40_40-20009394.SAR
+SWPM20SP02_7-80003424.SAR 
+S4CORE103_INST_EXPORT_10.zip
+S4CORE103_INST_EXPORT_11.zip
+S4CORE103_INST_EXPORT_12.zip
+S4CORE103_INST_EXPORT_13.zip
+S4CORE103_INST_EXPORT_14.zip
+S4CORE103_INST_EXPORT_15.zip
+S4CORE103_INST_EXPORT_16.zip
+S4CORE103_INST_EXPORT_17.zip
+S4CORE103_INST_EXPORT_18.zip
+S4CORE103_INST_EXPORT_19.zip
+S4CORE103_INST_EXPORT_1.zip
+S4CORE103_INST_EXPORT_20.zip
+S4CORE103_INST_EXPORT_2.zip
+S4CORE103_INST_EXPORT_3.zip
+S4CORE103_INST_EXPORT_4.zip
+S4CORE103_INST_EXPORT_5.zip
+S4CORE103_INST_EXPORT_6.zip
+S4CORE103_INST_EXPORT_7.zip
+S4CORE103_INST_EXPORT_8.zip
+S4CORE103_INST_EXPORT_9.zip
+
+### SAP Application server 
+
+51050423_3.ZIP
+51050829_JAVA_part1.exe
+51050829_JAVA_part2.rar
+51052190_part1.exe
+51052190_part2.rar
+51052190_part3.rar
+51052190_part4.rar
+51052190_part5.rar
+51052318_part1.exe
+51052318_part2.rar
+SAPCAR_1014-80000935.EXE
+SWPM10SP23_1-20009701.SAR
+SAPHOSTAGENT36_36-20009394.SAR
+SAPEXE_200-80002573.SAR
+SAPEXEDB_200-80002572.SAR
+igsexe_5-80003187.sar
+igshelper_17-10010245.sar
+
+
+###
 ## SAP Landscape Deployment
-To deploy multiple components of an SAP Landscape (HANA, ISCSI, NFS, ASCS and NW) you can use the following button. For more information on the SAP Landscape  deployment, please refer to the SAP Landscape [documentation page](https://github.com/AzureCAT-GSI/Hana-Test-Deploy/blob/master/README-full.md).
+To deploy multiple components of an SAP Landscape (HANA, ISCSI, NFS, ASCS and NW) Please refer to the installation doc here: [documentation page](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2Ftests/README.md).
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzureCAT-GSI%2FHana-Test-Deploy%2Fmaster%2FFazuredeploy-full.json)
