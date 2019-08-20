@@ -278,6 +278,30 @@ do_zypper_update() {
   cat /tmp/cleanlist2 | xargs -L 1 -I '{}' zypper update -y '{}'
 }
 
+
+setup_ssh_keys() {
+  P_OTHERVMNAME=$1
+  P_HANAUSR=$2
+  P_HANAPWD=$3
+
+##external dependency on sshpt
+    retry 5 "zypper --non-interactive --no-gpg-checks addrepo https://download.opensuse.org/repositories/openSUSE:/Tools/SLE_12_SP3/openSUSE:Tools.repo"
+    retry 5 "zypper --non-interactive --no-gpg-checks refresh"
+    retry 5 "zypper install -y python-pip"
+    retry 5 "pip install sshpt==1.3.11"
+    #set up passwordless ssh on both sides
+    cd ~/
+    #rm -r -f .ssh
+    cat /dev/zero |ssh-keygen -q -N "" > /dev/null
+
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "mkdir -p /root/.ssh"
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "chmod 700 /root/.ssh"
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "chown root:root /root/.ssh/authorized_keys"
+    sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "chmod 700 /root/.ssh/authorized_keys"    
+}
+
 ##end of bash function definitions
 
 
@@ -605,6 +629,7 @@ cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
 
+setup_ssh_keys $OTHERVMNAME $HANAUSR $HANAPWD
 
 if [ "$ISPRIMARY" = "yes" ]; then
   cd $SAPBITSDIR
@@ -699,24 +724,6 @@ $SAPBITSDIR/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm -b --configfil
 echo "install hana end" >> /tmp/parameter.txt
 echo "install hana end" >> /tmp/hanacomplete.txt
 
-##external dependency on sshpt
-    retry 5 "zypper --non-interactive --no-gpg-checks addrepo https://download.opensuse.org/repositories/openSUSE:/Tools/SLE_12_SP3/openSUSE:Tools.repo"
-    retry 5 "zypper --non-interactive --no-gpg-checks refresh"
-    retry 5 "zypper install -y python-pip"
-    retry 5 "pip install sshpt==1.3.11"
-    #set up passwordless ssh on both sides
-    cd ~/
-    #rm -r -f .ssh
-    cat /dev/zero |ssh-keygen -q -N "" > /dev/null
-
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "mkdir -p /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo -c ~/.ssh/id_rsa.pub -d /root/
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "cp /root/id_rsa.pub /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chmod 700 /root/.ssh"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chown root:root /root/.ssh/authorized_keys"
-    sshpt --hosts $OTHERVMNAME -u $HANAUSR -p $HANAPWD --sudo "chmod 700 /root/.ssh/authorized_keys"
-    
-#
 if [ "$CONFIGHSR" == "yes" ]; then
     echo "hsr config start" >> /tmp/parameter.txt	    
     HANASIDU="${HANASID^^}"
