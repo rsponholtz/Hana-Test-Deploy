@@ -634,7 +634,19 @@ if [ "$ISPRIMARY" = "yes" ]; then
   fi
   touch /tmp/hanaunpackcomplete.txt
   else
-    waitfor root $OTHERVMNAME /tmp/hanaunpackcomplete.txt
+    #make sure the above completes
+    DLRESULT=1
+    while [ $DLRESULT != 0 ]
+    do
+      retry 20 "waitfor root $OTHERVMNAME /tmp/hanaunpackcomplete.txt"
+      DLRESULT=$?
+      if [[ $DLRESULT = 0 ]];
+      then
+        #check that the hdblcm program is there
+        test -e $SAPBITSDIR/${hanapackage}/DATA_UNITS/HDB_LCM_LINUX_X86_64/hdblcm
+        DLRESULT=$?
+      fi
+    done
 fi
 
 cd $SAPBITSDIR

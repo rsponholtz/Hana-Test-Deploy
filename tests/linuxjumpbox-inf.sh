@@ -15,11 +15,11 @@ az group deployment create \
 --template-uri "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/linuxjumpbox/linuxjumpbox-infra.json" \
 --parameters \
 vmName="$LINUXJUMPBOXNAME" \
-vmUserName=$vmusername  \
-             ExistingNetworkResourceGroup=$vnetrgname \
-             vnetName=$vnetname \
-             subnetName=$mgtsubnetname \
+vmUserName="$vmusername"  \
+             ExistingNetworkResourceGroup="$vnetrgname" \
+             vnetName="$vnetname" \
+             subnetName="$mgtsubnetname" \
                    osType="SLES 12 SP3" \
-             adminPublicKey=$jumpboxkey \
-             customUri=$customuri \
-                   StaticIP=$LINUXJUMPBOXIP
+             adminPublicKey="$jumpboxkey" \
+             customUri="$customuri" \
+                   StaticIP="$LINUXJUMPBOXIP"
