@@ -18,12 +18,12 @@ az group deployment create \
    --parameters \
     ExistingNetworkResourceGroup="$vnetrgname" \
     vnetName="$vnetname" \
-    subnetName="$anfsubnetname" \
-    netappAccountName="$anfaccountname" \
-    capacityPoolName="$anfcappoolname" \
-    capacityPoolSize="$anfcappoolsize" \
+    subnetName="$anfsubnetName" \
+    netappAccountName="$netappAccountName" \
+    capacityPoolName="$capacityPoolName" \
+    capacityPoolSize="$capacityPoolSize" \
     capacityPoolServiceLevel="Premium" \
-    volumeFilePath="$anfvolpath" \
-    volumeUsageThreshold="$anfvolthresh"
+    volumeFilePath="$volumeFilePath" \
+    volumeUsageThreshold="$volumeUsageThreshold"
 
 echo "anf service created"

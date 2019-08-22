@@ -13,7 +13,7 @@
         "type": "string"
     },
     "subnetName": {
-        "defaultValue": "mgtsubnet",
+        "defaultValue": "anfsubnet",
         "type": "string"
     },      
     "netappAccountName": {
@@ -119,7 +119,7 @@
             "resources": [],
             "dependsOn": [
                 "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
-                "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName''), parameters('capacityPoolName'))]"
+                "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
             ]
           }
     ],
