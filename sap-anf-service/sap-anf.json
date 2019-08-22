@@ -76,7 +76,7 @@
         },
         {
             "type": "Microsoft.NetApp/netAppAccounts/capacityPools",
-            "name": "[parameters('capacityPoolName')]",
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'))]",
             "apiVersion": "2019-05-01",
             "location": "[resourceGroup().location]",
             "properties": {
@@ -88,7 +88,7 @@
             ]
         },
         {
-            "name": "string",
+          "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
             "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
             "apiVersion": "2019-05-01",
             "location": "[resourceGroup().location]",
