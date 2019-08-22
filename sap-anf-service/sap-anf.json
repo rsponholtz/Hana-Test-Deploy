@@ -92,7 +92,6 @@
             "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
             "apiVersion": "2019-05-01",
             "location": "[resourceGroup().location]",
-            "tags": {},
             "properties": {
               "creationToken": "[parameters('volumeFilePath')]",
               "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
@@ -110,11 +109,7 @@
                   }
                 ]
               },
-              "protocolTypes": [
-                "nfsv3"
-              ],
-              "subnetId": "[variables('subnetRef')]",
-              "mountTargets": {}
+              "subnetId": "[variables('subnetRef')]"
             },
             "resources": [],
             "dependsOn": [
