@@ -56,15 +56,41 @@
             "metadata": {
                 "description": "subnet address range for shared services tier in CIDR notation"
             }            
+        },
+        "use_anf": {
+                "type": "string",
+                "metadata": {
+                    "description": "yes to use anf subnet, no to skip"
+                },
+                "defaultValue": "no",
+                "allowedValues": [
+                    "yes",
+                    "no"
+                ]            
+        },
+        "ANFSubnetName": {
+            "defaultValue": "anfsubnet",
+            "type": "string",
+            "metadata": {
+                "description": "subnet name for azure netapp files"
+            }            
+        },
+        "ANFSubnetPrefix": {
+            "defaultValue": "10.0.3.0/24",
+            "type": "string",
+            "metadata": {
+                "description": "subnet address range for azure netapp files"
+            }            
         }
+                    
     },
     "variables": {
-
+        "dbsubnettxt":
     },
     "resources":   [{
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[parameters('vnetName')]",
-            "apiVersion": "2015-06-15",
+            "apiVersion": "2018-07-01",
             "location": "[resourceGroup().location]",
             "properties": {
                 "addressSpace": {
@@ -90,7 +116,25 @@
                         "properties": {
                             "addressPrefix": "[parameters('MgtSubnetPrefix')]"
                         }
-                    }                    
+                    },
+                    {
+                        "name": "[parameters('ANFSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('ANFSubnetPrefix')]",
+                            "delegations": [
+                                {
+                                    "name": "NetAppDelegation",
+                                    "properties": {
+                                        "serviceName": "Microsoft.NetApp/volumes",
+                                        "actions": [
+                                            "Microsoft.Network/networkinterfaces/*",
+                                            "Microsoft.Network/virtualNetworks/subnets/join/action"
+                                        ]
+                                    }
+                                }
+                            ]                        
+                        }
+                    }                                                     
                 ]
             }
         }

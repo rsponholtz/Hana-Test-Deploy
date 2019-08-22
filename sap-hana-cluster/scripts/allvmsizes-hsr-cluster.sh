@@ -130,7 +130,8 @@ download_if_needed() {
   SOURCEFILE="$P_SOURCEDIR/$P_FILENAME"
   test -e $DESTFILE
   RESULT=$?
-  if [ "$RESULT" = "1" ]; then
+
+  if [ "$RESULT" != "0" ]; then
     #need to download the file.
     test -e $DESTFILE.downloading  
     DLRESULT=$?
@@ -636,7 +637,14 @@ if [ "$ISPRIMARY" = "yes" ]; then
   echo "hana download start" >> /tmp/parameter.txt
   if [ "${hanapackage}" = "51053787" ]
   then 
-    download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
+    DLRESULT=1
+    while [ $DLRESULT != 0 ]
+    do
+      download_if_needed $SAPBITSDIR "$URI/SapBits" "${hanapackage}.ZIP"
+      unzip -t $SAPBITSDIR/${hanapackage}.ZIP
+      DLRESULT=$?
+    done
+
     cd $SAPBITSDIR
     mkdir ${hanapackage}
     cd ${hanapackage}
