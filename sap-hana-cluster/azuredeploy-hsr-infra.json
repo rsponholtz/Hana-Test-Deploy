@@ -252,7 +252,7 @@
         "mytemplatevar": "[variables('vmSizes')[parameters('VMSize')].templateuri]",
         "myattachedstgtemp": "[concat(variables('baseUri'), '/Vms/',variables('mytemplatevar'))]",
         "mynfsstgtemp": "[concat(variables('baseUri'), '/Vms/nfsstg-allvmsizes-hsr.json')]",
-        "mytemplateuri": "[if(equals(use_anf,'yes'),variables('mynfsstgtemp'),variables('myattachedstgtemp'))]"
+        "mytemplateuri": "[if(equals(parameters('use_anf'),'yes'),variables('mynfsstgtemp'),variables('myattachedstgtemp'))]"
     },
     "resources": [
         {
