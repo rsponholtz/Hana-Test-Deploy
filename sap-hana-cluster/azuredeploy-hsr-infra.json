@@ -169,7 +169,18 @@
                 "description": "name of the availability set for the VMs"
             },
             "defaultValue": "hanaavset"
-        }
+        },
+        "use_anf": {
+            "type": "string",
+            "metadata": {
+                "description": "yes to use anf for storage, no for attached disk"
+            },
+            "defaultValue": "no",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]            
+        }        
     },
     "variables": {
         "vmName1": "[toLower(parameters('vmName1'))]",
@@ -239,7 +250,9 @@
 
         },
         "mytemplatevar": "[variables('vmSizes')[parameters('VMSize')].templateuri]",
-        "mytemplateuri": "[concat(variables('baseUri'), '/Vms/',variables('mytemplatevar'))]"
+        "myattachedstgtemp": "[concat(variables('baseUri'), '/Vms/',variables('mytemplatevar'))]",
+        "mynfsstgtemp": "[concat(variables('baseUri'), '/Vms/nfsstg-allvmsizes-hsr.json')]",
+        "mytemplateuri": "[if(equals(use_anf,'yes'),variables('mynfsstgtemp'),variables('myattachedstgtemp'))]"
     },
     "resources": [
         {

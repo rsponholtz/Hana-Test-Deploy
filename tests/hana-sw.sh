@@ -32,6 +32,20 @@ az group deployment create \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
    SMTUri="$slessmt" \
-   NFSIP="$NFSILBIP"
+   NFSIP="$NFSILBIP" \
+   use_anf=$USE_ANF \
+   sapbitsfilepath=$sapbitsmount \
+   hana1datafilepath=$hana1datamount \
+   hana1logfilepath=$hana1logmount \
+   hana1sharedfilepath=$hana1sharedmount \
+   hana1usrsapfilepath=$hana1usrsapmount \
+   hana1backupfilepath=$hana1backupmount \
+   hana2datafilepath=$hana2datamount \
+   hana2logfilepath=$hana2logmount \
+   hana2sharedfilepath=$hana2sharedmount \
+   hana2usrsapfilepath=$hana2usrsapmount \
+   hana2backupfilepath=$hana2backupmount 
+
+
 
 echo "hana software installed"

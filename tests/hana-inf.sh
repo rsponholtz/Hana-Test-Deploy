@@ -35,6 +35,7 @@ az group deployment create \
    SubscriptionEmail="$slesemail" \
    SubscriptionID="$slesreg" \
    SMTUri="$slessmt" \
-   ILBIP=$HANAILBIP
+   ILBIP=$HANAILBIP \
+   use_anf=$USE_ANF
 
 echo "hana cluster created"

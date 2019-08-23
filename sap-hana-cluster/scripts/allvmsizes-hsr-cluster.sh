@@ -32,6 +32,14 @@ SUBID=${18}
 SUBURL=${19}
 NFSIP=${20}
 HANAVER=${21}
+use_anf=${22}
+sapbitsfilepath=${23}
+hanadatafilepath=${24}
+hanalogfilepath=${25}
+hanasharedfilepath=${26}
+hanausrsapfilepath=${27}
+hanabackupfilepath=${28}
+
 ###
 # cluster tuning values
 WATCHDOGTIMEOUT="30"
@@ -303,47 +311,26 @@ setup_ssh_keys() {
     sshpt --hosts $P_OTHERVMNAME -u $P_HANAUSR -p $P_HANAPWD --sudo "chmod 700 /root/.ssh/authorized_keys"    
 }
 
-##end of bash function definitions
 
 
-register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
+setup_hana_anf() {
 
-#decode hana version parameter
-HANAVER=${HANAVER^^}
-if [ "${HANAVER}" = "SAP HANA PLATFORM EDITION 2.0 SPS01 REV 10 (51052030)" ]
-then
-  hanapackage="51052030"
-else
-  echo "not 51052030"
-  if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS02 (51052325)" ]
-  then
-    hanapackage="51052325"
-  else
-  echo "not 51052325"
-    if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS03 REV30 (51053061)" ]
-    then
-      hanapackage="51053061"
-    else
-      if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS04 REV40 (51053787)" ]
-      then
-        hanapackage="51053787"
-      else
-        echo "not 51053061, default to 51052325"
-        hanapackage="51052325"
-      fi
-    fi
-  fi
-fi
+  mkdir /sapbits
+  mount -t nfs4 ${sapbitsfilepath} /sapbits
+  SAPBITSDIR="/sapbits"
+
+echo "write to fstab start" >> /tmp/parameter.txt
+echo "${sapbitsfilepath} /sapbits nfs3 defaults 0 0" >> /etc/fstab
+echo "${hanadatafilepath} /hana/data nfs3 defaults 0 0" >> /etc/fstab
+echo "${hanalogfilepath} /hana/log nfs3 defaults 0 0" >> /etc/fstab
+echo "${hanasharedfilepath} /hana/shared nfs3 defaults 0 0" >> /etc/fstab
+echo "${hanabackupfilepath} /hana/backup nfs3 defaults 0 0" >> /etc/fstab
+echo "${hanausrsapfilepath} /usr/sap nfs3 defaults 0 0" >> /etc/fstab
+echo "write to fstab end" >> /tmp/parameter.txt
+}
 
 
-
-mkdir /etc/systemd/login.conf.d
-mkdir /hana
-mkdir /hana/data
-mkdir /hana/log
-mkdir /hana/shared
-mkdir /hana/backup
-mkdir /usr/sap
+setup_hana_direct_storage() {
 
 # this assumes that 5 disks are attached at lun 0 through 4
 echo "Creating partitions and physical volumes"
@@ -606,6 +593,58 @@ else
   SAPBITSDIR="/hana/data/sapbits"
   ln -s  /hana/data/sapbits /sapbits
 fi
+}
+
+setup_hana_storage() {
+
+  mkdir /etc/systemd/login.conf.d
+  mkdir /hana
+  mkdir /hana/data
+  mkdir /hana/log
+  mkdir /hana/shared
+  mkdir /hana/backup
+  mkdir /usr/sap
+
+  if [] $use_anf == "yes" ]; then
+    setup_hana_anf
+  else
+    setup_hana_direct_storage
+  fi
+}
+
+##end of bash function definitions
+
+
+register_subscription "$SUBEMAIL"  "$SUBID" "$SUBURL"
+
+#decode hana version parameter
+HANAVER=${HANAVER^^}
+if [ "${HANAVER}" = "SAP HANA PLATFORM EDITION 2.0 SPS01 REV 10 (51052030)" ]
+then
+  hanapackage="51052030"
+else
+  echo "not 51052030"
+  if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS02 (51052325)" ]
+  then
+    hanapackage="51052325"
+  else
+  echo "not 51052325"
+    if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS03 REV30 (51053061)" ]
+    then
+      hanapackage="51053061"
+    else
+      if [ "$HANAVER" = "SAP HANA PLATFORM EDITION 2.0 SPS04 REV40 (51053787)" ]
+      then
+        hanapackage="51053787"
+      else
+        echo "not 51053061, default to 51052325"
+        hanapackage="51052325"
+      fi
+    fi
+  fi
+fi
+
+setup_hana_storage
 
 #install hana prereqs
 retry 5 "zypper install -y glibc-2.22-51.6"
