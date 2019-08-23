@@ -204,11 +204,25 @@
             "description": "maximum storage quota allowed for the volume"
           }
         },
+        "vol13fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
         "vol13ut": {
           "type": "int",
           "metadata": {
             "description": "maximum storage quota allowed for the volume"
           }
+        },
+        "vol14fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
         },
         "vol14ut": {
           "type": "int",
@@ -216,17 +230,38 @@
             "description": "maximum storage quota allowed for the volume"
           }
         },
+        "vol15fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
         "vol15ut": {
           "type": "int",
           "metadata": {
             "description": "maximum storage quota allowed for the volume"
           }
         },
+        "vol16fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
         "vol16ut": {
           "type": "int",
           "metadata": {
             "description": "maximum storage quota allowed for the volume"
           }
+        },
+        "vol17fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
         },
         "vol17ut": {
           "type": "int",
