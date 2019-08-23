@@ -203,6 +203,36 @@
           "metadata": {
             "description": "maximum storage quota allowed for the volume"
           }
+        },
+        "vol13ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol14ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol15ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol16ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol17ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
         }
       },
     "variables": {
