@@ -48,20 +48,163 @@
         ],
         "defaultValue": "Premium"
     },
-    "volumeFilePath": {
+    "vol1fp": {
         "type": "string",
         "metadata": {
           "description": "File path for the ANF volume"
         },
         "defaultValue": "anfvol1"
       },
-      "volumeUsageThreshold": {
+      "vol1ut": {
         "type": "int",
         "metadata": {
           "description": "maximum storage quota allowed for the volume"
         }
-      }         
+      },
+    "vol2fp": {
+        "type": "string",
+        "metadata": {
+          "description": "File path for the ANF volume"
+        },
+        "defaultValue": "anfvol1"
+      },
+    "vol2ut": {
+      "type": "int",
+      "metadata": {
+        "description": "maximum storage quota allowed for the volume"
+      }
     },
+    "vol3fp": {
+        "type": "string",
+        "metadata": {
+          "description": "File path for the ANF volume"
+        },
+        "defaultValue": "anfvol1"
+      },
+      "vol3ut": {
+        "type": "int",
+        "metadata": {
+          "description": "maximum storage quota allowed for the volume"
+        }
+      },
+      "vol4fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol4ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol5fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol5ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol6fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol6ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol7fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol7ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol8fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol8ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol9fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol9ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol10fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol10ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol11fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol11ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        },
+        "vol12fp": {
+          "type": "string",
+          "metadata": {
+            "description": "File path for the ANF volume"
+          },
+          "defaultValue": "anfvol1"
+        },
+        "vol12ut": {
+          "type": "int",
+          "metadata": {
+            "description": "maximum storage quota allowed for the volume"
+          }
+        }
+      },
     "variables": {
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
         "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]"        
@@ -116,6 +259,366 @@
                 "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
                 "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
             ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol1fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol1ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol2fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol2ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol3fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol3ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol4fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol4ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol5fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol5ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol6fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol6ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol7fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol7ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol8fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol8ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol9fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol9ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol10fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol10ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol11fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol11ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
+          },
+          {
+            "name": "[concat(parameters('netappAccountName'),'/',parameters('capacityPoolName'),'/',parameters('volumeFilePath'))]",          
+              "type": "Microsoft.NetApp/netAppAccounts/capacityPools/volumes",
+              "apiVersion": "2019-05-01",
+              "location": "[resourceGroup().location]",
+              "properties": {
+                "creationToken": "[parameters('vol12fp')]",
+                "serviceLevel": "[parameters('capacityPoolServiceLevel')]",
+                "usageThreshold": "[parameters('vol12ut')]",
+                "exportPolicy": {
+                  "rules": [
+                    {
+                      "ruleIndex": 1,
+                      "unixReadOnly": false,
+                      "unixReadWrite": true,
+                      "cifs": false,
+                      "nfsv3": true,
+                      "nfsv4": false,
+                      "allowedClients": "0.0.0.0/0"
+                    }
+                  ]
+                },
+                "subnetId": "[variables('subnetRef')]"
+              },
+              "resources": [],
+              "dependsOn": [
+                  "[resourceId('Microsoft.NetApp/netAppAccounts', parameters('netappAccountName'))]",
+                  "[resourceId('Microsoft.NetApp/netAppAccounts/capacityPools', parameters('netappAccountName'), parameters('capacityPoolName'))]"
+              ]
           }
     ],
     "outputs": { }

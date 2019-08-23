@@ -23,7 +23,29 @@ az group deployment create \
     capacityPoolName="$capacityPoolName" \
     capacityPoolSize="$capacityPoolSize" \
     capacityPoolServiceLevel="Premium" \
-    volumeFilePath="$volumeFilePath" \
-    volumeUsageThreshold="$volumeUsageThreshold"
+vol1fp=$sapbitsFilePath \ 
+vol1ut=$sapbitsUsageThreshold \
+vol2fp=$hanadataFilePath \ 
+vol2ut=$hanadataUsageThreshold \
+vol3fp=$hanalogFilePath \ 
+vol3ut=$hanalogUsageThreshold \
+vol4fp=$hanasharedFilePath \ 
+vol4ut=$hanasharedUsageThreshold \
+vol5fp=$hanausrsapFilePath \ 
+vol5ut=$hanausrsapUsageThreshold \
+vol6fp=$hanabackupFilePath \ 
+vol6ut=$hanabackupUsageThreshold \
+vol7fp=$sapmntFilePath \ 
+vol7ut=$sapmntUsageThreshold \
+vol8fp=$ascsFilePath \ 
+vol8ut=$ascsUsageThreshold \
+vol9fp=$sapsysFilePath \ 
+vol9ut=$sapmntUsageThreshold \
+vol10fp=$ersFilePath \ 
+vol10ut=$ersUsageThreshold \
+vol11fp=$transFilePath \ 
+vol11ut=$transUsageThreshold \
+vol12fp=$usrsapsidFilePath \ 
+vol12ut=$usrsapsidUsageThreshold 
 
 echo "anf service created"
