@@ -605,7 +605,7 @@ setup_hana_storage() {
   mkdir /hana/backup
   mkdir /usr/sap
 
-  if [] $use_anf == "yes" ]; then
+  if [ $use_anf == "yes" ]; then
     setup_hana_anf
   else
     setup_hana_direct_storage
