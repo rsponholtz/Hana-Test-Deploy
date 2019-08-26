@@ -316,7 +316,7 @@ setup_ssh_keys() {
 setup_hana_anf() {
 
   mkdir /sapbits
-  mount -t nfs3 -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp ${sapbitsfilepath} /sapbits
+  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp ${sapbitsfilepath} /sapbits
   SAPBITSDIR="/sapbits"
 
   mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp  ${hanadatafilepath} /hana/data 
