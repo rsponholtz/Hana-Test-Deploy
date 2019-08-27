@@ -316,14 +316,7 @@ setup_ssh_keys() {
 setup_hana_anf() {
 
   mkdir /sapbits
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp ${sapbitsfilepath} /sapbits
   SAPBITSDIR="/sapbits"
-
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp  ${hanadatafilepath} /hana/data 
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp  ${hanalogfilepath}  /hana/log
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp  ${hanasharedfilepath} /hana/shared
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp  ${hanabackupfilepath} /hana/backup 
-  mount -t nfs -o rw,hard,rsize=65536,wsize=65536,vers=3,tcp ${hanausrsapfilepath} /usr/sap 
 
 
 echo "write to fstab start" >> /tmp/parameter.txt
@@ -334,6 +327,7 @@ echo "${hanasharedfilepath} /hana/shared nfs rw,hard,rsize=65536,wsize=65536,ver
 echo "${hanabackupfilepath} /hana/backup nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
 echo "${hanausrsapfilepath} /usr/sap nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
+mount -a
 }
 
 
@@ -609,6 +603,7 @@ setup_hana_storage() {
   mkdir /hana/data
   mkdir /hana/log
   mkdir /hana/shared
+  chmod a+rx /hana/shared
   mkdir /hana/backup
   mkdir /usr/sap
 
