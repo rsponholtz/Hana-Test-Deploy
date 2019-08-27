@@ -318,6 +318,15 @@ setup_hana_anf() {
   mkdir /sapbits
   SAPBITSDIR="/sapbits"
 
+  chattr +i /sapbits
+  chattr +i  /hana
+  chattr +i  /hana/data
+  chattr +i  /hana/log
+  chattr +i  /hana/shared
+  chmod a+rx /hana/shared
+  chattr +i  /hana/backup
+  chattr +i  /usr/sap
+
 
 echo "write to fstab start" >> /tmp/parameter.txt
 echo "${sapbitsfilepath} /sapbits nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
@@ -598,14 +607,16 @@ fi
 
 setup_hana_storage() {
 
+  mkdir /sapbits
   mkdir /etc/systemd/login.conf.d
   mkdir /hana
   mkdir /hana/data
   mkdir /hana/log
   mkdir /hana/shared
-  chmod a+rx /hana/shared
   mkdir /hana/backup
   mkdir /usr/sap
+
+
 
   if [ $use_anf == "yes" ]; then
     setup_hana_anf
