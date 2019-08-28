@@ -667,6 +667,13 @@ else
   fi
 fi
 
+
+groupadd -g 1002 sapinst
+groupadd -g 1001 sapsys
+useradd -u 1006 -g 1001 -M -d /home/sapadm -s /bin/false sapadm
+usermod -a -G sapinst root
+usermod -a -G sapsys root
+
 setup_hana_storage
 
 #install hana prereqs
