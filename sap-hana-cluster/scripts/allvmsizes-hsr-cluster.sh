@@ -337,6 +337,16 @@ echo "${hanabackupfilepath} /hana/backup nfs rw,hard,rsize=65536,wsize=65536,ver
 echo "${hanausrsapfilepath} /usr/sap nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
 mount -a
+
+  chmod 777  /sapbits
+  chmod 777  /hana
+  chmod 777  /hana/data
+  chmod 777  /hana/log
+  chmod 777  /hana/shared
+  chmod 777  /hana/shared
+  chmod 777  /hana/backup
+  chmod 777  /usr/sap
+
 }
 
 
@@ -892,7 +902,7 @@ device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
-sbdcmd="s#SBD_DEVICE=\"\"SBD_DEVICE=\"$sbdid\"#g"
+sbdcmd="s#SBD_DEVICE=/"\"SBD_DEVICE=\"$sbdid\"#g"
 sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
 cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
