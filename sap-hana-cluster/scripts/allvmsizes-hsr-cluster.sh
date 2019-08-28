@@ -901,8 +901,11 @@ cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
 device="$(lsscsi 6 0 0 0| cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
+sbdid2=`echo $sbdid | sed 's./.\\\\/.g' `
 
-sbdcmd="s#SBD_DEVICE=/"\"SBD_DEVICE=\"$sbdid\"#g"
+##sbdcmd="s#SBD_DEVICE=/"\"SBD_DEVICE=\"$sbdid\"#g"
+sbdcmd="s/\#SBD_DEVICE=.*/SBD_DEVICE=\"${sbdid2}\"/g"
+
 sbdcmd2='s/SBD_PACEMAKER=.*/SBD_PACEMAKER="yes"/g'
 sbdcmd3='s/SBD_STARTMODE=.*/SBD_STARTMODE="always"/g'
 cat sbd.new | sed $sbdcmd | sed $sbdcmd2 | sed $sbdcmd3 > /etc/sysconfig/sbd.modified
