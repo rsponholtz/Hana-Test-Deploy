@@ -251,7 +251,18 @@
                 "S4 1809",                
                 "IDES 1610"
             ]            
-        }        
+        },        ,
+        "use_anf": {
+            "type": "string",
+            "metadata": {
+                "description": "yes to use anf for storage, no for attached disk"
+            },
+            "defaultValue": "no",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]            
+        }
     },
     "variables": {},
     "resources": [
@@ -269,7 +280,7 @@
                     "fileUris": [
                         "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-netweaver-server/nwserver.sh"
                     ],
-                    "commandToExecute": "[concat('sh nwserver.sh',' \"',parameters('VMNAME'),'\" \"',parameters('VMIPADDR'),'\" \"',parameters('ISPRIMARY'),'\" \"',parameters('URI'),'\" \"',parameters('SUBEMAIL'),'\" \"',parameters('SUBID'),'\" \"',parameters('SUBURL'),'\" \"',parameters('NFSILBIP'),'\" \"',parameters('ASCS1VM'),'\" \"',parameters('ASCS1IP'),'\" \"',parameters('ASCS2VM'),'\" \"',parameters('ASCS2IP'),'\" \"',parameters('MASTERPASSWORD'),'\" \"',parameters('SAPADMUID'),'\" \"',parameters('SAPSYSGID'),'\" \"',parameters('SIDADMUID'),'\" \"',parameters('DBHOST'),'\" \"',parameters('DBSID'),'\" \"',parameters('DBINSTANCE'),'\" \"',parameters('ASCSSID'),'\" \"',parameters('ASCSHOST'),'\" \"',parameters('NWINSTANCE'),'\" \"',parameters('ASCSINSTANCE'),'\" \"',parameters('ERSINSTANCE'),'\" \"',parameters('SAPBITSMOUNT'),'\" \"',parameters('SAPMNTMOUNT'),'\" \"',parameters('USRSAPSIDMOUNT'),'\" \"',parameters('USRSAPASCSMOUNT'),'\" \"',parameters('USRSAPERSMOUNT'),'\" \"',parameters('SAPINSTGID'),'\" \"',parameters('ASCSILBIP'),'\" \"',parameters('DBIP'),'\" \"',parameters('CONFIGURESAP'),'\" \"',parameters('SAPSOFTWARETODEPLOY'),'\"')]"
+                    "commandToExecute": "[concat('sh nwserver.sh',' \"',parameters('VMNAME'),'\" \"',parameters('VMIPADDR'),'\" \"',parameters('ISPRIMARY'),'\" \"',parameters('URI'),'\" \"',parameters('SUBEMAIL'),'\" \"',parameters('SUBID'),'\" \"',parameters('SUBURL'),'\" \"',parameters('NFSILBIP'),'\" \"',parameters('ASCS1VM'),'\" \"',parameters('ASCS1IP'),'\" \"',parameters('ASCS2VM'),'\" \"',parameters('ASCS2IP'),'\" \"',parameters('MASTERPASSWORD'),'\" \"',parameters('SAPADMUID'),'\" \"',parameters('SAPSYSGID'),'\" \"',parameters('SIDADMUID'),'\" \"',parameters('DBHOST'),'\" \"',parameters('DBSID'),'\" \"',parameters('DBINSTANCE'),'\" \"',parameters('ASCSSID'),'\" \"',parameters('ASCSHOST'),'\" \"',parameters('NWINSTANCE'),'\" \"',parameters('ASCSINSTANCE'),'\" \"',parameters('ERSINSTANCE'),'\" \"',parameters('SAPBITSMOUNT'),'\" \"',parameters('SAPMNTMOUNT'),'\" \"',parameters('USRSAPSIDMOUNT'),'\" \"',parameters('USRSAPASCSMOUNT'),'\" \"',parameters('USRSAPERSMOUNT'),'\" \"',parameters('SAPINSTGID'),'\" \"',parameters('ASCSILBIP'),'\" \"',parameters('DBIP'),'\" \"',parameters('CONFIGURESAP'),'\" \"',parameters('SAPSOFTWARETODEPLOY'),'\" \"',parameters('use_anf'),'\"')]"
                 },
                 "protectedSettings": {}
             }

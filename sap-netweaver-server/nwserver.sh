@@ -46,6 +46,7 @@ ASCSILBIP=${31}
 DBIP=${32}
 CONFIGURESAP=${33}
 SAPSOFTWARETODEPLOY=${34}
+use_anf=${35}
 
 echo "nwserver.sh receiving:"
 echo "VMNAME:" $VMNAME >> /tmp/variables.txt
@@ -193,13 +194,21 @@ configure_mounts() {
   chattr +i /usr/sap/${P_ASCSSID}/ASCS${P_ASCSINSTANCE}
   chattr +i /usr/sap/${P_ASCSSID}/ERS${P_ERSINSTANCE}
 
+if [ $use_anf == "yes" ]; then
+    NFS_VERSION="nfs"
+    NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,vers=3,tcp"
+else
+    NFS_VERSION="nfs"
+    NFS_OPTIONS="nfsvers=4,nosymlink,sync"
+fi
+
   # Add the following lines to the auto.direct file, save and exit
-  echo "/sapbits -nfsvers=4,nosymlink,sync ${P_SAPBITSMOUNT}" >> /etc/auto.direct
-  echo "/sapmnt/${P_ASCSSID} -nfsvers=4,nosymlink,sync ${P_SAPMNTMOUNT}" >> /etc/auto.direct
-  echo "/usr/sap/trans -nfsvers=4,nosymlink,sync ${P_SAPTRANSMOUNT}" >> /etc/auto.direct
-  echo "/usr/sap/${P_ASCSSID}/SYS -nfsvers=4,nosymlink,sync ${P_USRSAPSIDMOUNT}" >> /etc/auto.direct
-  echo "/usr/sap/${P_ASCSSID}/ASCS00 -nfsvers=4,nosymlink,sync ${P_USRSAPASCSMOUNT}" >> /etc/auto.direct
-  echo "/usr/sap/${P_ASCSSID}/ERS00 -nfsvers=4,nosymlink,sync ${P_USRSAPERSMOUNT}" >> /etc/auto.direct
+  echo "/sapbits ${NFS_OPTIONS} ${P_SAPBITSMOUNT}" >> /etc/auto.direct
+  echo "/sapmnt/${P_ASCSSID} ${NFS_OPTIONS} ${P_SAPMNTMOUNT}" >> /etc/auto.direct
+  echo "/usr/sap/trans ${NFS_OPTIONS} ${P_SAPTRANSMOUNT}" >> /etc/auto.direct
+  echo "/usr/sap/${P_ASCSSID}/SYS ${NFS_OPTIONS} ${P_USRSAPSIDMOUNT}" >> /etc/auto.direct
+  echo "/usr/sap/${P_ASCSSID}/ASCS00 ${NFS_OPTIONS} ${P_USRSAPASCSMOUNT}" >> /etc/auto.direct
+  echo "/usr/sap/${P_ASCSSID}/ERS00 ${NFS_OPTIONS} ${P_USRSAPERSMOUNT}" >> /etc/auto.direct
 
   systemctl enable autofs
   service autofs restart  

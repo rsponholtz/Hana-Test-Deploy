@@ -52,7 +52,7 @@ SAPTRANSMOUNT=${38}
 USRSAPASCSMOUNT=${39}
 USRSAPERSMOUNT=${40}
 SAPSOFTWARETODEPLOY=${41}
-
+use_anf=${42}
 
 ###
 # cluster tuning values
@@ -102,6 +102,8 @@ echo "USRSAPSIDMOUNT: ${USRSAPSIDMOUNT}" >> /tmp/variables.txt
 echo "SAPTRANSMOUNT: ${SAPTRANSMOUNT}" >> /tmp/variables.txt
 echo "USRSAPASCSMOUNT: ${USRSAPASCSMOUNT}" >> /tmp/variables.txt
 echo "USRSAPERSMOUNT: ${USRSAPERSMOUNT}" >> /tmp/variables.txt
+echo "SAPSOFTWARETODEPLOY: ${SAPSOFTWARETODEPLOY}" >> /tmp/variables.txt
+echo "use_anf: ${use_anf}" >> /tmp/variables.txt
 
 retry() {
     local -r -i max_attempts="$1"; shift
@@ -808,10 +810,18 @@ echo "logicalvol start" >> /tmp/parameter.txt
 echo "logicalvol end" >> /tmp/parameter.txt
 
 
+if [ $use_anf == "yes" ]; then
+    NFS_VERSION="nfs"
+    NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,vers=3,tcp"
+else
+    NFS_VERSION="nfs"
+    NFS_OPTIONS="nfsvers=4,nosymlink,sync"
+fi
+
 if [ "${SAPBITSMOUNT}" != "" ]; then
   mkdir /sapbits
-  mount -t nfs4 ${SAPBITSMOUNT} /sapbits
-  echo "${SAPBITSMOUNT} /sapbits nfs4 defaults 0 0" >> /etc/fstab
+  mount -t ${NFS_VERSION} -o ${NFS_OPTIONS} ${SAPBITSMOUNT} /sapbits
+  echo "${SAPBITSMOUNT} /sapbits ${NFS_VERSION} ${NFS_OPTIONS}  0 0" >> /etc/fstab
   SAPBITSDIR="/sapbits"
 else
   mkdir -p /hana/data/sapbits
@@ -848,11 +858,11 @@ chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 
 # Add the following lines to the file, save and exit
 
-echo "/sapmnt/${ASCSSID} -nfsvers=4,nosymlink,sync ${SAPMNTMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/trans -nfsvers=4,nosymlink,sync ${SAPTRANSMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/SYS -nfsvers=4,nosymlink,sync ${USRSAPSIDMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE} -nfsvers=4,nosymlink,sync ${USRSAPASCSMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ERS${ERSINSTANCE} -nfsvers=4,nosymlink,sync ${USRSAPERSMOUNT}" >> /etc/auto.direct
+echo "/sapmnt/${ASCSSID} -${NFS_OPTIONS} ${SAPMNTMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/trans -${NFS_OPTIONS} ${SAPTRANSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/SYS -${NFS_OPTIONS} ${USRSAPSIDMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE} -${NFS_OPTIONS} ${USRSAPASCSMOUNT}" >> /etc/auto.direct
+echo "/usr/sap/${ASCSSID}/ERS${ERSINSTANCE} -${NFS_OPTIONS} ${USRSAPERSMOUNT}" >> /etc/auto.direct
 
 systemctl enable autofs
 service autofs restart
