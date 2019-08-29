@@ -41,8 +41,9 @@ az group deployment create \
         ASCSILBIP="$ASCSLBIP" \
         DBIP="$HANAILBIP" \
         CONFIGURESAP="YES" \
-        SAPSOFTWARETODEPLOY="$SAPSOFTWARETODEPLOY"
-
+        SAPSOFTWARETODEPLOY="$SAPSOFTWARETODEPLOY" \
+        use_anf=$USE_ANF 
+        
 echo "netweaver cluster created"
 
 

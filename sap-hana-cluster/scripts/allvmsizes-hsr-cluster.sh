@@ -674,6 +674,8 @@ useradd -u 1006 -g 1001 -M -d /home/sapadm -s /bin/false sapadm
 usermod -a -G sapinst root
 usermod -a -G sapsys root
 
+setup_ssh_keys $OTHERVMNAME $HANAUSR $HANAPWD
+
 setup_hana_storage
 
 #install hana prereqs
@@ -699,7 +701,7 @@ cat /etc/waagent.conf | sed $sedcmd | sed $sedcmd2 > /etc/waagent.conf.new
 cp -f /etc/waagent.conf.new /etc/waagent.conf
 # we may be able to restart the waagent and get the swap configured immediately
 
-setup_ssh_keys $OTHERVMNAME $HANAUSR $HANAPWD
+
 
 if [ "$ISPRIMARY" = "yes" ]; then
   cd $SAPBITSDIR
