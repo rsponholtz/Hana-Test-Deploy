@@ -251,7 +251,7 @@
                 "S4 1809",                
                 "IDES 1610"
             ]            
-        },        ,
+        },        
         "use_anf": {
             "type": "string",
             "metadata": {
