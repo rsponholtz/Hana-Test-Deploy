@@ -29,8 +29,15 @@ chmod u+x *.sh
 ./jb-inf.sh #(if you want a windows jumpbox to RDP to)
 ./iscsi-inf.sh
 ./iscsi-sw.sh
-./nfs-inf.sh
-./nfs-sw.sh #(this will generally take a long time. check the stderr file)
+
+At this point, if you are setting up your own NFS cluster, use this:
+    ./nfs-inf.sh
+    ./nfs-sw.sh #(this will generally take a long time. check the stderr file.  If you select SUSE 12 SP4+, this will be much faster)
+otherwise, if you are using ANF, run this:
+    ./anf-inf.sh
+    when this is done, you will have to gather the IP addresses for the ANF mount points from the Azure portal, and transfer them into the azuredeploy.cfg file i
+    in the nfs mount locations.
+    
 ./hana-inf.sh
 ./hana-sw.sh #(this should take 30-45 minutes - check the stderr file for completion)
 ./ascs-inf.sh
@@ -38,5 +45,11 @@ chmod u+x *.sh
 ./pas-inf.sh
 ./pas-sw.sh #(this should take 1-2 hours - check the stderr file for completion)
 ```
+
+when this is all done, you will have a few post automation steps to do:
+
+1) finish the ASCS/ERS cluster setup.  details to be added soon
+
+1) On the PAS server, you need to set the hdbuserstore to point to the hana load balancer rather than to a single HANA instance.
 
 You should then be able to go to the windows jumpbox, install sapgui, and connect to the primary app server.  The SAP* user password will be what you put in the azuredeploy.cfg.

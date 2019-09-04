@@ -635,6 +635,76 @@ setup_hana_storage() {
   fi
 }
 
+write_utility_shell_scripts() {
+   HANASIDU="${HANASID^^}"
+
+    cat > /root/showattr.sh <<EOF
+#!/bin/bash
+SAPHanaSR-showAttr
+EOF
+    chmod u+x /root/showattr.sh 
+    cat > /root/systemreplicationstatus.sh <<EOF
+#!/bin/bash
+su - -c "python /hana/shared/${HANASIDU}/HDB${HANANUMBER}/exe/python_support/systemReplicationStatus.py" ${HANASID}adm
+EOF
+    chmod u+x /root/systemreplicationstatus.sh
+
+
+  if [ "$ISPRIMARY" = "yes" ]; then
+    cat > /root/fail1.sh <<EOF
+#!/bin/bash
+crm resource migrate msl_SAPHana_$HANAID  force  
+EOF
+    chmod u+x /root/fail1.sh  
+    cat > /root/fail2.sh <<EOF
+#!/bin/bash
+su - -c "HDB stop" ${HANASID}adm
+EOF
+    chmod u+x /root/fail2.sh
+    cat > /root/fail3.sh <<EOF
+#!/bin/bash
+su - -c "hdbnsutil -sr_register --name=system0 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASID}adm
+EOF
+    chmod u+x /root/fail3.sh
+    cat > /root/fail4.sh <<EOF
+#!/bin/bash
+crm resource unmigrate msl_SAPHana_${HANASIDU}_HDB${HANANUMBER}
+EOF
+    chmod u+x /root/fail4.sh
+    cat > /root/fail9.sh <<EOF
+#!/bin/bash
+echo 'b' > /proc/sysrq-trigger
+EOF
+    chmod u+x /root/fail9.sh    
+else
+    cat > /root/fail5.sh <<EOF
+#!/bin/bash
+crm resource migrate msl_SAPHana_$HANAID  force  
+EOF 
+    chmod u+x /root/fail5.sh 
+    cat > /root/fail6.sh <<EOF
+#!/bin/bash
+su - -c "HDB stop" ${HANASID}adm
+EOF
+    chmod u+x /root/fail6.sh
+    cat > /root/fail7.sh <<EOF
+#!/bin/bash
+su - -c "hdbnsutil -sr_register --name=system1 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASID}adm
+EOF
+    chmod u+x /root/fail7.sh
+    cat > /root/fail8.sh <<EOF
+#!/bin/bash
+crm resource unmigrate msl_SAPHana_${HANASIDU}_HDB${HANANUMBER}
+EOF
+    chmod u+x /root/fail8.sh
+    cat > /root/fail10.sh <<EOF
+#!/bin/bash
+echo 'b' > /proc/sysrq-trigger
+EOF
+    chmod u+x /root/fail10.sh     
+fi
+
+}
 ##end of bash function definitions
 
 
@@ -1002,6 +1072,8 @@ crm resource cleanup rsc_SAPHana_$HANAID
 crm configure property maintenance-mode=false
 
 fi
+
+write_utility_shell_scripts
 
 echo "software deploy completed.  Please check for proper software install"
 
