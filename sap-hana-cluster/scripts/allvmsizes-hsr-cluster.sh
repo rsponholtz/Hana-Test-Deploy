@@ -963,7 +963,8 @@ if [ "$ISPRIMARY" = "yes" ]; then
 sleep 10 
 echo "hana iscsi end" >> /tmp/parameter.txt
 
-device="$(lsscsi 6 0 0 0| cut -c59-)"
+#device="$(lsscsi 6 0 0 0| cut -c59-)"
+device="$(lsscsi | grep LIO-ORG | cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 
@@ -977,7 +978,7 @@ fi
 #!/bin/bash [A]
 cd /etc/sysconfig
 cp -f /etc/sysconfig/sbd /etc/sysconfig/sbd.new
-device="$(lsscsi 6 0 0 0| cut -c59-)"
+device="$(lsscsi | grep LIO-ORG | cut -c59-)"
 diskid="$(ls -l /dev/disk/by-id/scsi-* | grep $device)"
 sbdid="$(echo $diskid | grep -o -P '/dev/disk/by-id/scsi-3.{32}')"
 sbdid2=`echo $sbdid | sed 's./.\\\\/.g' `
