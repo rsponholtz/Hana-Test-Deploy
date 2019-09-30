@@ -636,16 +636,16 @@ setup_hana_storage() {
 }
 
 write_utility_shell_scripts() {
-   HANASIDU="${HANASID^^}"
-
-    cat > /root/showattr.sh <<EOF
+  HANASIDU="${HANASID^^}"
+  HANASIDL="${HANASID,,}"
+  cat > /root/showattr.sh <<EOF
 #!/bin/bash
 SAPHanaSR-showAttr
 EOF
     chmod u+x /root/showattr.sh 
     cat > /root/systemreplicationstatus.sh <<EOF
 #!/bin/bash
-su - -c "python /hana/shared/${HANASIDU}/HDB${HANANUMBER}/exe/python_support/systemReplicationStatus.py" ${HANASID}adm
+su - -c "python /hana/shared/${HANASIDU}/HDB${HANANUMBER}/exe/python_support/systemReplicationStatus.py" ${HANASIDL}adm
 EOF
     chmod u+x /root/systemreplicationstatus.sh
 
@@ -653,17 +653,17 @@ EOF
   if [ "$ISPRIMARY" = "yes" ]; then
     cat > /root/fail1.sh <<EOF
 #!/bin/bash
-crm resource migrate msl_SAPHana_$HANAID  force  
+crm resource migrate msl_SAPHana_${HANASIDU}_HDB${HANANUMBER}  force  
 EOF
     chmod u+x /root/fail1.sh  
     cat > /root/fail2.sh <<EOF
 #!/bin/bash
-su - -c "HDB stop" ${HANASID}adm
+su - -c "HDB stop" ${HANASIDL}adm
 EOF
     chmod u+x /root/fail2.sh
     cat > /root/fail3.sh <<EOF
 #!/bin/bash
-su - -c "hdbnsutil -sr_register --name=system0 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASID}adm
+su - -c "hdbnsutil -sr_register --name=system0 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASIDL}adm
 EOF
     chmod u+x /root/fail3.sh
     cat > /root/fail4.sh <<EOF
@@ -680,7 +680,7 @@ else
     cat > /root/fail5.sh <<EOF
 #!/bin/bash
 crm resource migrate msl_SAPHana_$HANAID  force  
-EOF 
+EOF
     chmod u+x /root/fail5.sh 
     cat > /root/fail6.sh <<EOF
 #!/bin/bash
@@ -689,7 +689,7 @@ EOF
     chmod u+x /root/fail6.sh
     cat > /root/fail7.sh <<EOF
 #!/bin/bash
-su - -c "hdbnsutil -sr_register --name=system1 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASID}adm
+su - -c "hdbnsutil -sr_register --name=system1 --remoteHost=$OTHERVMNAME --remoteInstance=$HANANUMBER --replicationMode=sync --operationMode=logreplay" ${HANASIDL}adm
 EOF
     chmod u+x /root/fail7.sh
     cat > /root/fail8.sh <<EOF
@@ -904,7 +904,7 @@ if [ "$ISPRIMARY" = "yes" ]; then
 
 	#now set the role on the primary
 	cat >/tmp/srenable <<EOF
-hdbnsutil -sr_enable --name=system0 	
+  hdbnsutil -sr_enable --name=system0 	
 EOF
 	chmod a+r /tmp/srenable
 	su - $HANAADMIN -c "bash /tmp/srenable"

@@ -54,6 +54,13 @@
             "metadata": {
                 "description": "Uri for SAP Bits"
             }
+        },
+        "vmLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Location region for the Virtual Machine"
+            },
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -65,14 +72,15 @@
         "scriptFolder": ".",
         "scriptFileName": "hanastudio.ps1",
         "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
-        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]"
+        "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
+        "vmlocation": "[if(length(parameters('vmLocation'), parameters('vmLocation'),resourceGroup().location)]"
     },
     "resources": [
         {
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('vhdStorageAccountName')]",
             "apiVersion": "2016-01-01",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "sku": {
                 "name": "Standard_LRS"
             },
@@ -92,7 +100,7 @@
             "apiVersion": "2016-09-01",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('vNicName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "dependsOn": [
                 "[variables('PIPName')]"
             ],
@@ -118,7 +126,7 @@
             "apiVersion": "2016-03-30",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[parameters('vmName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "dependsOn": [
                 "[variables('vhdStorageAccountName')]",
                 "[variables('vNICName')]"
@@ -161,7 +169,7 @@
                     "type": "extensions",
                     "name": "CustomScriptExtension",
                     "apiVersion": "2015-06-15",
-                    "location": "[resourceGroup().location]",
+                    "location": "[variables('vmlocation')]",
                     "dependsOn": [
                         "[parameters('vmName')]"
                     ],

@@ -77,6 +77,13 @@
                 "description": "Name of the Virtual Machine"
             },
             "defaultValue": "linuxjumpbox"
+        },
+        "vmLocation": {
+            "type": "string",
+            "metadata": {
+                "description": "Location region for the Virtual Machine"
+            },
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -138,14 +145,15 @@
         },
         "scriptFolder": ".",
         "PublicIpAddressName":"ipcftsapbitspip",
-        "networkSecurityGroupName":"ipcftsapbitsnsg"
+        "networkSecurityGroupName":"ipcftsapbitsnsg",
+        "vmlocation": "[if(length(parameters('vmLocation'), parameters('vmLocation'),resourceGroup().location)]"
     },
     "resources": [
         {
             "apiVersion": "2016-09-01",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('vNicName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIpAddresses/', variables('PublicIpAddressName'))]"
             ],
@@ -183,7 +191,7 @@
             },
             "name": "[variables('PublicIpAddressName')]",
             "apiVersion": "2018-08-01",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "tags": {},
             "properties": {
                 "publicIpAllocationMethod": "dynamic"
@@ -193,7 +201,7 @@
             "type": "Microsoft.Compute/disks",
             "name": "[concat(parameters('vmName'),'-data')]",
             "apiVersion": "[variables('api-version-vm')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "sku": {
                 "name": "Premium_LRS",
                 "tier": "Premium"
@@ -209,7 +217,7 @@
             "apiVersion": "2018-10-01",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[variables('vmlocation')]",
             "dependsOn": [
                 "[variables('vNicName')]"
             ],

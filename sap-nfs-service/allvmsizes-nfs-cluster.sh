@@ -484,7 +484,7 @@ drbdsetup wait-sync-resource NWS-nfs
   echo "waiting for drbd sync"
  # drbdsetup wait-sync-resource NWS-nfs
   sleep 1m
-  mkfs.xfs /dev/drbd0
+  mkfs.xfs -K /dev/drbd0
   echo "waiting for drbd sync"
  # drbdsetup wait-sync-resource NWS-nfs
 
