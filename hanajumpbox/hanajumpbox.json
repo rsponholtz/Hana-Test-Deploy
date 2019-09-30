@@ -73,7 +73,7 @@
         "scriptFileName": "hanastudio.ps1",
         "fileuri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/hanastudio.ps1",
         "scriptParameters": "[concat(' -BaseURI ', parameters('customUri'))]",
-        "vmlocation": "[if(length(parameters('vmLocation'), parameters('vmLocation'),resourceGroup().location)]"
+        "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
     },
     "resources": [
         {

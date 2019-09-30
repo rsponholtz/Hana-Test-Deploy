@@ -146,7 +146,7 @@
         "scriptFolder": ".",
         "PublicIpAddressName":"ipcftsapbitspip",
         "networkSecurityGroupName":"ipcftsapbitsnsg",
-        "vmlocation": "[if(length(parameters('vmLocation'), parameters('vmLocation'),resourceGroup().location)]"
+        "vmlocation": "[if(greater(length(parameters('vmLocation')),0), parameters('vmLocation'),resourceGroup().location)]"
     },
     "resources": [
         {
