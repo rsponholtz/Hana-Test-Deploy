@@ -329,12 +329,12 @@ setup_hana_anf() {
 
 
 echo "write to fstab start" >> /tmp/parameter.txt
-echo "${sapbitsfilepath} /sapbits nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
-echo "${hanadatafilepath} /hana/data nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
-echo "${hanalogfilepath} /hana/log nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
-echo "${hanasharedfilepath} /hana/shared nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
-echo "${hanabackupfilepath} /hana/backup nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
-echo "${hanausrsapfilepath} /usr/sap nfs rw,hard,rsize=65536,wsize=65536,vers=3,tcp 0 0" >> /etc/fstab
+echo "${sapbitsfilepath} /sapbits nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
+echo "${hanadatafilepath} /hana/data nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
+echo "${hanalogfilepath} /hana/log nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
+echo "${hanasharedfilepath} /hana/shared nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
+echo "${hanabackupfilepath} /hana/backup nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
+echo "${hanausrsapfilepath} /usr/sap nfs rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp 0 0" >> /etc/fstab
 echo "write to fstab end" >> /tmp/parameter.txt
 mount -a
 
