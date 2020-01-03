@@ -812,7 +812,7 @@ echo "logicalvol end" >> /tmp/parameter.txt
 
 if [ $use_anf == "yes" ]; then
     NFS_VERSION="nfs"
-    NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,ec=sys,vers=4.1,tcp"
+    NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp"
 else
     NFS_VERSION="nfs"
     NFS_OPTIONS="nfsvers=4,nosymlink,sync"
