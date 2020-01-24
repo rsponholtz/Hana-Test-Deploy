@@ -207,8 +207,7 @@
         "vmSize": "[variables('vmSizeArray')[0]]",
         "avSetNameDB": "[concat(variables('prefix'), '-avset-ascs')]",
         "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]",
-        "diagStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
-        "diagStorageURI":  "[variables('diagStorageURI')]"
+        "diagStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]"
     },
     "resources": [
         {
