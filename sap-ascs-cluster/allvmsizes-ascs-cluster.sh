@@ -815,7 +815,7 @@ if [ $use_anf == "yes" ]; then
     NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,sec=sys,vers=4.1,tcp"
 else
     NFS_VERSION="nfs"
-    NFS_OPTIONS="nfsvers=4,nosymlink,sync"
+    NFS_OPTIONS="nfsvers=4"
 fi
 
 if [ "${SAPBITSMOUNT}" != "" ]; then
