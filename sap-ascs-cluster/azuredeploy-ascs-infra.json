@@ -206,9 +206,22 @@
         "vmSizeArray": "[split(parameters('vmSize'),' ')]",
         "vmSize": "[variables('vmSizeArray')[0]]",
         "avSetNameDB": "[concat(variables('prefix'), '-avset-ascs')]",
-        "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]"
+        "loadBalancerName": "[concat(variables('prefix'), 'ascslb')]",
+        "diagStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
+        "diagStorageURI":  "[variables('diagStorageURI')]"
     },
     "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('diagStorageAccountName')]",
+            "apiVersion": "2016-01-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Standard_LRS"
+            },
+            "kind": "Storage",
+            "properties": {}
+        },
         {
             "type": "Microsoft.Compute/availabilitySets",
             "name": "[variables('avSetNameDB')]",
@@ -529,7 +542,8 @@
             "type": "Microsoft.Resources/deployments",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
-                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
+                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('diagStorageAccountName'))]"       
             ],
             "properties": {
                 "mode": "Incremental",
@@ -595,6 +609,9 @@
                     },
                     "SMTUri": {
                         "value": "[parameters('SMTUri')]"
+                    },
+                    "diagStorageURI": {
+                        "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
                     }
                 }
             }
@@ -668,6 +685,9 @@
                     },
                     "SMTUri": {
                         "value": "[parameters('SMTUri')]"
+                    },
+                    "diagStorageURI": {
+                        "value": "[concat(reference(variables('diagStorageAccountName'), providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob)]"
                     }
                 }
             }
