@@ -157,6 +157,13 @@
                 "description": "SMT URI, blank for none"
             },
             "defaultValue": ""
+        },
+        "diagStorageURI": {
+            "type": "string",
+            "metadata": {
+                "description": "diag storage uri"
+            },
+            "defaultValue": ""
         }
     },
     "variables": {
@@ -260,6 +267,12 @@
                             "id": "[resourceId('Microsoft.Network/networkInterfaces',variables('nicName'))]"
                         }
                     ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true,
+                        "storageUri": "[parameters('diagStorageURI')]"
+                    }
                 }
             },
             "resources": [
