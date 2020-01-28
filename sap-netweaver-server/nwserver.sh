@@ -196,10 +196,10 @@ configure_mounts() {
 
 if [ $use_anf == "yes" ]; then
     NFS_VERSION="nfs"
-    NFS_OPTIONS="rw,hard,rsize=65536,wsize=65536,vers=3,tcp"
+    NFS_OPTIONS="-nfsvers=3,rw,hard,rsize=65536,wsize=65536,tcp"
 else
     NFS_VERSION="nfs"
-    NFS_OPTIONS="nfsvers=4,nosymlink,sync"
+    NFS_OPTIONS="-nfsvers=4,nosymlink,sync"
 fi
 
   # Add the following lines to the auto.direct file, save and exit
