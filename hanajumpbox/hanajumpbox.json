@@ -148,7 +148,6 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                        "name": "osdisk",
                         "caching": "ReadWrite",
                         "createOption": "FromImage"
                     }
