@@ -212,7 +212,7 @@
             ],
             "location": "[resourceGroup().location]",
             "properties": {
-                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",                
+                "enableAcceleratedNetworking": "[if(equals(parameters('enableAcceleratedNetworking'),"yes"),yes,no]",                
                 "ipConfigurations": [
                     {
                         "name": "[concat(variables('ipNamePrefix'))]",
