@@ -24,6 +24,7 @@ az group deployment create \
    osType="SLES 12 SP3" \
    appAvailSetName="nwavailset" \
    StaticIP="$AASIPADDR" \
-   subnetName="$appsubnetname"
+   subnetName="$appsubnetname" \
+   enableAcceleratedNetworking="no"
 
 echo "additional application server created"

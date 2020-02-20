@@ -1,4 +1,4 @@
-{
+,{
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {        
@@ -40,6 +40,7 @@
             "type": "string",
             "allowedValues": [
                 "Standard_DS2_v2",
+                "Standard_DS4_v2",
                 "Standard_DS13_v2",
                 "Standard_DS14_v2"
             ],
@@ -54,6 +55,8 @@
                 "Windows Server 2016 Datacenter",
                 "SLES 12 SP3",
                 "SLES 12 SP3 BYOS",
+                "SLES 12 SP4",
+                "SLES 12 SP4 BYOS",
                 "SLES 12 SP2",
                 "SLES 12 SP2 BYOS"
             ],
@@ -94,6 +97,17 @@
                 "description": "The static ip for the NW VM."
             },
             "defaultValue": "10.0.1.49"
+        },
+        "enableAcceleratedNetworking": {
+            "type": "string",
+            "metadata": {
+                "description": "Should we configure accelerated networking for the VM"
+            },
+            "defaultValue": "no",
+            "allowedValues": [
+                "yes",
+                "no"
+            ]
         },
         "_artifactsLocation": {
             "type": "string",
@@ -140,6 +154,20 @@
                 "OSType": "Linux",
                 "version": "latest"
             },
+            "SLES 12 SP4": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP4BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },            
             "SLES 12 SP2": {
                 "sku": "12-SP2",
                 "offer": "SLES-SAP",
@@ -178,12 +206,13 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[concat(variables('vNicName'))]",
-            "apiVersion": "2016-09-01",
+            "apiVersion": "2017-06-01",
             "dependsOn": [
                 "[concat('Microsoft.Compute/availabilitySets/', variables('avSetNameApp'))]"
             ],
             "location": "[resourceGroup().location]",
             "properties": {
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",                
                 "ipConfigurations": [
                     {
                         "name": "[concat(variables('ipNamePrefix'))]",
