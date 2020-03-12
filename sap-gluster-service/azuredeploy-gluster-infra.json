@@ -281,6 +281,69 @@
                     }
                 }
             }
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[concat('SmallLinkedTemplate', parameters('VMName3'))]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('smallUri')]"
+                },
+                "parameters": {
+                    "vmName1": {
+                        "value": "[parameters('vmName3')]"
+                    },
+                    "vmName2": {
+                        "value": "[parameters('vmName2')]"
+                    },
+                    "vmName3": {
+                        "value": "[parameters('vmName1')]"
+                    },
+                    "SubnetRef": {
+                        "value": "[variables('subnetRef')]"
+                    },
+                    "OperatingSystem": {
+                        "value": "[parameters('OperatingSystem')]"
+                    },
+                    "vmUserName": {
+                        "value": "[parameters('vmUserName')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmPassword')]"
+                    },
+                    "vmSize": {
+                        "value": "[variables('vmSize')]"
+                    },
+                    "StaticIP1": {
+                        "value": "[parameters('StaticIP3')]"
+                    },
+                    "StaticIP2": {
+                        "value": "[parameters('StaticIP2')]"
+                    },
+                    "StaticIP3": {
+                        "value": "[parameters('StaticIP1')]"
+                    },
+                    "ISPRIMARY": {
+                        "value": "no"
+                    },
+                    "repoUri": {
+                        "value": "[variables('repoUri')]"
+                    },
+                    "avSetObj": {
+                        "value": {
+                            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+                        }
+                    },
+                    "DataDiskSize": {
+                        "value":  "[parameters('DataDiskSize')]"
+                    }
+                }
+            }
         }
     ],
     "outputs": {}
