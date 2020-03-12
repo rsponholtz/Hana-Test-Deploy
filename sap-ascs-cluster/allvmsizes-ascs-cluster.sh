@@ -799,6 +799,7 @@ cat /root/.ssh/id_rsa.pub >> /root/.ssh/authorized_keys
 
 setup_cluster "$ISPRIMARY" "$sbdid" "$VMNAME" "$OTHERVMNAME" "$ASCSSID-cl"
 
+retry 5 "zypper remove -y  sap_suse_cluster_connector"
 retry 5 "zypper install -y sap_suse_cluster_connector"
 
 #!/bin/bash
@@ -861,8 +862,8 @@ chattr +i /usr/sap/${ASCSSID}/ERS${ERSINSTANCE}
 echo "/sapmnt/${ASCSSID} -${NFS_OPTIONS} ${SAPMNTMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/trans -${NFS_OPTIONS} ${SAPTRANSMOUNT}" >> /etc/auto.direct
 echo "/usr/sap/${ASCSSID}/SYS -${NFS_OPTIONS} ${USRSAPSIDMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE} -${NFS_OPTIONS} ${USRSAPASCSMOUNT}" >> /etc/auto.direct
-echo "/usr/sap/${ASCSSID}/ERS${ERSINSTANCE} -${NFS_OPTIONS} ${USRSAPERSMOUNT}" >> /etc/auto.direct
+echo "#/usr/sap/${ASCSSID}/ASCS${ASCSINSTANCE} -${NFS_OPTIONS} ${USRSAPASCSMOUNT}" >> /etc/auto.direct
+echo "#/usr/sap/${ASCSSID}/ERS${ERSINSTANCE} -${NFS_OPTIONS} ${USRSAPERSMOUNT}" >> /etc/auto.direct
 
 systemctl enable autofs
 service autofs restart

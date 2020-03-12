@@ -1,0 +1,288 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "prefix": {
+            "type": "string",
+            "metadata": {
+                "description": "prefix for resource naming"
+            },
+            "defaultValue": "nfs"
+        },
+        "VMName1": {
+            "type": "string",
+            "metadata": {
+                "description": "First VM Name"
+            },
+            "defaultValue": "gluster1"
+        },
+        "VMName2": {
+            "type": "string",
+            "metadata": {
+                "description": "Second VM Name"
+            },
+            "defaultValue": "gluster2"
+        },
+        "VMName3": {
+            "type": "string",
+            "metadata": {
+                "description": "Third VM Name"
+            },
+            "defaultValue": "gluster3"
+        },        "VMSize": {
+            "type": "string",
+            "metadata": {
+                "description": "VM Size"
+            },
+            "defaultValue": "Standard_D4s_v3",
+            "allowedValues": [
+                "Standard_D2s_v3",
+                "Standard_D4s_v3",
+                "Standard_D8s_v3",
+                "Standard_M64s (1 TB)",
+                "Standard_M64ms (1.7 TB)",
+                "Standard_M128s (2 TB)",
+                "Standard_M128ms (3.8 TB)",
+                "Standard_E16s_v3 (128 GB)",
+                "Standard_E32s_v3 (256 GB)",
+                "Standard_E64s_v3 (448 GB)"
+            ]
+        },
+        "vnetName": {
+            "type": "string",
+            "defaultValue": "vnet",
+            "metadata": {
+                "description": "The HANA VNET"
+            }
+        },
+        "SubnetName": {
+            "type": "string",
+            "defaultValue": "appsubnet",
+            "metadata": {
+                "description": "The data subnet name"
+            }
+        },
+        "VMUserName": {
+            "type": "string",
+            "metadata": {
+                "description": "Username for the Virtual Machines"
+            },
+            "defaultValue": "testuser"
+        },
+        "VMPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Password for the Virtual Machine"
+            }
+        },
+        "OperatingSystem": {
+            "type": "string",
+            "metadata": {
+                "description": "Operating system for HANA Machine"
+            },
+            "defaultValue": "SLES for SAP 12 SP3",
+            "allowedValues": [
+                "SLES for SAP 12 SP4",
+                "SLES for SAP 12 SP3",
+                "SLES for SAP 12 SP2",
+                "RHEL 7.2 for SAP HANA",
+                "RHEL 7.4 for SAP HANA",
+                "RHEL 7.5 for SAP HANA"
+            ]
+        },
+        "ExistingNetworkResourceGroup": {
+            "type": "string",
+            "metadata": {
+                "description": "Type in the name of the Resource Group for an existing network or leave no to use the same one"
+            }
+        },
+        "StaticIP1": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the first HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.1.7"
+        },
+        "StaticIP2": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the second HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.1.8"
+        },
+        "StaticIP3": {
+            "type": "string",
+            "metadata": {
+                "description": "IP Address for the third HANA VM when Static IP Allocation Method has been selected"
+            },
+            "defaultValue": "10.0.1.9"
+        },
+        "DataDiskSize": {
+            "type": "int",
+            "metadata": {
+                "description": "size of the data disk"
+            },
+            "defaultValue": 255
+        }        
+    },
+    "variables": {
+        "prefix": "[toLower(parameters('prefix'))]",
+        "vmName1": "[toLower(parameters('vmName1'))]",
+        "vmName2": "[toLower(parameters('vmName2'))]",
+        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-gluster-service",
+        "repoUri": "[variables('baseUri')]",
+        "smallUri": "[concat(variables('baseUri'), '/small-gluster.json')]",
+        "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
+        "subnetRef": "[concat(variables('vnetID'), '/subnets/',parameters('subnetName'))]",
+        "vmSizeArray": "[split(parameters('vmSize'),' ')]",
+        "vmSize": "[variables('vmSizeArray')[0]]",
+        "avSetNameDB": "[concat(variables('prefix'), '-avset-nfs')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Compute/availabilitySets",
+            "name": "[variables('avSetNameDB')]",
+            "apiVersion": "2017-03-30",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Aligned"
+            },
+            "properties": {
+                "platformFaultDomainCount": 2,
+                "platformUpdateDomainCount": 20
+            }
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[concat('SmallLinkedTemplate', parameters('VMName1'))]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('smallUri')]"
+                },
+                "debugSetting": {
+                    "detailLevel": "requestContent, responseContent"
+                },
+                "parameters": {
+                    "vmName1": {
+                        "value": "[parameters('vmName1')]"
+                    },
+                    "vmName2": {
+                        "value": "[parameters('vmName2')]"
+                    },
+                    "vmName3": {
+                        "value": "[parameters('vmName3')]"
+                    },
+                    "SubnetRef": {
+                        "value": "[variables('subnetRef')]"
+                    },
+                    "OperatingSystem": {
+                        "value": "[parameters('OperatingSystem')]"
+                    },
+                    "vmUserName": {
+                        "value": "[parameters('vmUserName')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmPassword')]"
+                    },
+                    "vmSize": {
+                        "value": "[variables('vmSize')]"
+                    },
+                    "StaticIP1": {
+                        "value": "[parameters('StaticIP1')]"
+                    },
+                    "StaticIP2": {
+                        "value": "[parameters('StaticIP2')]"
+                    },
+                    "StaticIP3": {
+                        "value": "[parameters('StaticIP3')]"
+                    },
+                    "ISPRIMARY": {
+                        "value": "yes"
+                    },
+                    "repoUri": {
+                        "value": "[variables('repoUri')]"
+                    },
+                    "avSetObj": {
+                        "value": {
+                            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+                        }
+                    },
+                    "DataDiskSize": {
+                        "value":  "[parameters('DataDiskSize')]"
+                    }
+                }
+            }
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[concat('SmallLinkedTemplate', parameters('VMName2'))]",
+            "type": "Microsoft.Resources/deployments",
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]",
+                "[resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[variables('smallUri')]"
+                },
+                "parameters": {
+                    "vmName1": {
+                        "value": "[parameters('vmName2')]"
+                    },
+                    "vmName2": {
+                        "value": "[parameters('vmName1')]"
+                    },
+                    "vmName3": {
+                        "value": "[parameters('vmName1')]"
+                    },
+                    "SubnetRef": {
+                        "value": "[variables('subnetRef')]"
+                    },
+                    "OperatingSystem": {
+                        "value": "[parameters('OperatingSystem')]"
+                    },
+                    "vmUserName": {
+                        "value": "[parameters('vmUserName')]"
+                    },
+                    "vmPassword": {
+                        "value": "[parameters('vmPassword')]"
+                    },
+                    "vmSize": {
+                        "value": "[variables('vmSize')]"
+                    },
+                    "StaticIP1": {
+                        "value": "[parameters('StaticIP2')]"
+                    },
+                    "StaticIP2": {
+                        "value": "[parameters('StaticIP1')]"
+                    },
+                    "StaticIP3": {
+                        "value": "[parameters('StaticIP3')]"
+                    },
+                    "ISPRIMARY": {
+                        "value": "no"
+                    },
+                    "repoUri": {
+                        "value": "[variables('repoUri')]"
+                    },
+                    "avSetObj": {
+                        "value": {
+                            "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('avSetNameDB'))]"
+                        }
+                    },
+                    "DataDiskSize": {
+                        "value":  "[parameters('DataDiskSize')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+}
