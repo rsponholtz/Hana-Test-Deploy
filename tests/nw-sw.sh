@@ -20,7 +20,7 @@ az group deployment create \
    vnetName="$vnetname" \
    ExistingNetworkResourceGroup="$rgname" \
    vmSize="Standard_DS2_v2" \
-   osType="SLES 12 SP3" \
+   osType="SLES 12 SP4" \
    appAvailSetName="nwavailset" \
    StaticIP="$FIRSTNWIPADDR"
 

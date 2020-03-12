@@ -110,6 +110,7 @@
             },
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
+                "Windows Server 2016 Datacenter",                
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP2",

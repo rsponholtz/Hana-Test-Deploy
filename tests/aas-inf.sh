@@ -21,7 +21,7 @@ az group deployment create \
    vnetName="$vnetname" \
    ExistingNetworkResourceGroup="$vnetrgname" \
    vmSize="Standard_DS2_v2" \
-   osType="SLES 12 SP3" \
+   osType="SLES 12 SP4" \
    appAvailSetName="nwavailset" \
    StaticIP="$AASIPADDR" \
    subnetName="$appsubnetname" \

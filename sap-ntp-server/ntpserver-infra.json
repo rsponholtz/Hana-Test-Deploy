@@ -27,6 +27,8 @@
             "type": "string",
             "allowedValues": [
                 "Windows Server 2016 Datacenter",
+                "SLES 12 SP4",
+                "SLES 12 SP4 BYOS",
                 "SLES 12 SP3",
                 "SLES 12 SP3 BYOS",
                 "SLES 12 SP2",

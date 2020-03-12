@@ -19,7 +19,7 @@ az group deployment create \
              ExistingNetworkResourceGroup=$vnetrgname \
              vnetName=$vnetname \
              subnetName=$mgtsubnetname \
-                   osType="SLES 12 SP3" \
+                   osType="SLES 12 SP4" \
              vmPassword=$vmpassword \
                    StaticIP=$ISCSIIP
 

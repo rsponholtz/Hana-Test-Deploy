@@ -27,7 +27,7 @@ az group deployment create \
    HANASubnetName=$dbsubnetname \
    VMUserName=$vmusername \
    VMPassword=$vmpassword \
-   OperatingSystem="SLES for SAP 12 SP3" \
+   OperatingSystem="SLES for SAP 12 SP4" \
    ExistingNetworkResourceGroup="$vnetrgname" \
    StaticIP1=$HANAIP1 \
    StaticIP2=$HANAIP2 \

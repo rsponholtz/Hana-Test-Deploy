@@ -140,6 +140,13 @@
                 "version": "latest",
                 "OSType": "Windows"
             },
+            "Windows Server 2019 Datacenter": {
+                "sku": "2019-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
+                "version": "latest",
+                "OSType": "Windows"
+            },             
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
