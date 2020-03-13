@@ -86,9 +86,12 @@
                 "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA",
-                "RHEL 7.4 for SAP HANA",
-                "RHEL 7.5 for SAP HANA"
+                "RHEL 7.2",
+                "RHEL 7.3",
+                "RHEL 7.4",
+                "RHEL 7.5",
+                "RHEL 7.6",
+                "RHEL 7.7"
             ]
         },
         "ExistingNetworkResourceGroup": {
