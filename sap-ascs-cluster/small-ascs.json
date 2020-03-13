@@ -224,7 +224,8 @@
                 "publisher": "SUSE",
                 "OSType": "Linux",
                 "version": "latest"
-            },
+            }
+        },
         "api-version": "2017-06-01",
         "api-version-vm": "2017-03-30",
         "nicName": "[concat(parameters('vmName1'),'-static')]",
