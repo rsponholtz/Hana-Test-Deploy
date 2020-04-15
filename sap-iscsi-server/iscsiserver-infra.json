@@ -88,6 +88,20 @@
                 "version": "latest",
                 "OSType": "Windows"
             },
+            "SLES 12 SP4": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP4BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },            
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
