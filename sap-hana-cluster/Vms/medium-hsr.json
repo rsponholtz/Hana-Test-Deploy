@@ -24,16 +24,7 @@
             "type": "string",
             "metadata": {
                 "description": "Operating system for HANA Machine"
-            },
-            "defaultValue": "SLES for SAP 12 SP3",
-            "allowedValues": [
-                "SLES for SAP 12 SP5",
-                "SLES for SAP 15 SP1",
-                "SLES for SAP 12 SP3",
-                "SLES for SAP 12 SP4",                
-                "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA"
-            ]
+            }
         },
         "vmUserName": {
             "type": "string",
@@ -167,21 +158,7 @@
         "mode": "Push",
         "nicName": "[concat(parameters('vmName1'),'-static')]",
         "subnetRef": "[parameters('HANASubnetRef')]",
-        "images": {
-            "Windows Server 2016 Datacenter": {
-                "sku": "2016-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },
-            "Windows Server 2019 Datacenter": {
-                "sku": "2019-Datacenter",
-                "offer": "WindowsServer",
-                "publisher": "MicrosoftWindowsServer",
-                "version": "latest",
-                "OSType": "Windows"
-            },            
+        "images": {      
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
@@ -231,21 +208,27 @@
                 "version": "latest",
                 "OSType": "Linux"
             },
+            "SLES 15 SP1": {
+                "sku": "gen1",
+                "offer": "sles-15-sp1",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },  
             "SLES for SAP 15 SP1": {
-                "sku": "15-SP1",
+                "sku": "15",
                 "offer": "SLES-SAP",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
             },
             "SLES for SAP 15 SP1 BYOS": {
-                "sku": "12-SP4",
+                "sku": "15",
                 "offer": "SLES-SAP-BYOS",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
             },
-
             "SLES 12 SP4BYOS": {
                 "sku": "12-SP4",
                 "offer": "SLES-SAP-BYOS",
