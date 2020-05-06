@@ -28,6 +28,8 @@
             "defaultValue": "SLES for SAP 12 SP3",
             "allowedValues": [
                 "Windows Server 2016 Datacenter",
+                "SLES for SAP 12 SP5",
+                "SLES for SAP 15 SP1",
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP2",
@@ -168,7 +170,7 @@
         }
     },
     "variables": {
-        "images": {
+         "images": {
             "Windows Server 2016 Datacenter": {
                 "sku": "2016-Datacenter",
                 "offer": "WindowsServer",
@@ -218,6 +220,35 @@
                 "version": "latest",
                 "OSType": "Linux"
             },
+            "SLES for SAP 12 SP5": {
+                "sku": "12-SP5",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP5 BYOS": {
+                "sku": "12-SP5",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP1": {
+                "sku": "15-SP1",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP1 BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+
             "SLES 12 SP4BYOS": {
                 "sku": "12-SP4",
                 "offer": "SLES-SAP-BYOS",
@@ -240,16 +271,16 @@
                 "version": "latest"
             }
         },
-        "api-version": "2017-06-01",
-        "api-version-vm": "2017-03-30",
-        "nicName": "[concat(parameters('vmName1'),'-static')]",
-        "subnetRef": "[parameters('SubnetRef')]",
         "OperatingSystemSpec": {
             "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
             "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
             "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
             "version": "latest"
         },
+        "api-version": "2017-06-01",
+        "api-version-vm": "2017-03-30",
+        "nicName": "[concat(parameters('vmName1'),'-static')]",
+        "subnetRef": "[parameters('SubnetRef')]",
         "DataDiskSize": "1023",
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
