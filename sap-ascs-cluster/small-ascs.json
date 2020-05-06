@@ -204,6 +204,20 @@
                 "version": "latest",
                 "OSType": "Linux"
             },
+            "SLES for SAP 12 SP4": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP4 BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
             "SLES 12 SP4BYOS": {
                 "sku": "12-SP4",
                 "offer": "SLES-SAP-BYOS",
