@@ -255,8 +255,7 @@
             "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
             "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
             "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
-            "version": "[variables('images')[parameters('OperatingSystem')].latest"
-            "version": "latest"
+            "version": "[variables('images')[parameters('OperatingSystem')].version"
         },
         "internalAVSetObj": "[parameters('avSetObj')]"
     },
