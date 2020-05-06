@@ -100,7 +100,21 @@
                 "publisher": "MicrosoftWindowsServer",
                 "version": "latest",
                 "OSType": "Windows"
-            },            
+            },    
+            "SLES 15 SP1": {
+                "sku": "15-SP1",
+                "offer": "SLES",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES 12 SP5": {
+                "sku": "12-SP5",
+                "offer": "SLES",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
