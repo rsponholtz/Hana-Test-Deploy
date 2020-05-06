@@ -23,17 +23,8 @@
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "description": "Operating system for HANA Machine"
-            },
-            "defaultValue": "SLES for SAP 12 SP3",
-            "allowedValues": [
-                "SLES for SAP 12 SP5",
-                "SLES for SAP 15 SP1",
-                "SLES for SAP 12 SP4",
-                "SLES for SAP 12 SP3",
-                "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA"
-            ]
+                "description": "Operating system for nfs Machine"
+            }
         },
         "vmUserName": {
             "type": "string",
@@ -166,7 +157,14 @@
                 "publisher": "MicrosoftWindowsServer",
                 "version": "latest",
                 "OSType": "Windows"
-            },            
+            },   
+            "SLES 15 SP1": {
+                "sku": "gen1",
+                "offer": "sles-15-sp1",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },      
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
@@ -257,6 +255,7 @@
             "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
             "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
             "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
+            "version": "[variables('images')[parameters('OperatingSystem')].latest"
             "version": "latest"
         },
         "internalAVSetObj": "[parameters('avSetObj')]"
