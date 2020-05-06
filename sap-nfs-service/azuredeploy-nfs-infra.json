@@ -86,7 +86,7 @@
                 "SLES 15 SP1",
                 "SLES 12 SP4",
                 "SLES 12 SP3",
-                "SLES SP2",
+                "SLES SP2"
             ]
         },
         "ExistingNetworkResourceGroup": {
