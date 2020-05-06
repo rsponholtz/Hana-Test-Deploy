@@ -23,17 +23,15 @@
             "defaultValue": "mgtsubnet",
             "type": "string"
         },
-        "osType": {
+        "OperatingSystem": {
             "type": "string",
             "allowedValues": [
-                "SLES 15",
-                "SLES 15 BYOS",
-                "SLES 12 SP4",
-                "SLES 12 SP4 BYOS",
-                "SLES 12 SP3",
-                "SLES 12 SP3 BYOS",
-                "SLES 12 SP2",
-                "SLES 12 SP2 BYOS"
+                "SLES for SAP 12 SP5",
+                "SLES for SAP 15 SP1",
+                "SLES for SAP 12 SP3",
+                "SLES for SAP 12 SP4",
+                "SLES for SAP 12 SP2",
+                "RHEL 7.2 for SAP HANA"
             ],
             "defaultValue": "SLES 12 SP3",
             "metadata": {
@@ -98,27 +96,20 @@
         "vNicName": "[concat(parameters('vmName'),'nic')]",
         "vhdStorageAccountName": "[uniqueString(resourceGroup().id, 'storage')]",
         "images": {
-            "SLES 15": {
-                "sku": "15",
-                "offer": "SLES-Priority",
-                "publisher": "SUSE",
+            "Windows Server 2016 Datacenter": {
+                "sku": "2016-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
                 "version": "latest",
-                "OSType": "Linux"
+                "OSType": "Windows"
             },
-            "SLES 12 SP4": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP",
-                "publisher": "SUSE",
+            "Windows Server 2019 Datacenter": {
+                "sku": "2019-Datacenter",
+                "offer": "WindowsServer",
+                "publisher": "MicrosoftWindowsServer",
                 "version": "latest",
-                "OSType": "Linux"
-            },
-            "SLES 12 SP4BYOS": {
-                "sku": "12-SP4",
-                "offer": "SLES-SAP-BYOS",
-                "publisher": "SUSE",
-                "OSType": "Linux",
-                "version": "latest"
-            },  
+                "OSType": "Windows"
+            },            
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
@@ -133,6 +124,63 @@
                 "OSType": "Linux",
                 "version": "latest"
             },
+            "SLES 12 SP4": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP4": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP4 BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP5": {
+                "sku": "12-SP5",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 12 SP5 BYOS": {
+                "sku": "12-SP5",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP1": {
+                "sku": "15-SP1",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP1 BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+
+            "SLES 12 SP4BYOS": {
+                "sku": "12-SP4",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "OSType": "Linux",
+                "version": "latest"
+            },            
             "SLES 12 SP2": {
                 "sku": "12-SP2",
                 "offer": "SLES-SAP",
@@ -148,7 +196,12 @@
                 "version": "latest"
             }
         },
-        "internalOSType": "[variables('images')[parameters('osType')].OSType]",
+        "OperatingSystemSpec": {
+            "imagePublisher": "[variables('images')[parameters('OperatingSystem')].publisher]",
+            "imageOffer": "[variables('images')[parameters('OperatingSystem')].offer]",
+            "sku": "[variables('images')[parameters('OperatingSystem')].sku]",
+            "version": "latest"
+        },
         "csExtension": {
             "Windows": {
                 "script": "[concat(parameters('_artifactsLocation'), '/scripts/noop.ps1', parameters('_artifactsLocationSasToken'))]",
@@ -258,9 +311,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "[variables('images')[parameters('osType')].publisher]",
-                        "offer": "[variables('images')[parameters('osType')].offer]",
-                        "sku": "[variables('images')[parameters('osType')].sku]",
+                        "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
+                        "offer": "[variables('OperatingSystemSpec').imageOffer]",
+                        "sku": "[variables('OperatingSystemSpec').sku]",
                         "version": "latest"
                     },
                     "osDisk": {
