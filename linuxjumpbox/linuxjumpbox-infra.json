@@ -31,7 +31,12 @@
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP2",
-                "RHEL 7.2 for SAP HANA"
+                "RHEL 7.2 for SAP HANA",
+                "SLES 12 SP5",
+                "SLES 15 SP1",
+                "SLES 12 SP3",
+                "SLES 12 SP4",
+                "SLES 12 SP2"
             ],
             "defaultValue": "SLES 12 SP3",
             "metadata": {
@@ -109,7 +114,14 @@
                 "publisher": "MicrosoftWindowsServer",
                 "version": "latest",
                 "OSType": "Windows"
-            },            
+            },  
+            "SLES 15 SP1": {
+                "sku": "15-SP1",
+                "offer": "SLES",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },                      
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
@@ -314,7 +326,7 @@
                         "publisher": "[variables('OperatingSystemSpec').imagePublisher]",
                         "offer": "[variables('OperatingSystemSpec').imageOffer]",
                         "sku": "[variables('OperatingSystemSpec').sku]",
-                        "version": "latest"
+                        "version": "[variables('OperatingSystemSpec').version]"
                     },
                     "osDisk": {
                         "createOption": "FromImage"
