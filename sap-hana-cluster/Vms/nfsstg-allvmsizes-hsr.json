@@ -223,14 +223,14 @@
                 "OSType": "Linux"
             },
             "SLES for SAP 15 SP1": {
-                "sku": "15-SP1",
+                "sku": "gen1",
                 "offer": "sles-sap-15-sp1",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
             },
             "SLES for SAP 15 SP1 BYOS": {
-                "sku": "12-SP1",
+                "sku": "gen1",
                 "offer": "sles-sap-15-sp1-byos",
                 "publisher": "SUSE",
                 "version": "latest",
