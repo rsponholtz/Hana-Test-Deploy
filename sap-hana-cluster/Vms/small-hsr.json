@@ -23,7 +23,7 @@
         "OperatingSystem": {
             "type": "string",
             "metadata": {
-                "description": "Operating system for HANA Machine"
+                "description": "Operating system for HANA Machine, no default or param list"
             }
         },
         "vmUserName": {
