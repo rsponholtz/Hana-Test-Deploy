@@ -195,15 +195,15 @@
                 "OSType": "Linux"
             },
             "SLES for SAP 12 SP5": {
-                "sku": "12-SP5",
-                "offer": "SLES-SAP",
+                "sku": "gen1",
+                "offer": "sles-sap-12-sp5",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
             },
             "SLES for SAP 12 SP5 BYOS": {
-                "sku": "12-SP5",
-                "offer": "SLES-SAP-BYOS",
+                "sku": "gen1",
+                "offer": "sles-sap-12-sp5-byos",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
