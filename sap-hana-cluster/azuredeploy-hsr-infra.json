@@ -98,7 +98,9 @@
                 "SLES for SAP 12 SP4 BYOS",
                 "SLES for SAP 12 SP3 BYOS",
                 "SLES for SAP 12 SP2 BYOS",
-                "RHEL 7.2 for SAP HANA"
+                "RHEL 7.2 for SAP HANA",
+                "RHEL 8.2",
+                "RHEL 8.2 for SAP"
             ]
         },
         "HANASID": {
