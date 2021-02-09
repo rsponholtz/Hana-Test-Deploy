@@ -249,6 +249,20 @@
                 "publisher": "SUSE",
                 "OSType": "Linux",
                 "version": "latest"
+            },
+            "RHEL 8.2": {
+                "sku": "8.2",
+                "offer": "RHEL",
+                "publisher": "RedHat",
+                "OSType": "Linux",
+                "version": "latest"
+            },
+            "RHEL 8.2 for SAP": {
+                "sku": "8.2",
+                "offer": "RHEL-SAP-HA",
+                "publisher": "RedHat",
+                "OSType": "Linux",
+                "version": "latest"
             }
         },
         "OperatingSystemSpec": {
