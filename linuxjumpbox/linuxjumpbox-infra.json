@@ -140,7 +140,7 @@
             },
             "SLES 12 SP5": {
                 "sku": "gen1",
-                "offer": "sles12-sp5",
+                "offer": "sles-12-sp5",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
