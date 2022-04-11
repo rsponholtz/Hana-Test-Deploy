@@ -37,8 +37,13 @@
             "type": "securestring",
             "metadata": {
                 "description": "Password for the Virtual Machine"
-            },
-            "defaultValue": "Hana07061992!"
+            }
+        },
+        "vmPublicKey": {
+            "type": "securestring",
+            "metadata": {
+                "description": "PublicKeyName"
+            }
         },
         "hanaSid": {
             "type": "string",
@@ -319,7 +324,17 @@
                 "osProfile": {
                     "computerName": "[parameters('vmName1')]",
                     "adminUsername": "[parameters('vmUserName')]",
-                    "adminPassword": "[parameters('vmPassword')]"
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminPublicKey')]"
+                                }
+                            ]
+                        }
+                    }
                 },
                 "storageProfile": {
                     "imageReference": {
