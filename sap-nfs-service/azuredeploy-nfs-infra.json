@@ -69,6 +69,12 @@
                 "description": "Password for the Virtual Machine"
             }
         },
+        "VMPublickey": {
+            "type": "string",
+            "metadata": {
+                "description": "Public key name, stored in azure"
+            }
+        },
         "OperatingSystem": {
             "type": "string",
             "metadata": {
@@ -346,6 +352,9 @@
                     "vmPassword": {
                         "value": "[parameters('vmPassword')]"
                     },
+                    "vmPublicKey":{
+                        "value":  "[parameters('vmPublicKey')]"
+                    },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
                     },
@@ -412,6 +421,9 @@
                     },
                     "vmPassword": {
                         "value": "[parameters('vmPassword')]"
+                    },
+                    "vmPublicKey":{
+                        "value":  "[parameters('vmPublicKey')]"
                     },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
