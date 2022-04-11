@@ -165,6 +165,13 @@
                 "version": "latest",
                 "OSType": "Linux"
             },      
+            "SLES 15 SP3": {
+                "sku": "gen1",
+                "offer": "sles-15-sp3",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },      
             "SLES 12 SP3": {
                 "sku": "12-SP3",
                 "offer": "SLES-SAP",
@@ -228,7 +235,20 @@
                 "version": "latest",
                 "OSType": "Linux"
             },
-
+            "SLES for SAP 15 SP3": {
+                "sku": "15-SP3",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP3 BYOS": {
+                "sku": "15-SP3",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
             "SLES 12 SP4BYOS": {
                 "sku": "12-SP4",
                 "offer": "SLES-SAP-BYOS",
