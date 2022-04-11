@@ -29,12 +29,14 @@
                 "Windows Server 2016 Datacenter",
                 "SLES for SAP 12 SP5",
                 "SLES for SAP 15 SP1",
+                "SLES for SAP 15 SP3",
                 "SLES for SAP 12 SP3",
                 "SLES for SAP 12 SP4",
                 "SLES for SAP 12 SP2",
                 "RHEL 7.2 for SAP HANA",
                 "SLES 12 SP5",
                 "SLES 15 SP1",
+                "SLES 15 SP3",
                 "SLES 12 SP3",
                 "SLES 12 SP4",
                 "SLES 12 SP2",
@@ -171,14 +173,27 @@
                 "version": "latest",
                 "OSType": "Linux"
             },
-            "SLES for SAP 15 SP1 BYOS": {
-                "sku": "12-SP4",
+            "SLES for SAP 15 SP3 BYOS": {
+                "sku": "15-SP3",
                 "offer": "SLES-SAP-BYOS",
                 "publisher": "SUSE",
                 "version": "latest",
                 "OSType": "Linux"
             },
-
+            "SLES for SAP 15 SP3": {
+                "sku": "15-SP3",
+                "offer": "SLES-SAP",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
+            "SLES for SAP 15 SP1 BYOS": {
+                "sku": "15-SP1",
+                "offer": "SLES-SAP-BYOS",
+                "publisher": "SUSE",
+                "version": "latest",
+                "OSType": "Linux"
+            },
             "SLES 12 SP4BYOS": {
                 "sku": "12-SP4",
                 "offer": "SLES-SAP-BYOS",
