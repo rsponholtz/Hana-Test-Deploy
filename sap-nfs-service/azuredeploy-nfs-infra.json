@@ -355,7 +355,7 @@
                         "value": "[parameters('vmPassword')]"
                     },
                     "vmPublicKey":{
-                        "value":  "[parameters('vmPublicKey')]"
+                        "value":  "[parameters('VMPublicKey')]"
                     },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
@@ -425,7 +425,7 @@
                         "value": "[parameters('vmPassword')]"
                     },
                     "vmPublicKey":{
-                        "value":  "[parameters('vmPublicKey')]"
+                        "value":  "[parameters('VMPublicKey')]"
                     },
                     "vmSize": {
                         "value": "[variables('vmSize')]"
