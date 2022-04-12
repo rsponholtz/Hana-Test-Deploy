@@ -142,7 +142,7 @@
         "prefix": "[toLower(parameters('prefix'))]",
         "vmName1": "[toLower(parameters('vmName1'))]",
         "vmName2": "[toLower(parameters('vmName2'))]",
-        "baseUri": "https://raw.githubusercontent.com/AzureCAT-GSI/Hana-Test-Deploy/master/sap-nfs-service",
+        "baseUri": "https://raw.githubusercontent.com/rsponholtz/Hana-Test-Deploy/master/sap-nfs-service",
         "repoUri": "[variables('baseUri')]",
         "smallUri": "[concat(variables('baseUri'), '/small-nfs.json')]",
         "vnetID": "[resourceId(parameters('ExistingNetworkResourceGroup'),'Microsoft.Network/virtualNetworks',parameters('vnetName'))]",
