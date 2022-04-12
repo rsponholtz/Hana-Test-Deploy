@@ -69,7 +69,7 @@
                 "description": "Password for the Virtual Machine"
             }
         },
-        "VMPublickey": {
+        "VMPublicKey": {
             "type": "string",
             "metadata": {
                 "description": "Public key name, stored in azure"
