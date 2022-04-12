@@ -38,6 +38,7 @@
             "metadata": {
                 "description": "Password for the Virtual Machine"
             }
+            "defaultValue": ""
         },
         "vmPublicKey": {
             "type": "securestring",
