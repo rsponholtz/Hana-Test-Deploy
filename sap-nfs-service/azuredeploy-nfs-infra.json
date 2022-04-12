@@ -71,7 +71,7 @@
             "defaultValue": ""
         },
         "vmPublicKey": {
-            "type": "securestring",
+            "type": "string",
             "metadata": {
                 "description": "Public key name, stored in azure"
             }
