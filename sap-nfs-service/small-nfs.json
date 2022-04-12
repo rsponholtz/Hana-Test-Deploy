@@ -41,7 +41,7 @@
             "defaultValue": ""
         },
         "vmPublicKey": {
-            "type": "securestring",
+            "type": "string",
             "metadata": {
                 "description": "PublicKeyName"
             }
